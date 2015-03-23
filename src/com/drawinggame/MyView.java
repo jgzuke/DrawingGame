@@ -8,6 +8,7 @@ import android.view.View;
 public class MyView extends View {
 	private Context context;
 	private MainActivity activity;
+	private ImageLibrary imageLibrary;
 	private Handler mHandler = new Handler();
 	protected Runnable frameCaller = new Runnable()
 	{
@@ -18,11 +19,16 @@ public class MyView extends View {
 			mHandler.postDelayed(this, 40);
 		}
 	};	
-    public MyView(Context contextSet, MainActivity activitySet)
+	
+	private double screenWidth;
+	private double screenHeight;
+    public MyView(Context contextSet, MainActivity activitySet, double[] screenDimensions)
     {
     	super(contextSet);
     	context = contextSet;
     	activity = activitySet;
+    	screenWidth = screenDimensions[0];
+    	screenHeight = screenDimensions[1];
     }
     private void frameCall()
     {
@@ -31,7 +37,6 @@ public class MyView extends View {
     @Override
 	protected void onDraw(Canvas g)
 	{
-		//g.translate(screenMinX, screenMinY);
 		//g.scale((float) screenDimensionMultiplier, (float) screenDimensionMultiplier);
 		//drawNotPaused(g);
 	}
