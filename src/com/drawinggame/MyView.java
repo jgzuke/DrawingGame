@@ -11,6 +11,7 @@ import android.graphics.Paint.Style;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 public class MyView extends View {
 	private Context context;
@@ -49,8 +50,9 @@ public class MyView extends View {
     	
     }
     
-    protected void endShape(ArrayList<int[]> points)
+    protected void endShape(ArrayList<int[]> points, String type)
     {
+    	Toast.makeText(context, type, Toast.LENGTH_SHORT);
     	lastShape = new Path();
     	lastShape.moveTo(points.get(0)[0], points.get(0)[1]);
 		for(int j = 1; j < points.size(); j++)

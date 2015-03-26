@@ -14,6 +14,7 @@ public class GestureDetector implements OnTouchListener
 	private double screenWidth;
 	private double screenHeight;
 	private ArrayList<Integer> IDs = new ArrayList<Integer>();
+	private ArrayList<Dollar> dollars = new ArrayList<Dollar>();
 	private ArrayList<ArrayList<int[]>> pointsLists = new ArrayList<ArrayList<int[]>>();
 	private int actionMask;
 	int[] coordinate = new int[2];
@@ -42,9 +43,17 @@ public class GestureDetector implements OnTouchListener
 			
         	ID = e.getPointerId(e.getActionIndex());				// Add pointer ID to ID list
         	IDs.add(ID);
+        	
+        	Dollar dollar = new Dollar(Dollar.GESTURES_DEFAULT);
+        	dollar.setActive(true);
+        	dollar.pointerPressed(coordinate[0], coordinate[1]);
+        	dollars.add(dollar);
         break;
         case MotionEvent.ACTION_UP:
-        	myView.endShape(pointsLists.remove(0));
+        	int [] coordsTemp = pointsLists.get(0).get(pointsLists.get(0).size()-1);
+        	dollars.get(0).pointerReleased(coordsTemp[0], coordsTemp[1]);
+        	myView.endShape(pointsLists.remove(0), dollars.get(0).getName());
+        	dollars.clear();
         	pointsLists.clear();
         	IDs.clear();
         break;
@@ -60,6 +69,11 @@ public class GestureDetector implements OnTouchListener
 	        	pointsLists.add(newAltPointSet);
 	        	
 	        	IDs.add(ID);
+	        	
+	        	Dollar dollarAlt = new Dollar(Dollar.GESTURES_DEFAULT);
+	        	dollarAlt.setActive(true);
+	        	dollarAlt.pointerPressed(coordinate[0], coordinate[1]);
+	        	dollars.add(dollarAlt);
         	}
         break;
         case MotionEvent.ACTION_MOVE:
@@ -69,6 +83,7 @@ public class GestureDetector implements OnTouchListener
 	        	coordinate[0] = (int)(e.getX(IDs.get(i)));
 	        	coordinate[1] = (int)(e.getY(IDs.get(i)));
 	        	pointsLists.get(i).add(coordinate.clone());
+	        	dollars.get(i).pointerDragged(coordinate[0], coordinate[1]);
         	}
         break;
         case MotionEvent.ACTION_POINTER_UP:
@@ -78,8 +93,11 @@ public class GestureDetector implements OnTouchListener
         	{
         		if(ID == IDs.get(i))
 	        	{
+        			int [] coordsTempAlt = pointsLists.get(i).get(pointsLists.get(i).size()-1);
+                	dollars.get(i).pointerReleased(coordsTempAlt[0], coordsTempAlt[1]);
         			IDs.remove(i);
-        			myView.endShape(pointsLists.remove(i));
+        			myView.endShape(pointsLists.remove(i), dollars.get(i).getName());
+        			dollars.remove(i);
 	        	}
         	}
         break;
