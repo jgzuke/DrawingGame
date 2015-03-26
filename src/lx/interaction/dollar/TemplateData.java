@@ -52,17 +52,11 @@ public class TemplateData
 			dst[ i*2 + 1 ] = src[src.length - i*2 + 1 - 2];  
 	
 		}
-	
-/*		for (int i = 0; i < dst.length/2; i++)
-			System.out.println(dst[ i*2 ] + ", " + dst[ i*2 + 1 ] + "\t" + 
-								src[ i*2 ] + ", " + src[ i*2 + 1 ]);		
-*/	}
-	
+	}
 	static
 	{
 		copyReversed(circlePointsCW, circlePointsCCW);
 		copyReversed(rectanglePointsCW, rectanglePointsCCW);
 		copyReversed(caretPointsCCW, caretPointsCW);
 	}
-
 }

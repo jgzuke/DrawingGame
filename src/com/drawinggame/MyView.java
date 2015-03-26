@@ -1,6 +1,9 @@
 package com.drawinggame;
 
 import java.util.ArrayList;
+import java.util.Vector;
+
+import lx.interaction.dollar.Point;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -50,33 +53,37 @@ public class MyView extends View {
     	
     }
     
-    protected void endShape(ArrayList<int[]> points, String type)
+    protected void endShape(Vector<Point> points, String type)
     {
-    	Toast.makeText(context, type, Toast.LENGTH_SHORT);
+    	Toast.makeText(context, type, Toast.LENGTH_SHORT).show();
     	lastShape = new Path();
-    	lastShape.moveTo(points.get(0)[0], points.get(0)[1]);
+    	Point p = (Point) points.get(0);
+    	lastShape.moveTo((int)p.X, (int)p.Y);
 		for(int j = 1; j < points.size(); j++)
 		{
-			lastShape.lineTo(points.get(j)[0], points.get(j)[1]);
+			p = (Point) points.get(j);
+			lastShape.lineTo((int)p.X, (int)p.Y);
 		}
     }
     @Override
 	protected void onDraw(Canvas g)
 	{
-    	ArrayList<ArrayList<int[]>> pointsList = gestureDetector.getPointsLists();
+    	ArrayList<Vector<Point>> pointsList = gestureDetector.getPointsLists();
     	paint.setColor(Color.RED);
     	paint.setStyle(Style.STROKE);
     	paint.setStrokeWidth(4);
     	//Log.e("myid", "test");
     	for(int i = 0; i < pointsList.size(); i++)
     	{
-    		ArrayList<int[]> points = pointsList.get(i);
+    		Vector<Point> points = pointsList.get(i);
     		//Log.e("myid", Integer.toString(points.size()));
     		Path path = new Path();
-    		path.moveTo(points.get(0)[0], points.get(0)[1]);
+    		Point p = (Point) points.get(0);
+    		path.moveTo((int)p.X, (int)p.Y);
     		for(int j = 1; j < points.size(); j++)
     		{
-    			path.lineTo(points.get(j)[0], points.get(j)[1]);
+    			p = (Point) points.get(j);
+    			path.lineTo((int)p.X, (int)p.Y);
     		}
     		g.drawPath(path, paint);
     	}

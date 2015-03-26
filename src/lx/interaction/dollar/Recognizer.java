@@ -10,42 +10,22 @@ public class Recognizer
 	int NumTemplates = 16;
 	public static int NumPoints = 64;
 	public static double SquareSize = 250.0;
-	double HalfDiagonal = 0.5 * Math.sqrt(250.0 * 250.0 + 250.0 * 250.0);
-	double AngleRange = 45.0;
-	double AnglePrecision = 2.0;
+	double AngleRange = 20.0;
+	double AnglePrecision = 1.0;
 	public static double Phi = 0.5 * (-1.0 + Math.sqrt(5.0)); // Golden Ratio
 	
 	public Point centroid = new Point(0, 0);
 	public Rectangle boundingBox = new Rectangle(0, 0, 0, 0);
 	int bounds[] = { 0, 0, 0, 0 };
 	
-	Vector Templates = new Vector(NumTemplates);
+	Vector<Template> Templates = new Vector<Template>(NumTemplates);
 
-	public static final int GESTURES_DEFAULT = 1;
-	public static final int GESTURES_SIMPLE = 2;
-	public static final int GESTURES_CIRCLES = 3;	
-	
 	public Recognizer()
 	{
-		this(GESTURES_SIMPLE);
-	}
-
-	public Recognizer(int gestureSet)
-	{
-		switch(gestureSet)
-		{
-			case GESTURES_DEFAULT:
-				loadTemplatesDefault(); break;
-
-			case GESTURES_SIMPLE:
-				loadTemplatesSimple();	break;
-
-			case GESTURES_CIRCLES:
-				loadTemplatesCircles();	break;
-		}
+		loadTemplates();
 	}
 	
-	void loadTemplatesDefault()
+	void loadTemplates()
 	{
 		Templates.addElement(loadTemplate("triangle", TemplateData.trianglePoints));
 		Templates.addElement(loadTemplate("x", TemplateData.xPoints));
@@ -87,21 +67,18 @@ public class Recognizer
 		return new Template(name, loadArray(array));
 	}
 	
-	Vector loadArray(int[] array)
+	Vector<Point> loadArray(int[] array)
 	{
-		Vector v = new Vector(array.length/2);
+		Vector<Point> v = new Vector<Point>(array.length/2);
 		for (int i = 0; i < array.length; i+= 2)
 		{
 			Point p = new Point(array[i], array[i+1]);
 			v.addElement(p);
 		}
-		
-	//	System.out.println(v.size() + " " + array.length);
-	
 		return v;
 	}
 	
-	public Result Recognize(Vector points)
+	public String Recognize(Vector<Point> points)
 	{
 		points = Utils.Resample(points, NumPoints);		
 		points = Utils.RotateToZero(points, centroid, boundingBox);
@@ -125,24 +102,6 @@ public class Recognizer
 				t = i;
 			}
 		}
-		double score = 1.0 - (b / HalfDiagonal);
-		return new Result(((Template)Templates.elementAt(t)).Name, score, t);
+		return ((Template)Templates.elementAt(t)).Name;
 	};
-
-	int AddTemplate(String name, Vector points)
-	{
-		Templates.addElement(new Template(name, points));
-		return Templates.size();
-	}
-	
-	int DeleteUserTemplates()
-	{
-		for (int i = Templates.size()-NumTemplates; i > 0; i--)
-		{
-			Templates.removeElementAt(Templates.size()-1);
-		}
-		
-		return Templates.size();
-	}
-
 }
