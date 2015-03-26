@@ -1,7 +1,4 @@
 package lx.interaction.dollar;
-
-//TODO: Most of the code here could be significantly optimized. This was a quick port from the C# version of the library
-
 import lx.util.Trigonometric;
 
 import java.util.Vector;
@@ -9,16 +6,16 @@ import java.util.Enumeration;
 
 public class Utils
 {	 
-	public static Vector Resample(Vector points, int n)
+	public static Vector<Point> Resample(Vector<Point> points, int n)
 	{		
 		double I = PathLength(points) / (n - 1); // interval length
 		double D = 0.0;
 		
-		Vector srcPts = new Vector(points.size());
+		Vector<Point> srcPts = new Vector<Point>(points.size());
 		for (int i = 0; i < points.size(); i++)
 			srcPts.addElement(points.elementAt(i));
 		
-		Vector dstPts = new Vector(n);
+		Vector<Point> dstPts = new Vector<Point>(n);
 		dstPts.addElement(srcPts.elementAt(0));	//assumes that srcPts.size() > 0
 		
 		for (int i = 1; i < srcPts.size(); i++)
@@ -51,11 +48,11 @@ public class Utils
 	}
 
 	
-	public static Vector RotateToZero(Vector points)
+	public static Vector<Point> RotateToZero(Vector<Point> points)
 	{	return RotateToZero(points, null, null);	}
 
 	
-	public static Vector RotateToZero(Vector points, Point centroid, Rectangle boundingBox)
+	public static Vector<Point> RotateToZero(Vector<Point> points, Point centroid, Rectangle boundingBox)
 	{
 		Point c = Centroid(points);
 		Point first = (Point)points.elementAt(0);
@@ -70,15 +67,15 @@ public class Utils
 		return RotateBy(points, -theta);
 	}		
 	
-	public static Vector RotateBy(Vector points, double theta)
+	public static Vector<Point> RotateBy(Vector<Point> points, double theta)
 	{
 		return RotateByRadians(points, theta);
 	}
 	
 	// rotate the points by the given radians about their centroid
-	public static Vector RotateByRadians(Vector points, double radians)
+	public static Vector<Point> RotateByRadians(Vector<Point> points, double radians)
 	{
-		Vector newPoints = new Vector(points.size());
+		Vector<Point> newPoints = new Vector<Point>(points.size());
 		Point c = Centroid(points);
 
 		double _cos = Math.cos(radians);
@@ -102,15 +99,15 @@ public class Utils
 		return newPoints;
 	}
 
-	public static Vector ScaleToSquare(Vector points, double size)
+	public static Vector<Point> ScaleToSquare(Vector<Point> points, double size)
 	{
 		return ScaleToSquare(points, size, null);
 	}				
 
-	public static Vector ScaleToSquare(Vector points, double size, Rectangle boundingBox)
+	public static Vector<Point> ScaleToSquare(Vector<Point> points, double size, Rectangle boundingBox)
 	{
 		Rectangle B = BoundingBox(points);
-		Vector newpoints = new Vector(points.size());
+		Vector<Point> newpoints = new Vector<Point>(points.size());
 		for (int i = 0; i < points.size(); i++)
 		{
 			Point p = (Point)points.elementAt(i);
@@ -125,10 +122,10 @@ public class Utils
 		return newpoints;
 	}			
 	
-	public static Vector TranslateToOrigin(Vector points)
+	public static Vector<Point> TranslateToOrigin(Vector<Point> points)
 	{
 		Point c = Centroid(points);
-		Vector newpoints = new Vector(points.size());
+		Vector<Point> newpoints = new Vector<Point>(points.size());
 		for (int i = 0; i < points.size(); i++)
 		{
 			Point p = (Point)points.elementAt(i);
@@ -139,7 +136,7 @@ public class Utils
 		return newpoints;
 	}			
 	
-	public static double DistanceAtBestAngle(Vector points, Template T, double a, double b, double threshold)
+	public static double DistanceAtBestAngle(Vector<Point> points, Template T, double a, double b, double threshold)
 	{
 		double Phi = Recognizer.Phi;
 	
@@ -170,22 +167,22 @@ public class Utils
 		return Math.min(f1, f2);
 	}			
 
-	public static double DistanceAtAngle(Vector points, Template T, double theta)
+	public static double DistanceAtAngle(Vector<Point> points, Template T, double theta)
 	{
-		Vector newpoints = RotateBy(points, theta);
+		Vector<Point> newpoints = RotateBy(points, theta);
 		return PathDistance(newpoints, T.Points);
 	}		
 
 //	#region Lengths and Rects	
 	
-	public static Rectangle BoundingBox(Vector points)
+	public static Rectangle BoundingBox(Vector<Point> points)
 	{
 		double minX = Double.MAX_VALUE;
 		double maxX = Double.MIN_VALUE;
 		double minY = Double.MAX_VALUE;
 		double maxY = Double.MIN_VALUE;
 	
-		Enumeration e = points.elements();
+		Enumeration<Point> e = points.elements();
 		
 //		foreach (Point p in points)
 		while (e.hasMoreElements())
@@ -206,14 +203,14 @@ public class Utils
 		return new Rectangle(minX, minY, maxX - minX, maxY - minY);
 	}
 
-	public static void BoundingBox(Vector points, Rectangle dst)
+	public static void BoundingBox(Vector<Point> points, Rectangle dst)
 	{
 		double minX = Double.MAX_VALUE;
 		double maxX = Double.MIN_VALUE;
 		double minY = Double.MAX_VALUE;
 		double maxY = Double.MIN_VALUE;
 	
-		Enumeration e = points.elements();
+		Enumeration<Point> e = points.elements();
 		
 //		foreach (Point p in points)
 		while (e.hasMoreElements())
@@ -245,12 +242,12 @@ public class Utils
 	}
 
 	// compute the centroid of the points given
-	public static Point Centroid(Vector points)
+	public static Point Centroid(Vector<Point> points)
 	{
 		double xsum = 0.0;
 		double ysum = 0.0;
 		
-		Enumeration e = points.elements();
+		Enumeration<Point> e = points.elements();
 		
 //		foreach (Point p in points)
 		while (e.hasMoreElements())
@@ -262,7 +259,7 @@ public class Utils
 		return new Point(xsum / points.size(), ysum / points.size());
 	}
 
-	public static double PathLength(Vector points)
+	public static double PathLength(Vector<Point> points)
 	{
 		double length = 0;
 		for (int i = 1; i < points.size(); i++)
@@ -275,7 +272,7 @@ public class Utils
 
 	// computes the 'distance' between two point paths by summing their corresponding point distances.
 	// assumes that each path has been resampled to the same number of points at the same distance apart.
-	public static double PathDistance(Vector path1, Vector path2)
+	public static double PathDistance(Vector<Point> path1, Vector<Point> path2)
 	{            
 		double distance = 0;
 		for (int i = 0; i < path1.size(); i++)

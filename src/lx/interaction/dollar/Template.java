@@ -5,9 +5,9 @@ import java.util.*;
 public class Template
 {
 	String Name;
-	Vector Points;
+	public Vector<Point> Points;
 
-	Template(String name, Vector points) 
+	Template(String name, Vector<Point> points) 
 	{
 		this.Name = name;
 		this.Points = Utils.Resample(points, Recognizer.NumPoints);

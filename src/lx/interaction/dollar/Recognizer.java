@@ -7,7 +7,7 @@ public class Recognizer
 	//
 	// Recognizer class constants
 	//
-	int NumTemplates = 16;
+	int Numtemplates = 16;
 	public static int NumPoints = 64;
 	public static double SquareSize = 250.0;
 	double AngleRange = 20.0;
@@ -18,48 +18,48 @@ public class Recognizer
 	public Rectangle boundingBox = new Rectangle(0, 0, 0, 0);
 	int bounds[] = { 0, 0, 0, 0 };
 	
-	Vector<Template> Templates = new Vector<Template>(NumTemplates);
+	public Vector<Template> templates = new Vector<Template>(Numtemplates);
 
 	public Recognizer()
 	{
-		loadTemplates();
+		loadtemplates();
 	}
 	
-	void loadTemplates()
+	void loadtemplates()
 	{
-		Templates.addElement(loadTemplate("triangle", TemplateData.trianglePoints));
-		Templates.addElement(loadTemplate("x", TemplateData.xPoints));
-		Templates.addElement(loadTemplate("rectangle CCW", TemplateData.rectanglePointsCCW));
-		Templates.addElement(loadTemplate("circle CCW", TemplateData.circlePointsCCW));
-		Templates.addElement(loadTemplate("check", TemplateData.checkPoints));
-		Templates.addElement(loadTemplate("caret CW", TemplateData.caretPointsCW));
-		Templates.addElement(loadTemplate("question", TemplateData.questionPoints));
-		Templates.addElement(loadTemplate("arrow", TemplateData.arrowPoints));
-		Templates.addElement(loadTemplate("leftSquareBracket", TemplateData.leftSquareBracketPoints));
-		Templates.addElement(loadTemplate("rightSquareBracket", TemplateData.rightSquareBracketPoints));
-		Templates.addElement(loadTemplate("v", TemplateData.vPoints));
-		Templates.addElement(loadTemplate("delete", TemplateData.deletePoints));	
-		Templates.addElement(loadTemplate("leftCurlyBrace", TemplateData.leftCurlyBracePoints));
-		Templates.addElement(loadTemplate("rightCurlyBrace", TemplateData.rightCurlyBracePoints));
-		Templates.addElement(loadTemplate("star", TemplateData.starPoints));
-		Templates.addElement(loadTemplate("pigTail", TemplateData.pigTailPoints));
+		templates.addElement(loadTemplate("triangle", TemplateData.trianglePoints));
+		templates.addElement(loadTemplate("x", TemplateData.xPoints));
+		templates.addElement(loadTemplate("rectangle CCW", TemplateData.rectanglePointsCCW));
+		templates.addElement(loadTemplate("circle CCW", TemplateData.circlePointsCCW));
+		templates.addElement(loadTemplate("check", TemplateData.checkPoints));
+		templates.addElement(loadTemplate("caret CW", TemplateData.caretPointsCW));
+		templates.addElement(loadTemplate("question", TemplateData.questionPoints));
+		templates.addElement(loadTemplate("arrow", TemplateData.arrowPoints));
+		templates.addElement(loadTemplate("leftSquareBracket", TemplateData.leftSquareBracketPoints));
+		templates.addElement(loadTemplate("rightSquareBracket", TemplateData.rightSquareBracketPoints));
+		templates.addElement(loadTemplate("v", TemplateData.vPoints));
+		templates.addElement(loadTemplate("delete", TemplateData.deletePoints));	
+		templates.addElement(loadTemplate("leftCurlyBrace", TemplateData.leftCurlyBracePoints));
+		templates.addElement(loadTemplate("rightCurlyBrace", TemplateData.rightCurlyBracePoints));
+		templates.addElement(loadTemplate("star", TemplateData.starPoints));
+		templates.addElement(loadTemplate("pigTail", TemplateData.pigTailPoints));
 	}
 	
-	void loadTemplatesSimple()
+	void loadtemplatesSimple()
 	{
-		Templates.addElement(loadTemplate("circle CCW", TemplateData.circlePointsCCW));
-		Templates.addElement(loadTemplate("circle CW", TemplateData.circlePointsCW));
-		Templates.addElement(loadTemplate("rectangle CCW", TemplateData.rectanglePointsCCW));
-		Templates.addElement(loadTemplate("rectangle CW", TemplateData.rectanglePointsCW));
-		Templates.addElement(loadTemplate("caret CCW", TemplateData.caretPointsCCW));
-		Templates.addElement(loadTemplate("caret CW", TemplateData.caretPointsCW));
+		templates.addElement(loadTemplate("circle CCW", TemplateData.circlePointsCCW));
+		templates.addElement(loadTemplate("circle CW", TemplateData.circlePointsCW));
+		templates.addElement(loadTemplate("rectangle CCW", TemplateData.rectanglePointsCCW));
+		templates.addElement(loadTemplate("rectangle CW", TemplateData.rectanglePointsCW));
+		templates.addElement(loadTemplate("caret CCW", TemplateData.caretPointsCCW));
+		templates.addElement(loadTemplate("caret CW", TemplateData.caretPointsCW));
 	}
 	
 
-	void loadTemplatesCircles()
+	void loadtemplatesCircles()
 	{
-		Templates.addElement(loadTemplate("circle CCW", TemplateData.circlePointsCCW));
-		Templates.addElement(loadTemplate("circle CW", TemplateData.circlePointsCW));
+		templates.addElement(loadTemplate("circle CCW", TemplateData.circlePointsCCW));
+		templates.addElement(loadTemplate("circle CW", TemplateData.circlePointsCW));
 	}
 	
 	Template loadTemplate(String name, int[] array)
@@ -89,19 +89,17 @@ public class Recognizer
 		bounds[1] = (int)boundingBox.Y;
 		bounds[2] = (int)boundingBox.X + (int)boundingBox.Width;
 		bounds[3] = (int)boundingBox.Y + (int)boundingBox.Height;
-		
 		int t = 0;
-		
 		double b = Double.MAX_VALUE;
-		for (int i = 0; i < Templates.size(); i++)
+		for (int i = 0; i < templates.size(); i++)
 		{
-			double d = Utils.DistanceAtBestAngle(points, (Template)Templates.elementAt(i), -AngleRange, AngleRange, AnglePrecision);
+			double d = Utils.DistanceAtBestAngle(points, (Template)templates.elementAt(i), -AngleRange, AngleRange, AnglePrecision);
 			if (d < b)
 			{
 				b = d;
 				t = i;
 			}
 		}
-		return ((Template)Templates.elementAt(t)).Name;
+		return (templates.elementAt(t)).Name;
 	};
 }

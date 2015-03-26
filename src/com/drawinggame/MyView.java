@@ -16,7 +16,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-public class MyView extends View {
+public class MyView extends View
+{
 	private Context context;
 	private MainActivity activity;
 	private ImageLibrary imageLibrary;
@@ -56,14 +57,7 @@ public class MyView extends View {
     protected void endShape(Vector<Point> points, String type)
     {
     	Toast.makeText(context, type, Toast.LENGTH_SHORT).show();
-    	lastShape = new Path();
-    	Point p = (Point) points.get(0);
-    	lastShape.moveTo((int)p.X, (int)p.Y);
-		for(int j = 1; j < points.size(); j++)
-		{
-			p = (Point) points.get(j);
-			lastShape.lineTo((int)p.X, (int)p.Y);
-		}
+    	lastShape = getPathFromVector(points);
     }
     @Override
 	protected void onDraw(Canvas g)
@@ -75,18 +69,9 @@ public class MyView extends View {
     	//Log.e("myid", "test");
     	for(int i = 0; i < pointsList.size(); i++)
     	{
-    		Vector<Point> points = pointsList.get(i);
-    		//Log.e("myid", Integer.toString(points.size()));
-    		Path path = new Path();
-    		Point p = (Point) points.get(0);
-    		path.moveTo((int)p.X, (int)p.Y);
-    		for(int j = 1; j < points.size(); j++)
-    		{
-    			p = (Point) points.get(j);
-    			path.lineTo((int)p.X, (int)p.Y);
-    		}
-    		g.drawPath(path, paint);
+    		g.drawPath(getPathFromVector(pointsList.get(i)), paint);
     	}
+    	g.drawPath(getPathFromVector(gestureDetector.recognizer.templates.get(0).Points, 300, 500), paint);
     	if(lastShape != null)
     	{
     		g.drawPath(lastShape, paint);
@@ -96,4 +81,28 @@ public class MyView extends View {
 		//g.scale((float) screenDimensionMultiplier, (float) screenDimensionMultiplier);
 		//drawNotPaused(g);
 	}
+    protected Path getPathFromVector(Vector<Point> points, int x, int y)
+    {
+    	Path path = new Path();
+		Point p = (Point) points.get(0);
+		path.moveTo((int)p.X+x, (int)p.Y+y);
+		for(int j = 1; j < points.size(); j++)
+		{
+			p = (Point) points.get(j);
+			path.lineTo((int)p.X+x, (int)p.Y+y);
+		}
+		return path;
+    }
+    protected Path getPathFromVector(Vector<Point> points)
+    {
+    	Path path = new Path();
+		Point p = (Point) points.get(0);
+		path.moveTo((int)p.X, (int)p.Y);
+		for(int j = 1; j < points.size(); j++)
+		{
+			p = (Point) points.get(j);
+			path.lineTo((int)p.X, (int)p.Y);
+		}
+		return path;
+    }
 }
