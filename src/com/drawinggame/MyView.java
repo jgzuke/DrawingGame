@@ -18,6 +18,7 @@ public class MyView extends View {
 	private ImageLibrary imageLibrary;
 	private GestureDetector gestureDetector;
 	private Handler mHandler = new Handler();
+	private Path lastShape;
 	private Paint paint;
 	protected Runnable frameCaller = new Runnable()
 	{
@@ -47,6 +48,16 @@ public class MyView extends View {
     {
     	
     }
+    
+    protected void endShape(ArrayList<int[]> points)
+    {
+    	lastShape = new Path();
+    	lastShape.moveTo(points.get(0)[0], points.get(0)[1]);
+		for(int j = 1; j < points.size(); j++)
+		{
+			lastShape.lineTo(points.get(j)[0], points.get(j)[1]);
+		}
+    }
     @Override
 	protected void onDraw(Canvas g)
 	{
@@ -54,11 +65,11 @@ public class MyView extends View {
     	paint.setColor(Color.RED);
     	paint.setStyle(Style.STROKE);
     	paint.setStrokeWidth(4);
-    	Log.e("myid", "test");
+    	//Log.e("myid", "test");
     	for(int i = 0; i < pointsList.size(); i++)
     	{
     		ArrayList<int[]> points = pointsList.get(i);
-    		Log.e("myid", Integer.toString(points.size()));
+    		//Log.e("myid", Integer.toString(points.size()));
     		Path path = new Path();
     		path.moveTo(points.get(0)[0], points.get(0)[1]);
     		for(int j = 1; j < points.size(); j++)
@@ -66,6 +77,10 @@ public class MyView extends View {
     			path.lineTo(points.get(j)[0], points.get(j)[1]);
     		}
     		g.drawPath(path, paint);
+    	}
+    	if(lastShape != null)
+    	{
+    		g.drawPath(lastShape, paint);
     	}
     	
     	
