@@ -9,6 +9,7 @@ public class MyView extends View {
 	private Context context;
 	private MainActivity activity;
 	private ImageLibrary imageLibrary;
+	private GestureDetector gestureDetector;
 	private Handler mHandler = new Handler();
 	protected Runnable frameCaller = new Runnable()
 	{
@@ -29,6 +30,8 @@ public class MyView extends View {
     	activity = activitySet;
     	screenWidth = screenDimensions[0];
     	screenHeight = screenDimensions[1];
+    	gestureDetector = new GestureDetector(this);
+		this.setOnTouchListener(gestureDetector);
     }
     private void frameCall()
     {
