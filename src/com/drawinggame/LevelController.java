@@ -41,8 +41,6 @@ public final class LevelController
 	protected int levelNum = -1;
 	protected int levelWidth = 800;
 	protected int levelHeight = 800;
-	protected List<ArrayList<int[]>> saveEnemyInformation = new ArrayList<ArrayList<int[]>>();
-	protected List<Integer> savedInformationLevels = new ArrayList<Integer>();
 	/** 
 	 * Initializes all undecided variables, loads level, creates player and enemy objects, and starts frameCaller
 	 */
@@ -51,127 +49,12 @@ public final class LevelController
 		control = Control;
 	}
 	/**
-	 * changes the level when you reach a portal type thing
-	 */
-	protected void checkChangeLevel()
-	{
-		switch(levelNum)
-		{
-		case 1:
-			if(inBounds(0, 342, 26, 110))
-			{
-				loadLevel(2);
-				control.player.x = 765;
-			}
-			if(inBounds(544, 702, 31, 33))
-			{
-				loadLevel(3);
-				control.player.x = 237;
-				control.player.y = 74;
-			}
-			if(inBounds(671, 671, 22, 39))
-			{
-				loadLevel(4);
-				control.player.x = 47;
-				control.player.y = 514;
-			}
-			break;
-		case 2:
-			if(inBounds(774, 342, 26, 110))
-			{
-				loadLevel(1);
-				control.player.x = 35;
-			}
-			if(inBounds(103, 80, 54, 31))
-			{
-				loadLevel(5);
-				control.player.x = 202;
-				control.player.y = 156;
-			}
-			if(inBounds(665, 102, 35, 46))
-			{
-				loadLevel(6);
-				control.player.x = 130;
-				control.player.y = 149;
-			}
-			if(inBounds(94, 683, 25, 46))
-			{
-				loadLevel(7);
-				control.player.x = 148;
-				control.player.y = 139;
-			}
-			if(inBounds(654, 689, 62, 29))
-			{
-				loadLevel(8);
-				control.player.x = 48;
-				control.player.y = 25;
-			}
-			break;
-		case 3:
-			if(inBounds(222, 35, 31, 33))
-			{
-				loadLevel(1);
-				control.player.x = 559;
-				control.player.y = 595;
-			}
-			break;
-		case 4:
-			if(inBounds(0, 492, 34, 50))
-			{
-				loadLevel(1);
-				control.player.x = 664;
-				control.player.y = 690;
-			}
-			break;
-		case 5:
-			if(inBounds(169, 162, 67, 33))
-			{
-				loadLevel(2);
-				control.player.x = 128;
-				control.player.y = 122;
-			}
-			break;
-		case 6:
-			if(inBounds(96, 129, 24, 40))
-			{
-				loadLevel(2);
-				control.player.x = 654;
-				control.player.y = 122;
-			}
-			break;
-		case 7:
-			if(inBounds(159, 103, 39, 78))
-			{
-				loadLevel(2);
-				control.player.x = 123;
-				control.player.y = 708;
-			}
-			break;
-		case 8:
-			if(inBounds(14, -17, 67, 33))
-			{
-				loadLevel(2);
-				control.player.x = 686;
-				control.player.y = 678;
-			}
-			break;
-		}
-	}
-	/**
-	 * checks whether player is in bounds of rectangle
-	 */
-	protected boolean inBounds(int x, int y, int w, int h)
-	{
-		return (control.player.x>x && control.player.x<x+w&&control.player.y>y && control.player.y<y+h);
-	}
-	/**
 	 * loads a new level, creates walls enemies etc.
 	 */
 	protected void loadLevel(int toLoad)
 	{
 		if(levelNum != -1)
 		{
-			saveEnemies(levelNum);
 			endFightSection();
 		}
 		levelNum = toLoad;
@@ -374,55 +257,7 @@ public final class LevelController
 		makeEnemies(levelNum);
 		control.imageLibrary.loadLevel(toLoad, levelWidth, levelHeight);
 	}
-	protected void saveEnemies(int levelToSave)
-	{
-		ArrayList<int[]> newSave = new ArrayList<int[]>();
-		ArrayList<Enemy> enemies = control.spriteController.enemies;
-		for(int i = 0; i < enemies.size(); i++)
-		{
-			if(!enemies.get(i).deleted)
-			{
-				int[] enemy = new int[5];
-				enemy[0] = enemies.get(i).enemyType;
-				enemy[1] = (int) enemies.get(i).x;
-				enemy[2] = (int) enemies.get(i).y;
-				enemy[3] = (int) enemies.get(i).rotation;
-				enemy[4] = enemies.get(i).hp;
-				newSave.add(enemy);
-			}
-		}
-		for(int i = 0; i < savedInformationLevels.size(); i++) // if feild already saved delete old data
-		{
-			if(savedInformationLevels.get(i)==levelToSave)
-			{
-				saveEnemyInformation.remove(i);
-				savedInformationLevels.remove(i);
-			}
-		}
-		saveEnemyInformation.add(newSave);
-		savedInformationLevels.add(levelToSave);
-	}
 	protected void makeEnemies(int toLoad)
-	{
-		boolean haveSavedEnemies = false;
-		for(int i = 0; i < savedInformationLevels.size(); i++)
-		{
-			if(savedInformationLevels.get(i)==toLoad)
-			{
-				haveSavedEnemies = true;
-				for(int j = 0; j < saveEnemyInformation.get(i).size(); j++)
-				{
-					control.spriteController.createEnemy(saveEnemyInformation.get(i).get(j)); // CREATES SAVED ENEMIES
-				}
-				break;
-			}
-		}
-		if(!haveSavedEnemies)
-		{
-			makeNewEnemies(toLoad);
-		}
-	}
-	protected void makeNewEnemies(int toLoad)
 	{
 		SpriteController s = control.spriteController;
 		switch(toLoad)
@@ -462,11 +297,6 @@ public final class LevelController
 			s.makeEnemy(5, 183, 390, 45);
 			break;
 		}
-	}
-	protected void discardSavedEnemies()
-	{
-		saveEnemyInformation = new ArrayList<ArrayList<int[]>>();
-		savedInformationLevels = new ArrayList<Integer>();
 	}
 	/**
 	 * ends a fight section with no saved enemies

@@ -158,11 +158,6 @@ public class StartActivity extends Activity
 	{ //TODO change some
 		savedData[1] = (byte)((int) control.soundController.volumeMusic);		//1 volume music
 		savedData[2] = (byte)((int) control.soundController.volumeEffect);		//2 volume effect
-		savedData[15]=control.itemControl.helm;
-		savedData[16]=control.itemControl.shirt;
-		savedData[17]=control.itemControl.staff;
-		savedData[18]=(byte)control.itemControl.favor;
-		//savedData[58]=
 	}
 	/**
 	 * read data once it has been put into savedData array
@@ -171,11 +166,6 @@ public class StartActivity extends Activity
 	{ //TODO change some
 		control.soundController.volumeMusic = savedData[1];
 		control.soundController.volumeEffect = savedData[2];
-		control.itemControl.helm = savedData[15];
-		control.itemControl.shirt = savedData[16];
-		control.itemControl.staff = savedData[17];
-		control.itemControl.favor = savedData[18];
-		//savedData[58]=
 	}
 	/**
 	 * reads data from file and sets variables accordingly
@@ -245,52 +235,5 @@ public class StartActivity extends Activity
 		setContentView(control.graphicsController);
 		control.paused = false;
 		control.frameCaller.run();
-	}
-	
-	/**
-	 * Blessing game
-	 */
-	public void requestAttack(View v)
-	{
-		if(canBless()) blessed(1);
-	}
-	/**
-	 * Blessing game
-	 */
-	public void requestArmor(View v)
-	{
-		if(canBless()) blessed(2);
-	}
-	/**
-	 * Blessing game
-	 */
-	public void requestSpeed(View v)
-	{
-		if(canBless()) blessed(3);
-	}
-	/**
-	 * Blessing game
-	 */
-	public void requestCooldown(View v)
-	{
-		if(canBless()) blessed(4);
-	}
-	/**
-	 * starts a blessing
-	 */
-	private void blessed(int i)
-	{
-		control.player.blessing = i;
-		control.spriteController.playerBlessing = control.imageLibrary.loadImage("effect000"+Integer.toString(i), 80, 80);
-		control.player.blessingTimer = 300;
-		control.itemControl.favor -= 50;
-		control.player.setAttributes();
-	}
-	/**
-	 * checks whether you can request a blessing
-	 */
-	private boolean canBless()
-	{
-		return true;//control.itemControl.favor>50;
 	}
 }

@@ -44,46 +44,6 @@ public class Wall_Rectangle extends Wall
         @ Override
         protected void frameCall()
         {
-				if(control.player.x > oRX1 && control.player.x < oRX2 && control.player.y > oRY1 && control.player.y < oRY2)
-				{
-						double holdX;
-						double holdY;
-						if(control.player.x > x)
-						{
-							holdX = Math.abs(control.player.x - oRX2);
-						} else
-						{
-							holdX = Math.abs(control.player.x - oRX1);
-						}
-						if(control.player.y > y)
-						{
-							holdY = Math.abs(control.player.y - oRY2);
-						} else
-						{
-							holdY = Math.abs(control.player.y - oRY1);
-						}
-						if((holdX) < (holdY))
-						{
-							if(control.player.x > x)
-							{
-								control.player.x = oRX2;
-							}
-							else
-							{
-								control.player.x = oRX1;
-							}
-						} else
-						{
-							if(control.player.y > y)
-							{
-								control.player.y = oRY2;
-							}
-							else
-							{
-								control.player.y = oRY1;
-							}
-						}
-				}
         	ArrayList<Enemy> enemies = control.spriteController.enemies;
 		for(int i = 0; i < enemies.size(); i++)
 		{

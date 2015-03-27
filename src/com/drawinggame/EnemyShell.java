@@ -15,36 +15,42 @@ abstract public class EnemyShell extends Human
 	protected int runTimer = 0;
 	protected int rollTimer = 0;
 	protected int worth = 3;
-	protected int stunTimer = 0;
-	protected double lastPlayerX;
-	protected double lastPlayerY;
-	protected boolean sick = false;
+	protected double velocityX;
+	protected double velocityY;
+	protected double lastX;
+	protected double lastY;
 	protected boolean checkedPlayerLast = true;
 	protected Bitmap [] myImage;
 	protected int imageIndex;
 	protected int inDanger = 0;
 	protected double[] closestDanger = new double[2];
 	protected boolean HasLocation = false;
+	protected double lastXSeen = 0;
+	protected double lastYSeen = 0;
 	protected boolean LOS = false;
 	protected double distanceFound;
 	private int dangerCheckCounter;
+	protected boolean onPlayersTeam;
 	protected boolean keyHolder = false;
 	protected int radius = 20;
-	protected double pXVelocity=0;
-	protected double pYVelocity=0;
-	private double pXSpot=0;
-	private double pYSpot=0;
 	protected double xMove;
 	protected double yMove;
 	protected int enemyType;
 	protected int hadLOSLastTime=-1;
+	private ArrayList<Enemy> enemies;
+	private ArrayList<Enemy> allies;
+	private ArrayList<Structure> enemyStructures;
+	private ArrayList<Structure> allyStructures;
+	private ArrayList<Proj_Tracker> proj_Trackers;
+	private ArrayList<Proj_Tracker_AOE> proj_Tracker_AOEs;
+	
 	int [][] frames;
 	protected String action = "Nothing"; //"Nothing", "Move", "Alert", "Shoot", "Melee", "Roll", "Hide", "Sheild", "Stun"
 	/**
 	 * sets danger arrays, speed and control object
 	 * @param creator control object
 	 */
-	public EnemyShell(Controller creator, double X, double Y, double R, int HP, int ImageIndex)
+	public EnemyShell(Controller creator, double X, double Y, double R, int HP, int ImageIndex, boolean isOnPlayersTeam)
 	{
 		super(X, Y, 0, 0, true, false, creator.imageLibrary.enemyImages[ImageIndex][0]);
 		control = creator;
@@ -52,12 +58,30 @@ abstract public class EnemyShell extends Human
 		y = Y;
 		width = 30;
 		height = 30;
-		lastPlayerX = x;
-		lastPlayerY = y;
+		lastX = x;
+		lastY = y;
 		imageIndex = ImageIndex;
 		enemyType = ImageIndex;
 		myImage = creator.imageLibrary.enemyImages[ImageIndex];
 		image = myImage[frame];
+		onPlayersTeam = isOnPlayersTeam;
+		if(isOnPlayersTeam)
+		{
+			enemies = control.spriteController.enemies;
+			allies = control.spriteController.allies;
+			enemyStructures = control.spriteController.enemyStructures;
+			allyStructures = control.spriteController.allyStructures;
+			proj_Trackers = control.spriteController.proj_TrackerEs;
+			proj_Tracker_AOEs = control.spriteController.proj_TrackerE_AOEs;
+		} else
+		{
+			enemies = control.spriteController.allies;
+			allies = control.spriteController.enemies;
+			enemyStructures = control.spriteController.allyStructures;
+			allyStructures = control.spriteController.enemyStructures;
+			proj_Trackers = control.spriteController.proj_TrackerAs;
+			proj_Tracker_AOEs = control.spriteController.proj_TrackerA_AOEs;
+		}
 	}
 	/**
 	 * Clears danger arrays, sets current dimensions, and counts timers
@@ -82,15 +106,10 @@ abstract public class EnemyShell extends Human
 		image = myImage[frame];
 		rollTimer --;
 		hadLOSLastTime--;
-		if(sick)
-		{
-			hp -= 20;
-			getHit(0);
-		}
-		pXVelocity = control.player.x-pXSpot;
-		pYVelocity = control.player.y-pYSpot;
-		pXSpot = control.player.x;
-		pYSpot = control.player.y;
+		velocityX = x - lastX;
+		velocityY = y - lastY;
+		lastX = x;
+		lastY = y;
 		hp += 4;
 		super.frameCall();
 		sizeImage();
@@ -112,21 +131,8 @@ abstract public class EnemyShell extends Human
 		double movementX;
 		double movementY;
 		double moveRads;
-		double xdif = x - control.player.x;
-		double ydif = y - control.player.y;
-		if(Math.pow(xdif, 2) + Math.pow(ydif, 2) < Math.pow(radius, 2))
-		{
-			moveRads = Math.atan2(ydif, xdif);
-			movementX = (x - (Math.cos(moveRads) * radius) - control.player.x)/2;
-			movementY = (y - (Math.sin(moveRads) * radius) - control.player.y)/2;
-			if(control.player.rollTimer<1)
-			{
-				control.player.x += movementX;
-				control.player.y += movementY;
-				x -= movementX;
-				y -= movementY;
-			}
-		}
+		double xdif;
+		double ydif;
 		ArrayList<Enemy> enemies = control.spriteController.enemies;
 		for(int i = 0; i < enemies.size(); i++)
 		{
@@ -152,18 +158,15 @@ abstract public class EnemyShell extends Human
 	 * if health below 0 kills enemy
 	 * @param damage amount of damage to take
 	 */
-	protected void getHit(double damage)
+	protected void getHit(double damage, EnemyShell target)
 	{
 		if(!deleted)
 		{
 			if(action.equals("Sheild")) damage /= 9;
-			getPlayerLocation();
+			getEnemyLocation(target);
 			if(action.equals("Hide")) action = "Nothing";
 			damage /= 1.2;
 			super.getHit(damage);
-			control.player.abilityTimer_burst += damage/30*control.player.chargeCooldown;
-			control.player.abilityTimer_roll += damage/50*control.player.chargeCooldown;
-			control.player.abilityTimer_Proj_Tracker += damage/100*control.player.chargeCooldown;
 			if(deleted)
 			{
 				dieDrops();
@@ -178,12 +181,6 @@ abstract public class EnemyShell extends Human
 			control.spriteController.createProj_TrackerEnemyAOE(x, y, 140, false);
 			control.soundController.playEffect("burst");
 			control.itemControl.favor+= (double)worth/10;
-			control.player.experience += worth;
-			if(control.player.blessingTimer>0) // if blessing active get more
-			{
-				control.itemControl.favor+= (double)worth/2;
-				control.player.blessingTimer += 20;
-			}
 	}
 	protected boolean checkLOS(int px, int py)
 	{
@@ -192,57 +189,51 @@ abstract public class EnemyShell extends Human
 	/**
 	 * Checks whether object can 'see' player
 	 */
-	protected void checkLOS()
+	protected void checkLOS(EnemyShell target)
 	{
-		int px = (int)control.player.x;
-		int py = (int)control.player.y;
-		if(control.player.rollTimer>0 && hadLOSLastTime<1)
+		int px = (int)target.x;
+		int py = (int)target.y;
+		if(!control.wallController.checkObstructionsPoint((float)x, (float)y, (float)px, (float)py, false, fromWall))
 		{
-			LOS = false;
+			LOS = true;
+			hadLOSLastTime = 25;
+			lastXSeen = px;
+			lastYSeen = py;
+			checkedPlayerLast = false;
 		} else
 		{
-			if(!control.wallController.checkObstructionsPoint((float)x, (float)y, (float)px, (float)py, false, fromWall))
-			{
-				LOS = true;
-				hadLOSLastTime = 25;
-				lastPlayerX = px;
-				lastPlayerY = py;
-				checkedPlayerLast = false;
-			} else
-			{
-				LOS = false;
-			}
+			LOS = false;
 		}
 		HasLocation = hadLOSLastTime>0;
 		if(HasLocation)	//tell others where player is
 		{
-			callPlayerLocation();
+			callPlayerLocation(target);
 		}
 	}
 	/**
 	 * tells other enemies where player is
 	 */
-	protected void callPlayerLocation()
+	protected void callPlayerLocation(EnemyShell target)
 	{
 		for(int i = 0; i < control.spriteController.enemies.size(); i++)
 		{
 			Enemy enemy = control.spriteController.enemies.get(i);
 			if(!enemy.HasLocation&&checkDistance(x, y, enemy.x, enemy.y)<200)
 			{
-				enemy.getPlayerLocation();
+				enemy.getEnemyLocation(target);
 			}
 		}
 	}
 	/**
 	 * hears where player is
 	 */
-	protected void getPlayerLocation()
+	protected void getEnemyLocation(EnemyShell target)
 	{
-		lastPlayerX = control.player.x;
-		lastPlayerY = control.player.y;
 		if(!LOS)
 		{
-			rads = Math.atan2((control.player.y - y), (control.player.x - x));
+			lastXSeen = target.x;
+			lastYSeen = target.y;
+			rads = Math.atan2((target.y - y), (target.x - x));
 			rotation = rads * r2d;
 		}
 	}
@@ -261,9 +252,9 @@ abstract public class EnemyShell extends Human
 		inDanger = 0;
 		closestDanger[0] = 0;
 		closestDanger[1] = 0;
-		for(int i = 0; i < control.spriteController.proj_TrackerP_AOEs.size(); i++)
+		for(int i = 0; i < proj_Tracker_AOEs.size(); i++)
 		{
-			Proj_Tracker_AOE_Player AOE = control.spriteController.proj_TrackerP_AOEs.get(i);
+			Proj_Tracker_AOE AOE = proj_Tracker_AOEs.get(i);
 			if(AOE.timeToDeath>7 && Math.pow(x-AOE.x, 2)+Math.pow(y-AOE.y, 2)<Math.pow(AOE.widthDone+25, 2))
 			{
 				closestDanger[0]+=AOE.x;
@@ -271,9 +262,9 @@ abstract public class EnemyShell extends Human
 				inDanger++;
 			}
 		}
-		for(int i = 0; i < control.spriteController.proj_TrackerPs.size(); i++)
+		for(int i = 0; i < proj_Trackers.size(); i++)
 		{
-			Proj_Tracker_Player shot = control.spriteController.proj_TrackerPs.get(i);
+			Proj_Tracker shot = proj_Trackers.get(i);
 			if(shot.goodTarget(this, 110))
 			{
 				closestDanger[0]+=shot.x*2;
@@ -288,9 +279,9 @@ abstract public class EnemyShell extends Human
 	 * Checks distance to player
 	 * @return Returns distance
 	 */
-	protected double distanceToPlayer()
+	protected double distanceTo(EnemyShell target)
 	{
-		return checkDistance(x, y, control.player.x, control.player.y);
+		return checkDistance(x, y, target.x, target.y);
 	}
 	/**
 	 * Checks distance between two points
@@ -307,15 +298,6 @@ abstract public class EnemyShell extends Human
 	protected double checkDistance(double fromX, double fromY, double toX, double toY)
 	{
 		return Math.sqrt((Math.pow(fromX - toX, 2)) + (Math.pow(fromY - toY, 2)));
-	}
-	/**
-	 * stuns enemy
-	 * @param time time to stun enemy for
-	 */
-	protected void stun(int time)
-	{
-		action ="Stun";
-		stunTimer=time;
 	}
 	protected void baseHp(int setHP)
 	{

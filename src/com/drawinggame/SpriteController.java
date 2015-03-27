@@ -46,11 +46,13 @@ public final class SpriteController extends SpriteDrawer
 {
 	protected Controller control;
 	protected ArrayList<Enemy> enemies = new ArrayList<Enemy>();
-	protected ArrayList<Structure> structures = new ArrayList<Structure>();
-	protected ArrayList<Proj_Tracker_Enemy> proj_TrackerEs = new ArrayList<Proj_Tracker_Enemy>();
-	protected ArrayList<Proj_Tracker_Player> proj_TrackerPs = new ArrayList<Proj_Tracker_Player>();
-	protected ArrayList<Proj_Tracker_AOE_Player> proj_TrackerP_AOEs = new ArrayList<Proj_Tracker_AOE_Player>();
-	protected ArrayList<Proj_Tracker_AOE_Enemy> proj_TrackerE_AOEs = new ArrayList<Proj_Tracker_AOE_Enemy>();
+	protected ArrayList<Enemy> allies = new ArrayList<Enemy>();
+	protected ArrayList<Structure> enemyStructures = new ArrayList<Structure>();
+	protected ArrayList<Structure> allyStructures = new ArrayList<Structure>();
+	protected ArrayList<Proj_Tracker> proj_TrackerEs = new ArrayList<Proj_Tracker>();
+	protected ArrayList<Proj_Tracker> proj_TrackerAs = new ArrayList<Proj_Tracker>();
+	protected ArrayList<Proj_Tracker_AOE> proj_TrackerA_AOEs = new ArrayList<Proj_Tracker_AOE>();
+	protected ArrayList<Proj_Tracker_AOE> proj_TrackerE_AOEs = new ArrayList<Proj_Tracker_AOE>();
 	protected Bitmap playerBlessing;
 	/**
 	 * Initializes all undecided variables, loads level, creates player and enemy objects, and starts frameCaller
@@ -66,10 +68,11 @@ public final class SpriteController extends SpriteDrawer
 	void clearObjectArrays()
 	{
 		enemies.clear();
-		structures.clear();
+		enemyStructures.clear();
+		allyStructures.clear();
 		proj_TrackerEs.clear();
-		proj_TrackerPs.clear();
-		proj_TrackerP_AOEs.clear();
+		proj_TrackerAs.clear();
+		proj_TrackerA_AOEs.clear();
 		proj_TrackerE_AOEs.clear();
 	}
 	/**
@@ -125,17 +128,17 @@ public final class SpriteController extends SpriteDrawer
 				}
 			}
 		}
-		for(int i = 0; i < proj_TrackerPs.size(); i++)
+		for(int i = 0; i < proj_TrackerAs.size(); i++)
 		{
-			if(proj_TrackerPs.get(i) != null)
+			if(proj_TrackerAs.get(i) != null)
 			{
-				if(proj_TrackerPs.get(i).deleted)
+				if(proj_TrackerAs.get(i).deleted)
 				{
-					proj_TrackerPs.remove(i);
+					proj_TrackerAs.remove(i);
 				}
 				else
 				{
-					proj_TrackerPs.get(i).frameCall();
+					proj_TrackerAs.get(i).frameCall();
 				}
 			}
 		}
@@ -153,17 +156,17 @@ public final class SpriteController extends SpriteDrawer
 				}
 			}
 		}
-		for(int i = 0; i < proj_TrackerP_AOEs.size(); i++)
+		for(int i = 0; i < proj_TrackerA_AOEs.size(); i++)
 		{
-			if(proj_TrackerP_AOEs.get(i) != null)
+			if(proj_TrackerA_AOEs.get(i) != null)
 			{
-				if(proj_TrackerP_AOEs.get(i).deleted)
+				if(proj_TrackerA_AOEs.get(i).deleted)
 				{
-					proj_TrackerP_AOEs.remove(i);
+					proj_TrackerA_AOEs.remove(i);
 				}
 				else
 				{
-					proj_TrackerP_AOEs.get(i).frameCall();
+					proj_TrackerA_AOEs.get(i).frameCall();
 				}
 			}
 		}
@@ -185,17 +188,31 @@ public final class SpriteController extends SpriteDrawer
 				}
 			}
 		}
-		for(int i = 0; i < structures.size(); i++)
+		for(int i = 0; i < enemyStructures.size(); i++)
 		{
-			if(structures.get(i) != null)
+			if(enemyStructures.get(i) != null)
 			{
-				if(structures.get(i).deleted)
+				if(enemyStructures.get(i).deleted)
 				{
-					structures.remove(i);
+					enemyStructures.remove(i);
 				}
 				else
 				{
-					structures.get(i).frameCall();
+					enemyStructures.get(i).frameCall();
+				}
+			}
+		}
+		for(int i = 0; i < allyStructures.size(); i++)
+		{
+			if(allyStructures.get(i) != null)
+			{
+				if(allyStructures.get(i).deleted)
+				{
+					allyStructures.remove(i);
+				}
+				else
+				{
+					allyStructures.get(i).frameCall();
 				}
 			}
 		}
@@ -227,17 +244,33 @@ public final class SpriteController extends SpriteDrawer
 					g.drawRect(minX, minY, maxX, maxY, paint);
 			}
 		}
-		for(int i = 0; i < structures.size(); i++)
+		for(int i = 0; i < enemyStructures.size(); i++)
 		{
-			if(structures.get(i) != null)
+			if(enemyStructures.get(i) != null)
 			{
-				minX = (int) structures.get(i).x - 20;
-				maxX = (int) structures.get(i).x + 20;
-				minY = (int) structures.get(i).y - 30;
-				maxY = (int) structures.get(i).y - 20;
+				minX = (int) enemyStructures.get(i).x - 20;
+				maxX = (int) enemyStructures.get(i).x + 20;
+				minY = (int) enemyStructures.get(i).y - 30;
+				maxY = (int) enemyStructures.get(i).y - 20;
 				paint.setColor(Color.BLUE);
 				paint.setStyle(Paint.Style.FILL);
-				g.drawRect(minX, minY, minX + (40 * structures.get(i).hp / structures.get(i).hpMax), maxY, paint);
+				g.drawRect(minX, minY, minX + (40 * enemyStructures.get(i).hp / enemyStructures.get(i).hpMax), maxY, paint);
+				paint.setColor(Color.BLACK);
+				paint.setStyle(Paint.Style.STROKE);
+				g.drawRect(minX, minY, maxX, maxY, paint);
+			}
+		}
+		for(int i = 0; i < allyStructures.size(); i++)
+		{
+			if(allyStructures.get(i) != null)
+			{
+				minX = (int) allyStructures.get(i).x - 20;
+				maxX = (int) allyStructures.get(i).x + 20;
+				minY = (int) allyStructures.get(i).y - 30;
+				maxY = (int) allyStructures.get(i).y - 20;
+				paint.setColor(Color.BLUE);
+				paint.setStyle(Paint.Style.FILL);
+				g.drawRect(minX, minY, minX + (40 * allyStructures.get(i).hp / allyStructures.get(i).hpMax), maxY, paint);
 				paint.setColor(Color.BLACK);
 				paint.setStyle(Paint.Style.STROKE);
 				g.drawRect(minX, minY, maxX, maxY, paint);
@@ -246,16 +279,17 @@ public final class SpriteController extends SpriteDrawer
 	}
 	protected void drawStructures(Canvas g, Paint paint, ImageLibrary imageLibrary)
 	{
-		for(int i = 0; i < structures.size(); i++)
+		for(int i = 0; i < allyStructures.size(); i++)
 		{
-			drawFlat(structures.get(i), g, paint);
+			drawFlat(allyStructures.get(i), g, paint);
+		}
+		for(int i = 0; i < enemyStructures.size(); i++)
+		{
+			drawFlat(enemyStructures.get(i), g, paint);
 		}
 	}
 	protected void drawSprites(Canvas g, Paint paint, ImageLibrary imageLibrary, Rect aoeRect)
 	{
-		drawFlat(control.player, imageLibrary.isPlayer, g, paint);
-		draw(control.player, g, paint);
-		if(control.player.blessing!=0) g.drawBitmap(playerBlessing, (int)control.player.x-40, (int)control.player.y-40, paint);
 		for(int i = 0; i < enemies.size(); i++)
 		{
 			if(enemies.get(i) != null)
@@ -263,11 +297,11 @@ public final class SpriteController extends SpriteDrawer
 				draw(enemies.get(i), g, paint);
 			}
 		}
-		for(int i = 0; i < proj_TrackerPs.size(); i++)
+		for(int i = 0; i < proj_TrackerAs.size(); i++)
 		{
-			if(proj_TrackerPs.get(i) != null)
+			if(proj_TrackerAs.get(i) != null)
 			{
-				draw(proj_TrackerPs.get(i), g, paint);
+				draw(proj_TrackerAs.get(i), g, paint);
 			}
 		}
 		for(int i = 0; i < proj_TrackerEs.size(); i++)
@@ -289,16 +323,16 @@ public final class SpriteController extends SpriteDrawer
 				drawRect(proj_TrackerE_AOEs.get(i).image, aoeRect, g, paint);
 			}
 		}
-		for(int i = 0; i < proj_TrackerP_AOEs.size(); i++)
+		for(int i = 0; i < proj_TrackerA_AOEs.size(); i++)
 		{
-			if(proj_TrackerP_AOEs.get(i) != null)
+			if(proj_TrackerA_AOEs.get(i) != null)
 			{
-				aoeRect.top = (int)(proj_TrackerP_AOEs.get(i).y - (proj_TrackerP_AOEs.get(i).getHeight() / 2.5));
-				aoeRect.bottom = (int)(proj_TrackerP_AOEs.get(i).y + (proj_TrackerP_AOEs.get(i).getHeight() / 2.5));
-				aoeRect.left = (int)(proj_TrackerP_AOEs.get(i).x - (proj_TrackerP_AOEs.get(i).getWidth() / 2.5));
-				aoeRect.right = (int)(proj_TrackerP_AOEs.get(i).x + (proj_TrackerP_AOEs.get(i).getWidth() / 2.5));
-				paint.setAlpha(proj_TrackerP_AOEs.get(i).getAlpha());
-				drawRect(proj_TrackerP_AOEs.get(i).image, aoeRect, g, paint);
+				aoeRect.top = (int)(proj_TrackerA_AOEs.get(i).y - (proj_TrackerA_AOEs.get(i).getHeight() / 2.5));
+				aoeRect.bottom = (int)(proj_TrackerA_AOEs.get(i).y + (proj_TrackerA_AOEs.get(i).getHeight() / 2.5));
+				aoeRect.left = (int)(proj_TrackerA_AOEs.get(i).x - (proj_TrackerA_AOEs.get(i).getWidth() / 2.5));
+				aoeRect.right = (int)(proj_TrackerA_AOEs.get(i).x + (proj_TrackerA_AOEs.get(i).getWidth() / 2.5));
+				paint.setAlpha(proj_TrackerA_AOEs.get(i).getAlpha());
+				drawRect(proj_TrackerA_AOEs.get(i).image, aoeRect, g, paint);
 			}
 		}
 		paint.setAlpha(255);
@@ -327,7 +361,7 @@ public final class SpriteController extends SpriteDrawer
 	 */
 	protected void createProj_TrackerPlayer(double rotation, double Vel, int power, double x, double y)
 	{
-		proj_TrackerPs.add(new Proj_Tracker_Player(control, (int)x, (int)y, power, Vel, rotation, this));
+		proj_TrackerAs.add(new Proj_Tracker_Player(control, (int)x, (int)y, power, Vel, rotation, this));
 	}
 	/**
 	 * creates an emeny AOE explosion
@@ -349,8 +383,8 @@ public final class SpriteController extends SpriteDrawer
 	 */
 	protected void createProj_TrackerPlayerAOE(double x, double y, double power, boolean damaging)
 	{
-		proj_TrackerP_AOEs.add(new Proj_Tracker_AOE_Player(control, (int) x, (int) y, power, true, this));
-		if(!damaging) proj_TrackerP_AOEs.get(proj_TrackerP_AOEs.size()-1).damaging = false;
+		proj_TrackerA_AOEs.add(new Proj_Tracker_AOE_Player(control, (int) x, (int) y, power, true, this));
+		if(!damaging) proj_TrackerA_AOEs.get(proj_TrackerA_AOEs.size()-1).damaging = false;
 	}
 	/**
 	 * creates an enemy burst
@@ -370,7 +404,7 @@ public final class SpriteController extends SpriteDrawer
 	 */
 	protected void createProj_TrackerPlayerBurst(double x, double y, double power)
 	{
-		proj_TrackerP_AOEs.add(new Proj_Tracker_AOE_Player(control, (int) x, (int) y, power, false, this));
+		proj_TrackerA_AOEs.add(new Proj_Tracker_AOE_Player(control, (int) x, (int) y, power, false, this));
 	}
 	@Override
 	protected boolean onScreen(double x, double y, int width, int height) {

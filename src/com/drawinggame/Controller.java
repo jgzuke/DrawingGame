@@ -44,7 +44,6 @@ public final class Controller
 	protected int curYShift;
 	protected StartActivity activity;
 	protected GestureDetector gestureDetector;
-	protected Player player;
 	protected Context context;
 	protected ImageLibrary imageLibrary;
 	private Random randomGenerator = new Random();
@@ -54,7 +53,6 @@ public final class Controller
 	protected LevelController levelController;
 	protected GraphicsController graphicsController;
 	protected SoundController soundController;
-	protected ItemController itemControl;
 	
 	protected boolean paused = false;
 	protected Runnable frameCaller = new Runnable()
@@ -78,7 +76,6 @@ public final class Controller
 	{
 		activity = activitySet;
 		context = startSet;
-		itemControl = new ItemController();
 		gestureDetector = new GestureDetector(startSet, this);
 		soundController = new SoundController(startSet, activitySet);
 		
@@ -88,18 +85,14 @@ public final class Controller
 		levelController = new LevelController(this);
 		
 		imageLibrary.loadAllImages();
-		player = new Player(this); // creates player object
 		levelController.loadLevel(2);
 		
-		player.resetVariables();
-		graphicsController = new GraphicsController(this, imageLibrary, spriteController, wallController, levelController, player, startSet, dimensions);
+		graphicsController = new GraphicsController(this, imageLibrary, spriteController, wallController, levelController, startSet, dimensions);
 		graphicsController.setOnTouchListener(gestureDetector);
 		frameCaller.run();
 	}
 	protected void die()
 	{
-		itemControl.favor -= player.level;
-		player.resetVariables();
 		levelController.loadLevel(2);
 		graphicsController.playerBursted=40;
 		levelController.discardSavedEnemies();
@@ -110,7 +103,6 @@ public final class Controller
 		if(paused)Log.e("mine", "waspaused");
 		paused = true;
 		activity.pause();
-		//TODO
 	}
 	/**
 	 * Sets deleted objects to null to be gc'd and tests player and enemy hitting arena bounds
@@ -119,7 +111,6 @@ public final class Controller
 	{
 		graphicsController.frameCall();
 		spriteController.frameCall();
-		player.frameCall();
 		wallController.frameCall();
 		levelController.checkChangeLevel();
 	}

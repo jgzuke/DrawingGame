@@ -44,9 +44,6 @@ abstract public class Structure extends Sprite
 	{
 		if(!deleted)
 		{
-			control.player.abilityTimer_burst += damage/30;
-			control.player.abilityTimer_roll += damage/50;
-			control.player.abilityTimer_Proj_Tracker += damage/100;
 			hp -= damage;
 			if(hp < 1)
 			{
@@ -54,13 +51,6 @@ abstract public class Structure extends Sprite
 				deleted = true;
 				control.spriteController.createProj_TrackerEnemyAOE(x, y, 180, false);
 				control.soundController.playEffect("burst");
-				control.itemControl.favor+= (double)worth/10;
-				control.player.experience += worth;
-				if(control.player.blessingTimer>0) // if blessing active get more
-				{
-					control.itemControl.favor+= (double)worth/2;
-					control.player.blessingTimer += 20;
-				}
 			}
 		}
 	}

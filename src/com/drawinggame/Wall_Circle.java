@@ -39,14 +39,6 @@ public class Wall_Circle extends Wall
 	@ Override
 	protected void frameCall()
 	{
-			xdif = oCX - control.player.x;
-			ydif = oCY - control.player.y;
-			rads = Math.atan2(ydif, xdif);
-			if(Math.pow(xdif, 2) + Math.pow(ydif, 2) < oCRS)
-			{
-					control.player.x = oCX - (Math.cos(rads) * oCR);
-					control.player.y = oCY - (Math.sin(rads) * oCR);
-			}
 			ArrayList<Enemy> enemies = control.spriteController.enemies;
 		for(int i = 0; i < enemies.size(); i++)
 		{
