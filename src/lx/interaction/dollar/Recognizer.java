@@ -84,13 +84,9 @@ public class Recognizer
 	public String Recognize(Vector<Point> points)
 	{
 		points = Utils.Resample(points, NumPoints);
-		myView.setlastShapeBeforeTurn((Vector<Point>) points.clone());
-		//points = Utils.RotateToZero(points, centroid, boundingBox);
-		//myView.setlastShapeAfterTurn((Vector<Point>) points.clone());
 		points = Utils.ScaleToSquare(points, SquareSize);
-		myView.setlastShapeAfterScale((Vector<Point>) points.clone());
 		points = Utils.TranslateToOrigin(points);
-		myView.setlastShapeAfterTranslate((Vector<Point>) points.clone());
+		myView.setLastShapeDone((Vector<Point>) points.clone());
 	
 		bounds[0] = (int)boundingBox.X;
 		bounds[1] = (int)boundingBox.Y;
