@@ -1,6 +1,8 @@
 package lx.interaction.dollar;
 
-import java.util.*;
+import java.util.Vector;
+
+import android.util.Log;
 
 import com.drawinggame.MyView;
 
@@ -81,28 +83,41 @@ public class Recognizer
 		return v;
 	}
 	
-	public String Recognize(Vector<Point> points)
+	public void Recognize(Vector<Point> points)
 	{
-		points = Utils.Resample(points, NumPoints);
-		points = Utils.ScaleToSquare(points, SquareSize);
-		points = Utils.TranslateToOrigin(points);
-		myView.setLastShapeDone((Vector<Point>) points.clone());
-	
-		bounds[0] = (int)boundingBox.X;
-		bounds[1] = (int)boundingBox.Y;
-		bounds[2] = (int)boundingBox.X + (int)boundingBox.Width;
-		bounds[3] = (int)boundingBox.Y + (int)boundingBox.Height;
-		int t = 0;
-		double b = Double.MAX_VALUE;
-		for (int i = 0; i < templates.size(); i++)
+		if(points.size() == 0) return;
+		Rectangle myBounds = new Rectangle(0,0,0,0);
+		Utils.BoundingBox(points, myBounds);
+		double distMax = Math.pow(myBounds.Width, 2) + Math.pow(myBounds.Height, 2);
+		Log.e("myid", Double.toString(distMax));
+		if(distMax < 2000)			// a click
 		{
-			double d = Utils.DistanceAtAngle(points, (Template)templates.elementAt(i), 0);
-			if (d < b)
+			myView.click(new Point(myBounds.X+(myBounds.Width/2), myBounds.Y+(myBounds.Height/2)));
+		} else
+		{
+			points = Utils.Resample(points, NumPoints);
+			myView.setLastShape((Vector<Point>) points.clone());
+			Point moveCoords = Utils.getCentre(points);					// use this to get the x, y of the gestures centre
+			points = Utils.ScaleToSquare(points, SquareSize);
+			points = Utils.TranslateToOrigin(points);
+			myView.setLastShapeDone((Vector<Point>) points.clone());
+		
+			bounds[0] = (int)boundingBox.X;
+			bounds[1] = (int)boundingBox.Y;
+			bounds[2] = (int)boundingBox.X + (int)boundingBox.Width;
+			bounds[3] = (int)boundingBox.Y + (int)boundingBox.Height;
+			int t = 0;
+			double b = Double.MAX_VALUE;
+			for (int i = 0; i < templates.size(); i++)
 			{
-				b = d;
-				t = i;
+				double d = Utils.DistanceAtAngle(points, (Template)templates.elementAt(i), 0);
+				if (d < b)
+				{
+					b = d;
+					t = i;
+				}
 			}
+			myView.endShape((templates.elementAt(t)).Name, moveCoords);
 		}
-		return (templates.elementAt(t)).Name;
 	};
 }

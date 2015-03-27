@@ -36,15 +36,16 @@ public class GestureDetector implements OnTouchListener
 		switch (actionMask)
 		{
 		case MotionEvent.ACTION_DOWN:
+			ID = e.getPointerId(e.getActionIndex());				// Add pointer ID to ID list
+        	
 			Vector<Point> newPointSet = new Vector<Point>(1000);	// Start a new array of points
 			newPointSet.add(new Point((int)(e.getX(ID)), (int)(e.getY(ID))));				// Add array to list
 			pointsLists.add(newPointSet);
 			
-        	ID = e.getPointerId(e.getActionIndex());				// Add pointer ID to ID list
         	IDs.add(ID);
         break;
         case MotionEvent.ACTION_UP:
-        	myView.endShape(pointsLists.get(0), recognizer.Recognize(pointsLists.remove(0)));
+        	recognizer.Recognize(pointsLists.remove(0));
         	pointsLists.clear();
         	IDs.clear();
         break;
@@ -52,7 +53,6 @@ public class GestureDetector implements OnTouchListener
         	ID = e.getPointerId(e.getActionIndex());
         	if(ID < e.getPointerCount())
         	{
-        		Log.e("myid", "fingerDown");
         		Vector<Point> newAltPointSet = new Vector<Point>(1000);
 	        	newAltPointSet.add(new Point((int)(e.getX(ID)), (int)(e.getY(ID))));
 	        	pointsLists.add(newAltPointSet);
@@ -75,7 +75,7 @@ public class GestureDetector implements OnTouchListener
         		if(ID == IDs.get(i))
 	        	{
         			IDs.remove(i);
-        			myView.endShape(pointsLists.get(i), recognizer.Recognize(pointsLists.remove(i)));
+        			recognizer.Recognize(pointsLists.remove(i));
         		}
         	}
         break;

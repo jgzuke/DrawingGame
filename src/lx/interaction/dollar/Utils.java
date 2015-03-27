@@ -234,6 +234,32 @@ public class Utils
 		dst.Y = minY;
 		dst.Width = maxX - minX;
 		dst.Height = maxY - minY;
+	}
+	public static Point getCentre(Vector<Point> points)
+	{
+		double minX = Double.MAX_VALUE;
+		double maxX = Double.MIN_VALUE;
+		double minY = Double.MAX_VALUE;
+		double maxY = Double.MIN_VALUE;
+	
+		Enumeration<Point> e = points.elements();
+		
+//		foreach (Point p in points)
+		while (e.hasMoreElements())
+		{
+			Point p = (Point)e.nextElement();
+		
+			if (p.X < minX)
+				minX = p.X;
+			if (p.X > maxX)
+				maxX = p.X;
+		
+			if (p.Y < minY)
+				minY = p.Y;
+			if (p.Y > maxY)
+				maxY = p.Y;
+		}
+		return new Point((minX+maxX)/2, (minY+maxY)/2);
 	}	
 	
 	public static double Distance(Point p1, Point p2)
