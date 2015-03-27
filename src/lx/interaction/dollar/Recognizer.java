@@ -5,6 +5,7 @@ import java.util.Vector;
 import android.util.Log;
 
 import com.drawinggame.Controller;
+import com.drawinggame.GestureDetector;
 
 public class Recognizer
 {
@@ -23,11 +24,11 @@ public class Recognizer
 	int bounds[] = { 0, 0, 0, 0 };
 	
 	public Vector<Template> templates = new Vector<Template>(Numtemplates);
-	private Controller controller;
-	public Recognizer(Controller controllerSet)
+	private GestureDetector gestureDetector;
+	public Recognizer(GestureDetector gestureDetectorSet)
 	{
 		loadtemplates();
-		controller = controllerSet;
+		gestureDetector = gestureDetectorSet;
 	}
 	
 	void loadtemplates()
@@ -92,15 +93,15 @@ public class Recognizer
 		Log.e("myid", Double.toString(distMax));
 		if(distMax < 2000)			// a click
 		{
-			controller.click(new Point(myBounds.X+(myBounds.Width/2), myBounds.Y+(myBounds.Height/2)));
+			gestureDetector.click(new Point(myBounds.X+(myBounds.Width/2), myBounds.Y+(myBounds.Height/2)));
 		} else
 		{
 			points = Utils.Resample(points, NumPoints);
-			controller.setLastShape((Vector<Point>) points.clone());
+			gestureDetector.setLastShape((Vector<Point>) points.clone());
 			Point moveCoords = Utils.getCentre(points);					// use this to get the x, y of the gestures centre
 			points = Utils.ScaleToSquare(points, SquareSize);
 			points = Utils.TranslateToOrigin(points);
-			controller.setLastShapeDone((Vector<Point>) points.clone());
+			gestureDetector.setLastShapeDone((Vector<Point>) points.clone());
 		
 			bounds[0] = (int)boundingBox.X;
 			bounds[1] = (int)boundingBox.Y;
@@ -117,7 +118,7 @@ public class Recognizer
 					t = i;
 				}
 			}
-			controller.endShape((templates.elementAt(t)).Name, moveCoords);
+			gestureDetector.endShape((templates.elementAt(t)).Name, moveCoords);
 		}
 	};
 }

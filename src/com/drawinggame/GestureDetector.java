@@ -38,7 +38,7 @@ public class GestureDetector implements OnTouchListener
     {
     	context = contextSet;
     	controller = controllerSet;
-    	recognizer = new Recognizer(controller);
+    	recognizer = new Recognizer(this);
     	for(int i = average.size(); i < 64; i ++)
 		{
 			average.add(new Point(0,0));
