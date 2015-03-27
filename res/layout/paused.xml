@@ -1,0 +1,114 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/lostfight"
+    android:layout_width="640dp"
+    android:layout_height="360dp"
+    android:layout_gravity="center"
+    >
+
+    <LinearLayout
+        android:id="@+id/topbar"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true" >
+
+        <Button
+            android:id="@+id/back"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            
+            android:onClick="unPause" />
+        <Button
+            android:id="@+id/options"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            
+            android:onClick="options" />
+        <TextView
+            android:id="@+id/favor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="Request"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/blessings"
+        android:layout_width="wrap_content"
+        android:layout_height="310dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/topbar"
+        android:orientation="vertical" >
+
+        <TextView
+            android:layout_width="110dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="Request"
+            android:textSize="25sp" />
+
+        <Button 
+            android:id="@+id/attack"
+            android:layout_width="110dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:textSize="20sp"
+	        android:text="Attack" 
+            android:onClick="requestAttack" />
+        <Button 
+            android:id="@+id/protection"
+            android:layout_width="110dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:textSize="20sp"
+	        android:text="Protection" 
+            android:onClick="requestArmor" />
+        <Button 
+            android:id="@+id/speed"
+            android:layout_width="110dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:textSize="20sp"
+	        android:text="Speed" 
+            android:onClick="requestSpeed" />
+        <Button 
+            android:id="@+id/cooldown"
+            android:layout_width="110dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:textSize="20sp"
+	        android:text="Cooldown" 
+            android:onClick="requestCooldown" />
+        <Button 
+            android:id="@+id/cooldown2"
+            android:layout_width="110dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:textSize="20sp"
+	        android:text="Cooldown" 
+            android:onClick="requestCooldown" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/equips"
+        android:layout_width="wrap_content"
+        android:layout_height="310dp"
+        android:layout_below="@+id/topbar"
+        android:orientation="vertical" >
+        
+    </LinearLayout>
+
+</RelativeLayout>
