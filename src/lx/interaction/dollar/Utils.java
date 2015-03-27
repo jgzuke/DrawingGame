@@ -108,11 +108,13 @@ public class Utils
 	{
 		Rectangle B = BoundingBox(points);
 		Vector<Point> newpoints = new Vector<Point>(points.size());
+		Double biggerDist = B.Width;
+		if(biggerDist < B.Height) biggerDist = B.Height;
 		for (int i = 0; i < points.size(); i++)
 		{
 			Point p = (Point)points.elementAt(i);
-			double qx = p.X * (size / B.Width);
-			double qy = p.Y * (size / B.Height);
+			double qx = p.X * (size / biggerDist);
+			double qy = p.Y * (size / biggerDist);
 			newpoints.addElement(new Point(qx, qy));
 		}
 		
