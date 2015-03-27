@@ -48,7 +48,6 @@ public final class Controller
 	protected Context context;
 	protected ImageLibrary imageLibrary;
 	private Random randomGenerator = new Random();
-	protected PlayerGestureDetector detect;
 	private Handler mHandler = new Handler();
 	protected SpriteController spriteController;
 	protected WallController wallController;
@@ -93,11 +92,8 @@ public final class Controller
 		levelController.loadLevel(2);
 		
 		player.resetVariables();
-		detect = new PlayerGestureDetector(this); // creates gesture detector object
-		detect.setPlayer(player);
 		graphicsController = new GraphicsController(this, imageLibrary, spriteController, wallController, levelController, player, startSet, dimensions);
-		graphicsController.setOnTouchListener(detect);
-		detect.setDimensions();
+		graphicsController.setOnTouchListener(gestureDetector);
 		frameCaller.run();
 	}
 	protected void die()

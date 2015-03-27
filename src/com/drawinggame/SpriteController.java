@@ -98,9 +98,6 @@ public final class SpriteController extends SpriteDrawer
 		case 2:
 			enemies.add(new Enemy_Mage(control, x, y, r, 700, type));
 			break;
-		case 3:
-			enemies.add(new Enemy_Sentry(control, x, y, r, 1700, type));
-			break;
 		case 4:
 			enemies.add(new Enemy_Rogue(control, x, y, r, 1100, type));
 			break;
