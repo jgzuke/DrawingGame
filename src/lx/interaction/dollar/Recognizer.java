@@ -2,6 +2,8 @@ package lx.interaction.dollar;
 
 import java.util.*;
 
+import com.drawinggame.MyView;
+
 public class Recognizer
 {
 	//
@@ -10,7 +12,7 @@ public class Recognizer
 	int Numtemplates = 16;
 	public static int NumPoints = 64;
 	public static double SquareSize = 250.0;
-	double AngleRange = 20.0;
+	double AngleRange = 0.0;
 	double AnglePrecision = 1.0;
 	public static double Phi = 0.5 * (-1.0 + Math.sqrt(5.0)); // Golden Ratio
 	
@@ -19,10 +21,11 @@ public class Recognizer
 	int bounds[] = { 0, 0, 0, 0 };
 	
 	public Vector<Template> templates = new Vector<Template>(Numtemplates);
-
-	public Recognizer()
+	private MyView myView;
+	public Recognizer(MyView myViewSet)
 	{
 		loadtemplates();
+		myView = myViewSet;
 	}
 	
 	void loadtemplates()
@@ -80,10 +83,14 @@ public class Recognizer
 	
 	public String Recognize(Vector<Point> points)
 	{
-		points = Utils.Resample(points, NumPoints);		
-		points = Utils.RotateToZero(points, centroid, boundingBox);
+		points = Utils.Resample(points, NumPoints);
+		myView.setlastShapeBeforeTurn((Vector<Point>) points.clone());
+		//points = Utils.RotateToZero(points, centroid, boundingBox);
+		//myView.setlastShapeAfterTurn((Vector<Point>) points.clone());
 		points = Utils.ScaleToSquare(points, SquareSize);
+		myView.setlastShapeAfterScale((Vector<Point>) points.clone());
 		points = Utils.TranslateToOrigin(points);
+		myView.setlastShapeAfterTranslate((Vector<Point>) points.clone());
 	
 		bounds[0] = (int)boundingBox.X;
 		bounds[1] = (int)boundingBox.Y;
@@ -93,7 +100,7 @@ public class Recognizer
 		double b = Double.MAX_VALUE;
 		for (int i = 0; i < templates.size(); i++)
 		{
-			double d = Utils.DistanceAtBestAngle(points, (Template)templates.elementAt(i), -AngleRange, AngleRange, AnglePrecision);
+			double d = Utils.DistanceAtAngle(points, (Template)templates.elementAt(i), 0);
 			if (d < b)
 			{
 				b = d;

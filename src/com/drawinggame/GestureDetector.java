@@ -23,7 +23,7 @@ public class GestureDetector implements OnTouchListener
     public GestureDetector(MyView myViewSet)
     {
     	myView = myViewSet;
-    	recognizer = new Recognizer();
+    	recognizer = new Recognizer(myView);
     }
 
 	/**

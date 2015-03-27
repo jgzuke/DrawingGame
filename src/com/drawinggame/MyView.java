@@ -24,6 +24,10 @@ public class MyView extends View
 	private GestureDetector gestureDetector;
 	private Handler mHandler = new Handler();
 	private Path lastShape;
+	private Path lastShapeBeforeTurn;
+	private Path lastShapeAfterTurn;
+	private Path lastShapeAfterScale;
+	private Path lastShapeAfterTranslate;
 	private Paint paint;
 	protected Runnable frameCaller = new Runnable()
 	{
@@ -34,7 +38,22 @@ public class MyView extends View
 			mHandler.postDelayed(this, 40);
 		}
 	};	
-	
+	public void setlastShapeBeforeTurn(Vector<Point> points)
+	{
+		lastShapeBeforeTurn = getPathFromVector(points);
+	}
+	public void setlastShapeAfterTurn(Vector<Point> points)
+	{
+		lastShapeAfterTurn = getPathFromVector(points);
+	}
+	public void setlastShapeAfterScale(Vector<Point> points)
+	{
+		lastShapeAfterScale = getPathFromVector(points);
+	}
+	public void setlastShapeAfterTranslate(Vector<Point> points)
+	{
+		lastShapeAfterTranslate = getPathFromVector(points);
+	}
 	private double screenWidth;
 	private double screenHeight;
     public MyView(Context contextSet, MainActivity activitySet, double[] screenDimensions)
@@ -49,6 +68,7 @@ public class MyView extends View
     	frameCaller.run();
 		this.setOnTouchListener(gestureDetector);
     }
+    
     private void frameCall()
     {
     	
@@ -71,10 +91,19 @@ public class MyView extends View
     	{
     		g.drawPath(getPathFromVector(pointsList.get(i)), paint);
     	}
-    	g.drawPath(getPathFromVector(gestureDetector.recognizer.templates.get(0).Points, 300, 500), paint);
+    	//g.drawPath(getPathFromVector(gestureDetector.recognizer.templates.get(0).Points, 300, 500), paint);
     	if(lastShape != null)
     	{
+    		paint.setColor(Color.BLUE);
     		g.drawPath(lastShape, paint);
+    		paint.setColor(Color.CYAN);
+    		g.drawPath(lastShapeBeforeTurn, paint);
+    		//paint.setColor(Color.GREEN);
+    		//g.drawPath(lastShapeAfterTurn, paint);
+    		paint.setColor(Color.GRAY);
+    		g.drawPath(lastShapeAfterScale, paint);
+    		paint.setColor(Color.YELLOW);
+    		g.drawPath(lastShapeAfterTranslate, paint);
     	}
     	
     	
