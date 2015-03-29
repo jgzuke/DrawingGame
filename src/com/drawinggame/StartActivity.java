@@ -55,10 +55,17 @@ public class StartActivity extends Activity
 	 */
 	protected double[] getScreenDimensions()
 	{
-		int dimension1 = getResources().getDisplayMetrics().heightPixels;
-		int dimension2 = getResources().getDisplayMetrics().widthPixels;
-		double[] dims = {dimension1, dimension2};
-		return dims;
+		int d1 = getResources().getDisplayMetrics().heightPixels;
+		int d2 = getResources().getDisplayMetrics().widthPixels;
+		if(d2>d1)
+		{
+			double[] dims = {d2, d1};
+			return dims;
+		} else
+		{
+			double[] dims = {d1, d2};
+			return dims;
+		}
 	}
 	@ Override
 	public boolean onCreateOptionsMenu(Menu menu)

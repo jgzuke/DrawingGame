@@ -33,6 +33,7 @@ public class GestureDetector implements OnTouchListener
 	private Vector<Point> average = new Vector<Point>();
 	private int averagePoints = 0;
 	private Context context;
+	private int pointersDown = 0;
 	
     public GestureDetector(Context contextSet, Controller controllerSet)
     {
@@ -59,10 +60,10 @@ public class GestureDetector implements OnTouchListener
     	{
     		paint.setColor(Color.BLUE);
     		g.drawPath(lastShape, paint);
-    		paint.setColor(Color.CYAN);
+    		/*paint.setColor(Color.CYAN);
     		g.drawPath(lastShapeDone, paint);
     		paint.setColor(Color.MAGENTA);
-    		g.drawPath(aveShapeDone, paint);
+    		g.drawPath(aveShapeDone, paint);*/
     	}
 	}
     
@@ -120,13 +121,14 @@ public class GestureDetector implements OnTouchListener
 			Vector<Point> newPointSet = new Vector<Point>(1000);	// Start a new array of points
 			newPointSet.add(new Point((int)(e.getX(ID)), (int)(e.getY(ID))));				// Add array to list
 			pointsLists.add(newPointSet);
-			
         	IDs.add(ID);
+        	pointersDown = 1;
         break;
         case MotionEvent.ACTION_UP:
         	recognizer.Recognize(pointsLists.remove(0));
         	pointsLists.clear();
         	IDs.clear();
+        	pointersDown = 0;
         break;
         case MotionEvent.ACTION_POINTER_DOWN:
         	ID = e.getPointerId(e.getActionIndex());
@@ -135,9 +137,9 @@ public class GestureDetector implements OnTouchListener
         		Vector<Point> newAltPointSet = new Vector<Point>(1000);
 	        	newAltPointSet.add(new Point((int)(e.getX(ID)), (int)(e.getY(ID))));
 	        	pointsLists.add(newAltPointSet);
-	        	
 	        	IDs.add(ID);
         	}
+        	pointersDown ++;
         break;
         case MotionEvent.ACTION_MOVE:
         	for(int i = 0; i < IDs.size(); i++)
@@ -157,6 +159,7 @@ public class GestureDetector implements OnTouchListener
         			recognizer.Recognize(pointsLists.remove(i));
         		}
         	}
+        	pointersDown --;
         break;
 		}
 		return true;

@@ -42,24 +42,23 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
+import android.graphics.Paint.Style;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.View;
 import com.spritelib.Sprite;
 public final class GraphicsController extends View
 {
-	protected int playScreenSize = 650;
+	protected double playScreenSize = 1;
 	protected int mapXSlide = 0;
 	protected int mapYSlide = 0;
 	protected int curXShift;
 	protected int curYShift;
 	protected int phoneWidth;
 	protected int phoneHeight;
-	protected double screenDimensionMultiplier;
 	protected Paint paint = new Paint();
 	protected Matrix rotateImages = new Matrix();
 	private Rect aoeRect = new Rect();
-	private Bitmap background;
-	private Bitmap backgroundbot;
 	private int healthColor = Color.rgb(170, 0, 0);
 	private int cooldownColor = Color.rgb(0, 0, 170);
 	private ImageLibrary imageLibrary;
@@ -89,8 +88,8 @@ public final class GraphicsController extends View
 		paint.setAntiAlias(true);
 		paint.setDither(true);
 		paint.setFilterBitmap(true);
-		background = drawStart(); // redraws play screen
-		backgroundbot = imageLibrary.loadImage("menu_screenbehind", 480, 320);
+		phoneWidth = (int) dimensions[0];
+		phoneHeight = (int) dimensions[1];
 	}
 	protected void frameCall()
 	{
@@ -192,26 +191,23 @@ public final class GraphicsController extends View
 	 */
 	private void drawNotPaused(Canvas g)
 	{
-		paint.setTextAlign(Align.LEFT);
-		paint.setStyle(Paint.Style.FILL);
-		paint.setColor(Color.GRAY);
-		g.drawRect(90, 10, 390, 310, paint);
-		int middle = playScreenSize/2;
-		curXShift = middle - mapXSlide;
-		curYShift = middle - mapYSlide;
-		Rect src = new Rect(-curXShift, -curYShift, -curXShift+playScreenSize, -curYShift+playScreenSize);
-		Rect dst = new Rect(90, 10, 390, 310);
+		/*playScreenSize = levelController.levelWidth/phoneWidth;
+		curXShift = 0;
+		curYShift = 0;
+		Rect src = new Rect(-curXShift, -curYShift, -curXShift+(int)(playScreenSize*phoneWidth), -curYShift+(int)(playScreenSize*phoneHeight));
+		Rect dst = new Rect(0, 0, phoneWidth, phoneHeight);
 		g.drawBitmap(drawLevel(), src, dst, paint);
 		paint.setStyle(Paint.Style.FILL);
-		paint.setColor(Color.BLACK);
-		g.drawRect(-1000, -1000, 0, 1320, paint);
-		g.drawRect(480, -1000, 1480, 1320, paint);
-		g.drawRect(-1000, -1000, 1480, 0, paint);
-		g.drawRect(-1000, 320, 1480, 1320, paint);
-		paint.setAlpha(255);
-		g.drawBitmap(backgroundbot, 0, 0, paint);
-		paint.setColor(cooldownColor);
-		g.drawBitmap(background, 0, 0, paint);
+		paint.setColor(Color.BLACK);*/
+		playScreenSize = (double)800/phoneWidth;
+		curXShift = 0;
+		curYShift = 0;
+		Rect src = new Rect(curXShift, curYShift, curXShift+(int)(playScreenSize*phoneWidth), curYShift+(int)(playScreenSize*phoneHeight));
+		Rect dst = new Rect(0, 0, phoneWidth, phoneHeight);
+		g.drawBitmap(drawLevel(), src, dst, paint);
+		paint.setStyle(Style.STROKE);
+		paint.setColor(Color.RED);
+		g.drawRect(dst, paint);
 	}
 	/**
 	 * Starts warning label
