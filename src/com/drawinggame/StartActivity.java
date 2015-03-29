@@ -33,14 +33,14 @@ public class StartActivity extends Activity
 		setWindow();
 		control = new Controller(this, this, getScreenDimensions());
 		setContentView(control.graphicsController);
-		read();
+		/*read();
 		if(savedData[0] == 0)
 		{
 			savedData[0] = 1;
 			setSaveData();
 			write();
 		}
-		readSaveData();
+		readSaveData();*/
 	}
 	/**
 	 * sets screen variables as well as audio settings
@@ -81,11 +81,11 @@ public class StartActivity extends Activity
 	public void onResume()
 	{
 		super.onResume();
-		read();
+		/*read();
 		if(savedData[0] == 1)
 		{
 			readSaveData();
-		}
+		}*/
 		control.soundController.startMusic();
 		control.paused = false;
 	}
