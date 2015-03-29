@@ -6,9 +6,9 @@ package com.drawinggame;
 
 public final class Enemy_Sheild extends Enemy
 {
-	public Enemy_Sheild(Controller creator, double X, double Y, double R, int HP, int ImageIndex)
+	public Enemy_Sheild(Controller creator, double X, double Y, double R, int HP, int ImageIndex, boolean isOnPayersTeam)
 	{
-		super(creator, X, Y, R, HP, ImageIndex);
+		super(creator, X, Y, R, HP, ImageIndex, isOnPayersTeam);
 		speedCur = 3.8;
 		frame=0;
 		baseHp(HP);
@@ -29,36 +29,6 @@ public final class Enemy_Sheild extends Enemy
 		int[][] temp = {{0, 19}, e, e, {20, 45, 27, 36}, {46, 55}, e, e};
 		return temp;
 	}
-	protected void frameNoLOS()
-	{
-		if(inDanger>0)
-		{
-			turnToward();
-			action = "Sheild";
-			frame=frames[4][0];
-		} else
-		{
-			searchOrWander();
-		}
-	}
-	protected void frameLOS()
-	{
-		distanceFound = distanceToPlayer();
-		if(distanceFound < 30)
-		{
-			turnToward();
-			action = "Melee";
-			frame=frames[3][0];
-		} else if(inDanger>1)
-		{
-			turnToward();
-			action = "Sheild";
-			frame=frames[4][0];
-		} else
-		{
-			runTowards();
-		}
-	}
 	@Override
 	protected void attacking()
 	{
@@ -71,17 +41,7 @@ public final class Enemy_Sheild extends Enemy
 		}
 	}
 	@Override
-	protected void hiding() {}
-	@Override
 	protected void shooting() {}
-	@Override
-	protected void finishWandering()
-	{
-		if(control.getRandomInt(20) != 0) // we probably just keep wandering
-		{
-			runRandom();
-		}
-	}
 	@Override
 	protected void blocking()
 	{

@@ -48,10 +48,12 @@ import com.spritelib.Sprite;
 public final class GraphicsController extends View
 {
 	protected int playScreenSize = 650;
-	protected int screenMinX;
-	protected int screenMinY;
+	protected int mapXSlide = 0;
+	protected int mapYSlide = 0;
 	protected int curXShift;
 	protected int curYShift;
+	protected int phoneWidth;
+	protected int phoneHeight;
 	protected double screenDimensionMultiplier;
 	protected Paint paint = new Paint();
 	protected Matrix rotateImages = new Matrix();
@@ -60,9 +62,6 @@ public final class GraphicsController extends View
 	private Bitmap backgroundbot;
 	private int healthColor = Color.rgb(170, 0, 0);
 	private int cooldownColor = Color.rgb(0, 0, 170);
-	protected Sprite shootStick;
-	protected int playerHit=0;
-	protected int playerBursted = 0;
 	private ImageLibrary imageLibrary;
 	private Controller controller;
 	private SpriteController spriteController;
@@ -71,7 +70,7 @@ public final class GraphicsController extends View
 	/** 
 	 * Initializes all undecided variables, loads level, creates player and enemy objects, and starts frameCaller
 	 */
-	public GraphicsController(Controller c, ImageLibrary i, SpriteController s, WallController w, LevelController l, Context co, double [] dims)
+	public GraphicsController(Controller c, ImageLibrary i, SpriteController s, WallController w, LevelController l, Context co, double [] dims, int test)
 	{
 		super(co);
 		controller = c;
@@ -79,16 +78,14 @@ public final class GraphicsController extends View
 		spriteController = s;
 		levelController = l;
 		context = co;
-		setUpPaintStuff(dims);
+		setUpPaintStuff(dims); // dims = width/height
 	}
-	private void setUpPaintStuff(double [] dimensions)
+	private void setUpPaintStuff(double [] dimensions) // 
 	{
 		setBackgroundColor(Color.BLACK);
 		setKeepScreenOn(true); // so screen doesnt shut off when game is left inactive
-		shootStick = new Graphic_shootStick(imageLibrary.loadImage("icon_shoot", 70, 35));
-		screenMinX = (int)dimensions[0];
-		screenMinY = (int)dimensions[1];
-		screenDimensionMultiplier = dimensions[2];
+		phoneWidth = (int)dimensions[0];
+		phoneHeight = (int)dimensions[1];
 		paint.setAntiAlias(true);
 		paint.setDither(true);
 		paint.setFilterBitmap(true);
@@ -97,8 +94,6 @@ public final class GraphicsController extends View
 	}
 	protected void frameCall()
 	{
-		playerHit++;
-		playerBursted++;
 		invalidate();
 	}
 	/**
@@ -188,8 +183,6 @@ public final class GraphicsController extends View
 	@Override
 	protected void onDraw(Canvas g)
 	{
-		g.translate(screenMinX, screenMinY);
-		g.scale((float) screenDimensionMultiplier, (float) screenDimensionMultiplier);
 		drawNotPaused(g);
 		controller.gestureDetector.drawGestures(g, paint);
 	}
@@ -204,12 +197,8 @@ public final class GraphicsController extends View
 		paint.setColor(Color.GRAY);
 		g.drawRect(90, 10, 390, 310, paint);
 		int middle = playScreenSize/2;
-		curXShift = middle - (int) player.x;
-		curYShift = middle - (int) player.y;
-		if(player.x < middle) curXShift = 0;
-		if(player.y < middle) curYShift = 0;
-		if(player.x > levelController.levelWidth - middle) curXShift = playScreenSize - levelController.levelWidth;
-		if(player.y > levelController.levelHeight - middle) curYShift = playScreenSize - levelController.levelHeight;
+		curXShift = middle - mapXSlide;
+		curYShift = middle - mapYSlide;
 		Rect src = new Rect(-curXShift, -curYShift, -curXShift+playScreenSize, -curYShift+playScreenSize);
 		Rect dst = new Rect(90, 10, 390, 310);
 		g.drawBitmap(drawLevel(), src, dst, paint);
@@ -219,30 +208,10 @@ public final class GraphicsController extends View
 		g.drawRect(480, -1000, 1480, 1320, paint);
 		g.drawRect(-1000, -1000, 1480, 0, paint);
 		g.drawRect(-1000, 320, 1480, 1320, paint);
-		if(playerBursted<6)
-		{
-			paint.setColor(Color.WHITE);
-			paint.setStyle(Paint.Style.FILL);
-			paint.setAlpha(255-(30*playerBursted));
-			g.drawRect(90, 10, 390, 310, paint);
-		}
-		if(playerHit<6)
-		{
-			paint.setColor(Color.RED);
-			paint.setStyle(Paint.Style.FILL);
-			paint.setAlpha(100-(15*playerHit));
-			g.drawRect(90, 10, 390, 310, paint);
-		}
-		paint.setAlpha(255);
-		paint.setColor(Color.GREEN);
 		paint.setAlpha(255);
 		g.drawBitmap(backgroundbot, 0, 0, paint);
-		paint.setStyle(Paint.Style.FILL);
 		paint.setColor(cooldownColor);
-		g.drawRect(385, 315 - (int)((89 * player.abilityTimer_Proj_Tracker) / 91), 480, 315, paint);
 		g.drawBitmap(background, 0, 0, paint);
-		drawContestantStats(g);
-		paint.setStyle(Paint.Style.STROKE);
 	}
 	/**
 	 * Starts warning label

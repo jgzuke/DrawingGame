@@ -80,19 +80,16 @@ public final class SpriteController extends SpriteDrawer
 		switch(type)
 		{
 		case 0:
-			enemies.add(new Enemy_Sheild(control, x, y, r, 3000, type)); //x, y, hp, sick, type is ImageIndex
+			enemies.add(new Enemy_Sheild(control, x, y, r, 3000, type, isOnPlayersTeam)); //x, y, hp, sick, type is ImageIndex
 			break;
 		case 1:
-			enemies.add(new Enemy_Archer(control, x, y, r, 1700, type));
+			enemies.add(new Enemy_Archer(control, x, y, r, 1700, type, isOnPlayersTeam));
 			break;
 		case 2:
-			enemies.add(new Enemy_Mage(control, x, y, r, 700, type));
-			break;
-		case 4:
-			enemies.add(new Enemy_Rogue(control, x, y, r, 1100, type));
+			enemies.add(new Enemy_Mage(control, x, y, r, 700, type, isOnPlayersTeam));
 			break;
 		case 5:
-			enemies.add(new Enemy_Cleric(control, x, y, r, 700, type));
+			enemies.add(new Enemy_Cleric(control, x, y, r, 700, type, isOnPlayersTeam));
 			break;
 		}
 	}

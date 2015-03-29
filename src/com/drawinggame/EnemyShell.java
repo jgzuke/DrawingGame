@@ -7,6 +7,7 @@ package com.drawinggame;
 import java.util.ArrayList;
 
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.widget.Toast;
 
 abstract public class EnemyShell extends Human
@@ -23,7 +24,7 @@ abstract public class EnemyShell extends Human
 	protected Bitmap [] myImage;
 	protected int imageIndex;
 	protected int inDanger = 0;
-	protected double[] closestDanger = new double[2];
+	protected Point closestDanger = new Point();
 	protected boolean HasLocation = false;
 	protected double lastXSeen = 0;
 	protected double lastYSeen = 0;
@@ -37,12 +38,12 @@ abstract public class EnemyShell extends Human
 	protected double yMove;
 	protected int enemyType;
 	protected int hadLOSLastTime=-1;
-	private ArrayList<Enemy> enemies;
-	private ArrayList<Enemy> allies;
-	private ArrayList<Structure> enemyStructures;
-	private ArrayList<Structure> allyStructures;
-	private ArrayList<Proj_Tracker> proj_Trackers;
-	private ArrayList<Proj_Tracker_AOE> proj_Tracker_AOEs;
+	protected ArrayList<Enemy> enemies;
+	protected ArrayList<Enemy> allies;
+	protected ArrayList<Structure> enemyStructures;
+	protected ArrayList<Structure> allyStructures;
+	protected ArrayList<Proj_Tracker> proj_Trackers;
+	protected ArrayList<Proj_Tracker_AOE> proj_Tracker_AOEs;
 	
 	int [][] frames;
 	protected String action = "Nothing"; //"Nothing", "Move", "Alert", "Shoot", "Melee", "Roll", "Hide", "Sheild", "Stun"
@@ -52,7 +53,7 @@ abstract public class EnemyShell extends Human
 	 */
 	public EnemyShell(Controller creator, double X, double Y, double R, int HP, int ImageIndex, boolean isOnPlayersTeam)
 	{
-		super(X, Y, 0, 0, true, false, creator.imageLibrary.enemyImages[ImageIndex][0]);
+		super(X, Y, 0, 0, true, false, creator.imageLibrary.enemyImages[ImageIndex][0], isOnPlayersTeam);
 		control = creator;
 		x = X;
 		y = Y;
@@ -64,7 +65,6 @@ abstract public class EnemyShell extends Human
 		enemyType = ImageIndex;
 		myImage = creator.imageLibrary.enemyImages[ImageIndex];
 		image = myImage[frame];
-		onPlayersTeam = isOnPlayersTeam;
 		if(isOnPlayersTeam)
 		{
 			enemies = control.spriteController.enemies;
@@ -91,18 +91,6 @@ abstract public class EnemyShell extends Human
 	protected void frameCall()
 	{
 		otherActions();
-		if(action.equals("Nothing"))
-		{
-			checkLOS();
-			checkDanger();
-			if(LOS)
-			{
-				frameLOS();
-			} else
-			{
-				frameNoLOS();
-			}
-		}
 		image = myImage[frame];
 		rollTimer --;
 		hadLOSLastTime--;
@@ -116,12 +104,8 @@ abstract public class EnemyShell extends Human
 		pushOtherPeople();
 	}
 	abstract protected void attacking();
-	abstract protected void hiding();
 	abstract protected void shooting();
 	abstract protected void blocking();
-	abstract protected void finishWandering();
-	abstract protected void frameLOS();
-	abstract protected void frameNoLOS();
 	abstract protected void otherActions();
 	/**
 	 * checks who else this guy is getting in the way of and pushes em
@@ -178,9 +162,8 @@ abstract public class EnemyShell extends Human
 	 */
 	protected void dieDrops()
 	{
-			control.spriteController.createProj_TrackerEnemyAOE(x, y, 140, false);
-			control.soundController.playEffect("burst");
-			control.itemControl.favor+= (double)worth/10;
+		control.spriteController.createProj_TrackerAOE(x, y, 140, false, onPlayersTeam);
+		control.soundController.playEffect("burst");
 	}
 	protected boolean checkLOS(int px, int py)
 	{
@@ -250,15 +233,15 @@ abstract public class EnemyShell extends Human
 	protected void checkDanger()
 	{   
 		inDanger = 0;
-		closestDanger[0] = 0;
-		closestDanger[1] = 0;
+		closestDanger.x = 0;
+		closestDanger.y = 0;
 		for(int i = 0; i < proj_Tracker_AOEs.size(); i++)
 		{
 			Proj_Tracker_AOE AOE = proj_Tracker_AOEs.get(i);
 			if(AOE.timeToDeath>7 && Math.pow(x-AOE.x, 2)+Math.pow(y-AOE.y, 2)<Math.pow(AOE.widthDone+25, 2))
 			{
-				closestDanger[0]+=AOE.x;
-				closestDanger[1]+=AOE.y;
+				closestDanger.x+=AOE.x;
+				closestDanger.y+=AOE.y;
 				inDanger++;
 			}
 		}
@@ -267,13 +250,13 @@ abstract public class EnemyShell extends Human
 			Proj_Tracker shot = proj_Trackers.get(i);
 			if(shot.goodTarget(this, 110))
 			{
-				closestDanger[0]+=shot.x*2;
-				closestDanger[1]+=shot.y*2;
+				closestDanger.x+=shot.x*2;
+				closestDanger.y+=shot.y*2;
 				inDanger+=2;
 			}
 		}
-		closestDanger[0]/=inDanger;
-		closestDanger[1]/=inDanger;
+		closestDanger.x/=inDanger;
+		closestDanger.y/=inDanger;
 	}
 	/**
 	 * Checks distance to player

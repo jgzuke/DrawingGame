@@ -29,9 +29,9 @@ abstract public class Enemy extends EnemyShell
 	 * sets danger arrays, speed and control object
 	 * @param creator control object
 	 */
-	public Enemy(Controller creator, double X, double Y, double R, int HP, int ImageIndex)
+	public Enemy(Controller creator, double X, double Y, double R, int HP, int ImageIndex, boolean isOnPayersTeam)
 	{
-		super(creator, X, Y, R, HP, ImageIndex);
+		super(creator, X, Y, R, HP, ImageIndex, isOnPayersTeam);
 	}
 	@ Override
 	protected void otherActions()
@@ -73,13 +73,6 @@ abstract public class Enemy extends EnemyShell
 				action = "Nothing";	//block done
 				frame = 0;
 			}
-		} else if(action.equals("Hide"))
-		{
-			hiding();
-			if(frame < frames[5][1]-1)
-			{
-				frame++;
-			}
 		} else if(action.equals("Shoot"))
 		{
 			frame++;
@@ -100,33 +93,16 @@ abstract public class Enemy extends EnemyShell
 			{
 				action = "Nothing"; // stroll done
 			}
-		} else if(action.equals("Move")||action.equals("Wander"))
+		} else if(action.equals("Move"))
 		{
-			checkLOS();
-			checkDanger();
-			if(inDanger > 0 || LOS)
+			frame++;
+			if(frame == frames[0][1]) frame = 0; // restart walking motion
+			x += xMove;
+			y += yMove;
+			runTimer--;
+			if(runTimer<1) //stroll over
 			{
-				 action = "Nothing";
-				 frame = 0;
-			} else
-			{
-				frame++;
-				if(frame == frames[0][1]) frame = 0; // restart walking motion
-				x += xMove;
-				y += yMove;
-				runTimer--;
-				if(runTimer<1) //stroll over
-				{
-					if(action.equals("Move"))
-					{
-						action = "Nothing";
-						frameNoLOS();
-					} else
-					{
-						action = "Nothing";
-						finishWandering();
-					}
-				}
+				action = "Nothing";
 			}
 		}
 	}
@@ -171,7 +147,7 @@ abstract public class Enemy extends EnemyShell
 	/**
 	 * Aims towards player
 	 */
-	protected void aimAheadOfPlayer(double projectileVelocity, EnemyShell target)
+	protected void aimAheadOfTarget(double projectileVelocity, EnemyShell target)
 	{
 			double timeToHit = (checkDistance(x, y, target.x, target.y))/projectileVelocity;
 			timeToHit *= (control.getRandomDouble()*0.7)+0.6;
@@ -207,6 +183,10 @@ abstract public class Enemy extends EnemyShell
 			xMove = Math.cos(rads) * 8;
 			yMove = Math.sin(rads) * 8;
 		}
+	}
+	protected void turnToward()
+	{
+		turnToward(closestDanger.x, closestDanger.y);
 	}
 	protected void turnToward(EnemyShell target)
 	{
@@ -376,24 +356,31 @@ abstract public class Enemy extends EnemyShell
 	 */
 	protected void meleeAttack(int damage, int range, int ahead)
 	{
-		distanceFound = checkDistance(x + Math.cos(rads) * ahead, y + Math.sin(rads) * ahead, control.player.x, control.player.y);
-		if(distanceFound < range)
+		for(int i  = 0; i < enemies.size(); i++)
 		{
-			control.player.getHit((int)(damage));
-			control.soundController.playEffect("sword2");
-			if(control.getRandomInt(3) == 0)
+			distanceFound = checkDistance(x + Math.cos(rads) * ahead, y + Math.sin(rads) * ahead, enemies.get(i).x, enemies.get(i).y);
+			if(distanceFound < range)
 			{
-				control.player.rads = Math.atan2(control.player.y-y, control.player.x-x);
-				control.player.stun();
+				enemies.get(i).getHit((int)(damage));
+				control.soundController.playEffect("sword2");
+				return;
 			}
-		} else
-		{
-			control.soundController.playEffect("swordmiss");
 		}
+		for(int i  = 0; i < enemyStructures.size(); i++)
+		{
+			distanceFound = checkDistance(x + Math.cos(rads) * ahead, y + Math.sin(rads) * ahead, enemyStructures.get(i).x, enemyStructures.get(i).y);
+			if(distanceFound < range)
+			{
+				enemyStructures.get(i).getHit((int)(damage));
+				control.soundController.playEffect("sword2");
+				return;
+			}
+		}
+		control.soundController.playEffect("swordmiss");
 	}
-	protected void runTowards()
+	protected void runTowards(EnemyShell target)
 	{
-		runTowards(control.player.x, control.player.y);
+		runTowards(target.x, target.y);
 	}
 	/**
 	 * Runs towards player, if you cant, run randomly

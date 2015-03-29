@@ -6,9 +6,9 @@ package com.drawinggame;
 
 public final class Enemy_Archer extends Enemy
 {
-	public Enemy_Archer(Controller creator, double X, double Y, double R, int HP, int ImageIndex)
+	public Enemy_Archer(Controller creator, double X, double Y, double R, int HP, int ImageIndex, boolean isOnPayersTeam)
 	{
-		super(creator, X, Y, R, HP, ImageIndex);
+		super(creator, X, Y, R, HP, ImageIndex, isOnPayersTeam);
 		speedCur = 3.5;
 		frame=0;
 		baseHp(HP);

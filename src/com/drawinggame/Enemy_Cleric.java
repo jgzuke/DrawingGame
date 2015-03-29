@@ -9,9 +9,9 @@ public final class Enemy_Cleric extends Enemy
 	int shoot = 4;
 	int energy = 90;
 	Enemy target;
-	public Enemy_Cleric(Controller creator, double X, double Y, double R, int HP, int ImageIndex)
+	public Enemy_Cleric(Controller creator, double X, double Y, double R, int HP, int ImageIndex, boolean isOnPayersTeam)
 	{
-		super(creator, X, Y, R, HP, ImageIndex);
+		super(creator, X, Y, R, HP, ImageIndex, isOnPayersTeam);
 		speedCur = 3;
 		frame=0;
 		baseHp(HP);
