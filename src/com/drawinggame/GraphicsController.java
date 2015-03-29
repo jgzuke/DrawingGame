@@ -67,7 +67,6 @@ public final class GraphicsController extends View
 	private Controller controller;
 	private SpriteController spriteController;
 	private LevelController levelController;
-	private Player player;
 	private Context context;
 	/** 
 	 * Initializes all undecided variables, loads level, creates player and enemy objects, and starts frameCaller
@@ -79,7 +78,6 @@ public final class GraphicsController extends View
 		imageLibrary = i;
 		spriteController = s;
 		levelController = l;
-		player = p;
 		context = co;
 		setUpPaintStuff(dims);
 	}
@@ -140,41 +138,6 @@ public final class GraphicsController extends View
 			offset = 310 - maxY;
 		}
 		return offset;
-	}
-	/**
-	 * Draws hp, mp, sp, and cooldown bars for player and enemies
-	 * @param g canvas to draw to
-	 */
-	protected void drawContestantStats(Canvas g)
-	{
-		paint.setAlpha(255);
-		paint.setStyle(Paint.Style.FILL);
-		paint.setColor(healthColor);
-		g.drawRect(14, 169, 14 + (62 * player.hp / player.hpMax), 181, paint);
-		paint.setStyle(Paint.Style.FILL);
-		paint.setColor(cooldownColor);
-		g.drawRect(404, 94, 404 + (int)((62 * player.abilityTimer_burst) / 500), 104, paint);
-		g.drawRect(404, 199, 404 + (int)((62 * player.abilityTimer_roll) / 120), 209, paint);
-		if(player.blessing!=0) g.drawRect(90, 290, 90 + player.blessingTimer, 300, paint);
-		paint.setStyle(Paint.Style.FILL);
-		paint.setColor(Color.BLACK);
-		paint.setAlpha(151);
-				if(player.abilityTimer_burst < 300)
-				{
-					g.drawRect(404, 42, 466, 104, paint);
-				}
-				if(player.abilityTimer_roll < 40)
-				{
-					g.drawRect(402, 147, 466, 209, paint);
-				}
-		paint.setAlpha(255);
-		drawBitmapRotated(shootStick, g);
-	}
-	protected boolean playerOnSquare(double x1, double y1, double width, double height)
-	{
-		double x2 = x1+width;
-		double y2 = y1+height;
-		return (player.x<x2&&player.x>x1&&player.y<y2&&player.y>y1);
 	}
 	/**
 	 * returns distance squared between two objects

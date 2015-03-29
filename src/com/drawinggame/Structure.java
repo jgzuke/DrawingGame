@@ -11,9 +11,9 @@ import com.spritelib.Sprite;
 abstract public class Structure extends Sprite
 {
 	public Structure(double X, double Y, int Width, int Height,
-			double Rotation, Bitmap Image) {
+			double Rotation, Bitmap Image, boolean isOnPlayersTeam) {
 		super(X, Y, Width, Height, Rotation, Image);
-		// TODO Auto-generated constructor stub
+		onPlayersTeam = isOnPlayersTeam;
 	}
 	protected int hp;
 	protected int hpMax;
@@ -21,6 +21,7 @@ abstract public class Structure extends Sprite
 	protected int width;
 	protected int height;
 	protected int worth;
+	protected boolean onPlayersTeam;
 	Controller control;
 	/**
 	 * Clears danger arrays, sets current dimensions, and counts timers
@@ -49,7 +50,7 @@ abstract public class Structure extends Sprite
 			{
 				hp = 0;
 				deleted = true;
-				control.spriteController.createProj_TrackerEnemyAOE(x, y, 180, false);
+				control.spriteController.createProj_TrackerAOE(x, y, 180, false, onPlayersTeam);
 				control.soundController.playEffect("burst");
 			}
 		}

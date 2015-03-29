@@ -11,9 +11,9 @@ public class Structure_Spawn extends Structure
 	 * @param creator control object
 	 */
 	int childType;
-	public Structure_Spawn(Controller creator, double X, double Y, int ChildType)
+	public Structure_Spawn(Controller creator, double X, double Y, int ChildType, boolean isOnPlayersTeam)
 	{
-		super(X, Y, 25, 25, 0, creator.imageLibrary.structure_Spawn);
+		super(X, Y, 25, 25, 0, creator.imageLibrary.structure_Spawn, isOnPlayersTeam);
 		control = creator;
 		hp = 6000;
 		hpMax = hp;
@@ -29,8 +29,8 @@ public class Structure_Spawn extends Structure
 		if(timer == 100)
 		{
 			timer = 0;
-			control.spriteController.makeEnemy(childType, (int)x, (int)y, control.getRandomInt(360));
-			control.spriteController.createProj_TrackerEnemyAOE(x, y, 140, false);
+			control.spriteController.makeEnemy(childType, (int)x, (int)y, control.getRandomInt(360), onPlayersTeam);
+			control.spriteController.createProj_TrackerAOE(x, y, 140, false, onPlayersTeam);
 			control.soundController.playEffect("burst");
 		}
 	}

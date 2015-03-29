@@ -75,20 +75,7 @@ public final class SpriteController extends SpriteDrawer
 		proj_TrackerA_AOEs.clear();
 		proj_TrackerE_AOEs.clear();
 	}
-	/**
-	 * creates an enemy based off of saved info
-	 * @param info array of stored values
-	 * @param index which spot in enemy array to populate
-	 */
-	void createEnemy(int[] info)
-	{
-		makeEnemy(info[0], info[1], info[2], info[3]);
-		if(info[4] != 0) // if enemy has set health change it, otherwise leave as starting health
-		{
-			enemies.get(enemies.size()-1).hp = info[4];
-		}
-	}
-	protected void makeEnemy(int type, int x, int y, int r)
+	protected void makeEnemy(int type, int x, int y, int r, boolean isOnPlayersTeam)
 	{
 		switch(type)
 		{
@@ -244,6 +231,22 @@ public final class SpriteController extends SpriteDrawer
 					g.drawRect(minX, minY, maxX, maxY, paint);
 			}
 		}
+		for(int i = 0; i < allies.size(); i++)
+		{
+			if(allies.get(i) != null)
+			{
+					minX = (int) allies.get(i).x - 20;
+					maxX = (int) allies.get(i).x + 20;
+					minY = (int) allies.get(i).y - 30;
+					maxY = (int) allies.get(i).y - 20;
+					paint.setColor(Color.RED);
+					paint.setStyle(Paint.Style.FILL);
+					g.drawRect(minX, minY, minX + (40 * allies.get(i).hp / allies.get(i).hpMax), maxY, paint);
+					paint.setColor(Color.BLACK);
+					paint.setStyle(Paint.Style.STROKE);
+					g.drawRect(minX, minY, maxX, maxY, paint);
+			}
+		}
 		for(int i = 0; i < enemyStructures.size(); i++)
 		{
 			if(enemyStructures.get(i) != null)
@@ -346,22 +349,10 @@ public final class SpriteController extends SpriteDrawer
 	 * @param x x position
 	 * @param y y position
 	 */
-	protected void createProj_TrackerEnemy(double rotation, double xVel, double yVel, int power, double x, double y)
+	protected void createProj_Tracker(double rotation, double Vel, int power, double x, double y, boolean onPlayersTeam)
 	{
-		proj_TrackerEs.add(new Proj_Tracker_Enemy(control, (int) (x+xVel*2), (int) (y+yVel*2), power, xVel, yVel, rotation));
-	}
-	/**
-	 * creates a player power ball
-	 * @param rotation rotation of bolt
-	 * @param xVel horizontal velocity of bolt
-	 * @param yVel vertical velocity of bolt
-	 * @param power power of bolt
-	 * @param x x position
-	 * @param y y position
-	 */
-	protected void createProj_TrackerPlayer(double rotation, double Vel, int power, double x, double y)
-	{
-		proj_TrackerAs.add(new Proj_Tracker_Player(control, (int)x, (int)y, power, Vel, rotation, this));
+		if(onPlayersTeam) proj_TrackerAs.add(new Proj_Tracker(control, (int)x, (int)y, power, Vel, rotation, this, onPlayersTeam));
+		else proj_TrackerEs.add(new Proj_Tracker(control, (int)x, (int)y, power, Vel, rotation, this, onPlayersTeam));
 	}
 	/**
 	 * creates an emeny AOE explosion
@@ -370,21 +361,10 @@ public final class SpriteController extends SpriteDrawer
 	 * @param power power of explosion
 	 * @param damaging whether it damages player
 	 */
-	protected void createProj_TrackerEnemyAOE(double x, double y, double power, boolean damaging)
+	protected void createProj_TrackerAOE(double x, double y, double power, boolean damaging, boolean onPlayersTeam)
 	{
-		proj_TrackerE_AOEs.add(new Proj_Tracker_AOE_Enemy(control, (int) x, (int) y, power, true, this));
-		if(!damaging) proj_TrackerE_AOEs.get(proj_TrackerE_AOEs.size()-1).damaging = false;
-	}
-	/**
-	 * creates a player AOE explosion
-	 * @param x x position
-	 * @param y y position
-	 * @param power power of explosion
-	 */
-	protected void createProj_TrackerPlayerAOE(double x, double y, double power, boolean damaging)
-	{
-		proj_TrackerA_AOEs.add(new Proj_Tracker_AOE_Player(control, (int) x, (int) y, power, true, this));
-		if(!damaging) proj_TrackerA_AOEs.get(proj_TrackerA_AOEs.size()-1).damaging = false;
+		if(onPlayersTeam) proj_TrackerA_AOEs.add(new Proj_Tracker_AOE(control, (int) x, (int) y, power, true, this, control.imageLibrary.shotAOEPlayer, damaging, onPlayersTeam));
+		else proj_TrackerE_AOEs.add(new Proj_Tracker_AOE(control, (int) x, (int) y, power, true, this, control.imageLibrary.shotAOEEnemy, damaging, onPlayersTeam));
 	}
 	/**
 	 * creates an enemy burst
@@ -392,19 +372,10 @@ public final class SpriteController extends SpriteDrawer
 	 * @param y y position
 	 * @param power power of explosion
 	 */
-	protected void createProj_TrackerEnemyBurst(double x, double y, double power)
+	protected void createProj_TrackerBurst(double x, double y, double power, boolean onPlayersTeam)
 	{
-		proj_TrackerE_AOEs.add(new Proj_Tracker_AOE_Enemy(control, (int) x, (int) y, power, false, this));
-	}
-	/**
-	 * creates a player burst
-	 * @param x x position
-	 * @param y y position
-	 * @param power power of explosion
-	 */
-	protected void createProj_TrackerPlayerBurst(double x, double y, double power)
-	{
-		proj_TrackerA_AOEs.add(new Proj_Tracker_AOE_Player(control, (int) x, (int) y, power, false, this));
+		if(onPlayersTeam) proj_TrackerA_AOEs.add(new Proj_Tracker_AOE(control, (int) x, (int) y, power, false, this, control.imageLibrary.shotAOEPlayer, true, onPlayersTeam));
+		else proj_TrackerE_AOEs.add(new Proj_Tracker_AOE(control, (int) x, (int) y, power, false, this, control.imageLibrary.shotAOEEnemy, true, onPlayersTeam));
 	}
 	@Override
 	protected boolean onScreen(double x, double y, int width, int height) {

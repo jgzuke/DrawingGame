@@ -3,11 +3,13 @@
  */
 package com.drawinggame;
 
+import java.util.ArrayList;
+
 import android.graphics.Bitmap;
 
 import com.spritelib.Sprite;
 
-abstract public class Proj_Tracker_AOE extends Sprite
+public final class Proj_Tracker_AOE extends Sprite
 {
 	protected double r2d = 180 / Math.PI;
 	protected boolean normal;
@@ -18,6 +20,9 @@ abstract public class Proj_Tracker_AOE extends Sprite
 	protected int alphaDown;
 	protected int timeToDeath;
 	protected SpriteController spriteController;
+	private ArrayList<Enemy> enemies;
+	private boolean onPlayersTeam;
+	private ArrayList<Structure> structures;
 	protected boolean damaging = true;
 	/**
 	 * sets position, size, and behaviors
@@ -28,7 +33,7 @@ abstract public class Proj_Tracker_AOE extends Sprite
 	 * @param Shrinking whether it is shrinking or growing
 	 */
 	Controller control;
-	public Proj_Tracker_AOE(Controller creator, int X, int Y, double Power, boolean Shrinking, SpriteController spriteControllerSet, Bitmap image)
+	public Proj_Tracker_AOE(Controller creator, int X, int Y, double Power, boolean Shrinking, SpriteController spriteControllerSet, Bitmap image, boolean isDamaging, boolean isOnPlayersTeam)
 	{
 		super(X, Y, 2, 2, 0, image);
 		spriteController = spriteControllerSet;
@@ -47,6 +52,17 @@ abstract public class Proj_Tracker_AOE extends Sprite
 			timeToDeath = (int) (Math.pow(Power, 0.65) / 3.5)+5;
 		}
 		alphaDown = (int)(254/timeToDeath);
+		onPlayersTeam = isOnPlayersTeam;
+		damaging = isDamaging;
+		if(onPlayersTeam)
+		{
+			enemies = spriteController.enemies;
+			structures = spriteController.enemyStructures;
+		} else
+		{
+			enemies = spriteController.allies;
+			structures = spriteController.allyStructures;
+		}
 	}
 	/**
 	 * changes width and explodes at certain intervals
@@ -79,6 +95,43 @@ abstract public class Proj_Tracker_AOE extends Sprite
 			deleted = true;
 		}
 		widthDone = 7.5 + (width / 2);
+		
+		if(damaging)
+		{
+			for(int i = 0; i < enemies.size(); i++)
+			{
+				if(enemies.get(i) != null)
+				{
+					xDif = x - enemies.get(i).x;
+					yDif = y - enemies.get(i).y;
+					if(Math.sqrt(Math.pow(xDif, 2) + Math.pow(yDif, 2)) < widthDone+15)
+					{
+						double damage = 60;
+						enemies.get(i).getHit((int)damage);
+					}
+				}
+			}
+			for(int i = 0; i < structures.size(); i++)
+			{
+				if(structures.get(i) != null)
+				{
+					xDif = x - structures.get(i).x;
+					yDif = y - structures.get(i).y;
+					if(Math.sqrt(Math.pow(xDif, 2) + Math.pow(yDif, 2)) < widthDone+15)
+					{
+						double damage = 60;
+						structures.get(i).getHit((int)damage);
+					}
+				}
+			}
+		}
+	}
+	protected void explode(int power)
+	{
+		for(int i = 0; i<9; i++)
+		{
+			spriteController.createProj_TrackerAOE(x-15+control.getRandomInt(30), y-15+control.getRandomInt(30), power+22, true, onPlayersTeam);
+		}
 	}
 	/**
 	 * returns alpha value
@@ -87,11 +140,6 @@ abstract public class Proj_Tracker_AOE extends Sprite
 	protected byte getAlpha() {
 		return alpha;
 	}
-	/**
-	 * if is is shrinking, explode creates more growing ones at certain points in time
-	 * @param power power to explode with
-	 */
-	abstract protected void explode(int power);
 	/**
 	 * returns 1.5 of width
 	 * @return 1.5 of width
