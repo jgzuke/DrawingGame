@@ -3,9 +3,14 @@
  */
 package com.drawinggame;
 
+import java.util.ArrayList;
+
+import com.spritelib.Sprite;
+
 
 public final class Enemy_Archer extends Enemy
 {
+	private EnemyShell target;
 	public Enemy_Archer(Controller creator, double X, double Y, double R, int HP, int ImageIndex, boolean isOnPayersTeam)
 	{
 		super(creator, X, Y, R, HP, ImageIndex, isOnPayersTeam);
@@ -29,52 +34,44 @@ public final class Enemy_Archer extends Enemy
 		int[][] temp = {{0, 19}, e, e, e, e, e, {20, 49}};
 		return temp;
 	}
-	protected void frameNoLOS()
-	{
-		searchOrWander();
-	}
-	protected void frameLOS()
-	{
-		distanceFound = distanceToPlayer();
-		if(distanceFound < 50 || hp<600 && distanceFound<100)
-		{
-			runAway();
-		} else if(distanceFound<140)
-		{
-			turnToward();
-			action = "Shoot";
-			frame=frames[6][0];
-		} else
-		{
-			runTowards();
-		}
-	}
 	@Override
 	protected void attacking() {}
-	@Override
-	protected void hiding() {}
 	@Override
 	protected void shooting()
 	{
 		int v = 10; //projectile velocity
 		if(frame<34) //geting weapon ready+aiming
 		{
-			aimAheadOfPlayer(v*2); //TODO add extra frames for when you aim
+			aimAheadOfTarget(v*2, target); //TODO add extra frames for when you aim
 		} else if(frame==36) // shoots
 		{
-			control.spriteController.createProj_TrackerEnemy(rotation, Math.cos(rads) * v, Math.sin(rads) * v, 130, x, y);
+			checkLOS(target);
+			if(!LOS)
+			{
+				ArrayList<Sprite> allEnemies = new ArrayList<Sprite>();
+				for(int i = 0; i < enemies.size(); i++)
+				{
+					double distance = checkDistance(x, y, enemies.get(i).x,  enemies.get(i).y);
+					if(distance <= 50) return;
+					if(distance < 160) allEnemies.add(enemies.get(i));
+				}
+				for(int i = 0; i < enemyStructures.size(); i++)
+				{
+					double distance = checkDistance(x, y, enemyStructures.get(i).x,  enemyStructures.get(i).y);
+					if(distance <= 50) return;
+					if(distance < 160) allEnemies.add(enemyStructures.get(i));
+				}
+				for(int i = 0; i < allEnemies.size(); i++)
+				{
+					checkLOS(allEnemies.get(i));
+					if(LOS) break;
+				}
+				if(!LOS) return;
+			}
+			control.spriteController.createProj_Tracker(rotation, v, 130, x, y, onPlayersTeam);
 			control.soundController.playEffect("arrowrelease");
-			checkLOS();
-			double distance = checkDistance(x, y, control.player.x,  control.player.y);
-			if(LOS&&hp>600&&distance<160&&distance>50) frame=25; // shoots again
-		}
-	}
-	@Override
-	protected void finishWandering()
-	{
-		if(control.getRandomInt(20) != 0) // we probably just keep wandering
-		{
-			runRandom();
+			double distance = checkDistance(x, y, target.x,  target.y);
+			if(hp>600&&distance<160&&distance>50) frame=25; // shoots again
 		}
 	}
 	@Override

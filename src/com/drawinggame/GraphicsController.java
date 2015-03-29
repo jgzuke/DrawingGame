@@ -70,7 +70,7 @@ public final class GraphicsController extends View
 	/** 
 	 * Initializes all undecided variables, loads level, creates player and enemy objects, and starts frameCaller
 	 */
-	public GraphicsController(Controller c, ImageLibrary i, SpriteController s, WallController w, LevelController l, Context co, double [] dims, int test)
+	public GraphicsController(Controller c, ImageLibrary i, SpriteController s, WallController w, LevelController l, Context co, double [] dims)
 	{
 		super(co);
 		controller = c;

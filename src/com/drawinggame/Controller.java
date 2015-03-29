@@ -94,8 +94,6 @@ public final class Controller
 	protected void die()
 	{
 		levelController.loadLevel(2);
-		graphicsController.playerBursted=40;
-		levelController.discardSavedEnemies();
 		//TODO
 	}
 	protected void pause()
@@ -112,7 +110,6 @@ public final class Controller
 		graphicsController.frameCall();
 		spriteController.frameCall();
 		wallController.frameCall();
-		levelController.checkChangeLevel();
 	}
 	/**
 	 * returns random integer between 0 and i-1

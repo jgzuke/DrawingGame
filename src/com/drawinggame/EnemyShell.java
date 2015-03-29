@@ -6,6 +6,8 @@ package com.drawinggame;
 
 import java.util.ArrayList;
 
+import com.spritelib.Sprite;
+
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.widget.Toast;
@@ -172,7 +174,7 @@ abstract public class EnemyShell extends Human
 	/**
 	 * Checks whether object can 'see' player
 	 */
-	protected void checkLOS(EnemyShell target)
+	protected void checkLOS(Sprite target)
 	{
 		int px = (int)target.x;
 		int py = (int)target.y;
@@ -196,7 +198,7 @@ abstract public class EnemyShell extends Human
 	/**
 	 * tells other enemies where player is
 	 */
-	protected void callPlayerLocation(EnemyShell target)
+	protected void callPlayerLocation(Sprite target)
 	{
 		for(int i = 0; i < control.spriteController.enemies.size(); i++)
 		{
@@ -210,7 +212,7 @@ abstract public class EnemyShell extends Human
 	/**
 	 * hears where player is
 	 */
-	protected void getEnemyLocation(EnemyShell target)
+	protected void getEnemyLocation(Sprite target)
 	{
 		if(!LOS)
 		{

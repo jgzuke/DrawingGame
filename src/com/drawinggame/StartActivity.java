@@ -57,26 +57,8 @@ public class StartActivity extends Activity
 	{
 		int dimension1 = getResources().getDisplayMetrics().heightPixels;
 		int dimension2 = getResources().getDisplayMetrics().widthPixels;
-		double screenWidthstart;
-		double screenHeightstart;
-		if(dimension1 > dimension2)
-		{
-			screenWidthstart = dimension1;
-			screenHeightstart = dimension2;
-		} else
-		{
-			screenWidthstart = dimension2;
-			screenHeightstart = dimension1;
-		}
-		if(screenWidthstart/screenHeightstart > 1.5)
-		{
-			double[] dims = {(screenWidthstart - (screenHeightstart * 1.5)) / 2, 0, ((screenHeightstart * 1.5) / 480)};
-			return dims;
-		} else
-		{
-			double[] dims = {0, (screenHeightstart - (screenWidthstart / 1.5)) / 2, ((screenWidthstart / 1.5) / 320)};
-			return dims;
-		}
+		double[] dims = {dimension1, dimension2};
+		return dims;
 	}
 	@ Override
 	public boolean onCreateOptionsMenu(Menu menu)
