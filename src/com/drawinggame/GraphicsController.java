@@ -50,6 +50,7 @@ import com.spritelib.Sprite;
 public final class GraphicsController extends View
 {
 	protected double playScreenSize = 1;
+	protected double playScreenSizeMax = 1;
 	protected int mapXSlide = 0;
 	protected int mapYSlide = 0;
 	protected int curXShift;
@@ -90,6 +91,8 @@ public final class GraphicsController extends View
 		paint.setFilterBitmap(true);
 		phoneWidth = (int) dimensions[0];
 		phoneHeight = (int) dimensions[1];
+		playScreenSize = (double)levelController.levelWidth/phoneWidth;
+		playScreenSizeMax = playScreenSize;
 	}
 	protected void frameCall()
 	{
@@ -191,23 +194,15 @@ public final class GraphicsController extends View
 	 */
 	private void drawNotPaused(Canvas g)
 	{
-		/*playScreenSize = levelController.levelWidth/phoneWidth;
-		curXShift = 0;
-		curYShift = 0;
-		Rect src = new Rect(-curXShift, -curYShift, -curXShift+(int)(playScreenSize*phoneWidth), -curYShift+(int)(playScreenSize*phoneHeight));
+		int xShift = mapXSlide;
+		int yShift = mapYSlide;
+		if(xShift < 0)
+		{
+			xShift = 0;
+		}
+		Rect src = new Rect(xShift, yShift, xShift+(int)(playScreenSize*phoneWidth), yShift+(int)(playScreenSize*phoneHeight));
 		Rect dst = new Rect(0, 0, phoneWidth, phoneHeight);
 		g.drawBitmap(drawLevel(), src, dst, paint);
-		paint.setStyle(Paint.Style.FILL);
-		paint.setColor(Color.BLACK);*/
-		playScreenSize = (double)800/phoneWidth;
-		curXShift = 0;
-		curYShift = 0;
-		Rect src = new Rect(curXShift, curYShift, curXShift+(int)(playScreenSize*phoneWidth), curYShift+(int)(playScreenSize*phoneHeight));
-		Rect dst = new Rect(0, 0, phoneWidth, phoneHeight);
-		g.drawBitmap(drawLevel(), src, dst, paint);
-		paint.setStyle(Style.STROKE);
-		paint.setColor(Color.RED);
-		g.drawRect(dst, paint);
 	}
 	/**
 	 * Starts warning label

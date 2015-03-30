@@ -76,7 +76,7 @@ public final class Controller
 	{
 		activity = activitySet;
 		context = startSet;
-		gestureDetector = new GestureDetector(startSet, this);
+		gestureDetector = new GestureDetector(startSet, this, (int)dimensions[0], (int)dimensions[1]);
 		soundController = new SoundController(startSet, activitySet);
 		
 		wallController = new WallController(startSet, this);

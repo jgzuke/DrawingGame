@@ -21,8 +21,18 @@ public class GestureDetector implements OnTouchListener
 	private Controller controller;
 	private double screenWidth;
 	private double screenHeight;
-	private ArrayList<Integer> IDs = new ArrayList<Integer>();
-	private ArrayList<Vector<Point>> pointsLists = new ArrayList<Vector<Point>>();
+	private int firstID = 0;
+	private int secondID = 0;
+	private Point firstPoint;
+	private Point secondPoint;
+	private Point firstPointStart;
+	private Point secondPointStart;
+	private double playScreenSizeStart;
+	private int mapXSlideStart;
+	private int mapYSlideStart;
+	private int phoneWidth;
+	private int phoneHeight;
+	private Vector<Point> pointsList = new Vector<Point>(1000);
 	private int actionMask;
 	protected Recognizer recognizer;
 	int ID = 0;
@@ -35,8 +45,10 @@ public class GestureDetector implements OnTouchListener
 	private Context context;
 	private int pointersDown = 0;
 	
-    public GestureDetector(Context contextSet, Controller controllerSet)
+    public GestureDetector(Context contextSet, Controller controllerSet, int widthSet, int heightSet)
     {
+    	phoneWidth = widthSet;
+    	phoneHeight = heightSet;
     	context = contextSet;
     	controller = controllerSet;
     	recognizer = new Recognizer(this);
@@ -47,23 +59,17 @@ public class GestureDetector implements OnTouchListener
     }
     protected void drawGestures(Canvas g, Paint paint)
 	{
-    	ArrayList<Vector<Point>> pointsList = pointsLists;
     	paint.setColor(Color.RED);
     	paint.setStyle(Style.STROKE);
     	paint.setStrokeWidth(4);
-    	//Log.e("myid", "test");
-    	for(int i = 0; i < pointsList.size(); i++)
+    	if(pointsList.size() != 0)
     	{
-    		g.drawPath(getPathFromVector(pointsList.get(i)), paint);
+    		g.drawPath(getPathFromVector(pointsList), paint);
     	}
     	if(lastShape != null)
     	{
     		paint.setColor(Color.BLUE);
     		g.drawPath(lastShape, paint);
-    		/*paint.setColor(Color.CYAN);
-    		g.drawPath(lastShapeDone, paint);
-    		paint.setColor(Color.MAGENTA);
-    		g.drawPath(aveShapeDone, paint);*/
     	}
 	}
     
@@ -117,48 +123,45 @@ public class GestureDetector implements OnTouchListener
 		{
 		case MotionEvent.ACTION_DOWN:
 			ID = e.getPointerId(e.getActionIndex());				// Add pointer ID to ID list
-        	
-			Vector<Point> newPointSet = new Vector<Point>(1000);	// Start a new array of points
-			newPointSet.add(new Point((int)(e.getX(ID)), (int)(e.getY(ID))));				// Add array to list
-			pointsLists.add(newPointSet);
-        	IDs.add(ID);
+        	pointsList.add(new Point((int)(e.getX(ID)), (int)(e.getY(ID))));				// Add array to list
+			firstID = ID;
         	pointersDown = 1;
+        	firstPoint = new Point((int)(e.getX(ID)), (int)(e.getY(ID)));
         break;
         case MotionEvent.ACTION_UP:
-        	recognizer.Recognize(pointsLists.remove(0));
-        	pointsLists.clear();
-        	IDs.clear();
+        	if(secondID == 0) recognizer.Recognize(pointsList);
+        	pointsList.clear();
         	pointersDown = 0;
+        	secondID = 0;
+        	firstID = 0;
         break;
         case MotionEvent.ACTION_POINTER_DOWN:
         	ID = e.getPointerId(e.getActionIndex());
-        	if(ID < e.getPointerCount())
-        	{
-        		Vector<Point> newAltPointSet = new Vector<Point>(1000);
-	        	newAltPointSet.add(new Point((int)(e.getX(ID)), (int)(e.getY(ID))));
-	        	pointsLists.add(newAltPointSet);
-	        	IDs.add(ID);
-        	}
         	pointersDown ++;
+        	if(pointersDown == 2)
+        	{
+        		secondID = ID;
+        		firstPoint = new Point((int)(e.getX(firstID)), (int)(e.getY(firstID)));
+        		secondPoint = new Point((int)(e.getX(secondID)), (int)(e.getY(secondID)));
+        		firstPointStart = new Point(firstPoint.X, firstPoint.Y);
+        		secondPointStart = new Point(secondPoint.X, secondPoint.Y);
+        		playScreenSizeStart = controller.graphicsController.playScreenSize;
+        		mapXSlideStart = controller.graphicsController.mapXSlide;
+        		mapYSlideStart = controller.graphicsController.mapYSlide;
+        	}
         break;
         case MotionEvent.ACTION_MOVE:
-        	for(int i = 0; i < IDs.size(); i++)
+        	if(pointersDown == 1 && secondID == 0) pointsList.add(new Point((int)(e.getX(firstID)), (int)(e.getY(firstID))));
+        	if(pointersDown > 1)
         	{
-        		if(ID >= e.getPointerCount()) break;
-	        	pointsLists.get(i).add(new Point((int)(e.getX(ID)), (int)(e.getY(ID))));
-	        }
+        		firstPoint.X = (int)(e.getX(firstID));
+        		firstPoint.Y = (int)(e.getY(firstID));
+        		secondPoint.X = (int)(e.getX(secondID));
+        		secondPoint.Y = (int)(e.getY(secondID));
+        		scaleMap();
+        	}
         break;
         case MotionEvent.ACTION_POINTER_UP:
-        	ID = e.getPointerId(e.getActionIndex());
-        	if(ID >= e.getPointerCount()) break;
-        	for(int i = 0; i < IDs.size(); i++)
-        	{
-        		if(ID == IDs.get(i))
-	        	{
-        			IDs.remove(i);
-        			recognizer.Recognize(pointsLists.remove(i));
-        		}
-        	}
         	pointersDown --;
         break;
 		}
@@ -187,5 +190,55 @@ public class GestureDetector implements OnTouchListener
 			path.lineTo((int)p.X, (int)p.Y);
 		}
 		return path;
+    }
+    protected void scaleMap()
+    {
+		double startXAverage = (firstPointStart.X + secondPointStart.X)/2;
+		double startYAverage = (firstPointStart.Y + secondPointStart.Y)/2;
+		double endXAverage = (firstPoint.X + secondPoint.X)/2;
+		double endYAverage = (firstPoint.Y + secondPoint.Y)/2;
+		double startSeperation = Math.sqrt(Math.pow(firstPointStart.X - secondPointStart.X, 2)+Math.pow(firstPointStart.Y - secondPointStart.Y, 2));
+		double endSeperation = Math.sqrt(Math.pow(firstPoint.X - secondPoint.X, 2)+Math.pow(firstPoint.Y - secondPoint.Y, 2));
+		double screenScale = startSeperation/endSeperation;
+		double newPlayScreenSize = playScreenSizeStart*screenScale;
+		double playScreenSizeMax = controller.graphicsController.playScreenSizeMax;
+		int levelWidth = controller.levelController.levelWidth;
+		int levelHeight = controller.levelController.levelHeight;
+		if(newPlayScreenSize > playScreenSizeMax)
+		{
+			playScreenSizeStart *= playScreenSizeMax/newPlayScreenSize;
+			newPlayScreenSize = playScreenSizeMax;
+		}
+		double scaledXAverage = startXAverage*screenScale;
+		double scaledYAverage = startYAverage*screenScale;
+		double xFix = 0;//startXAverage*screenScale*newPlayScreenSize;
+		double yFix = 0;//startYAverage*screenScale*newPlayScreenSize;
+		xFix += (endXAverage-startXAverage)*playScreenSizeStart;
+		yFix += (endYAverage-startYAverage)*playScreenSizeStart;
+		int newXSlide = (int)(mapXSlideStart - xFix);
+		int newYSlide = (int)(mapYSlideStart - yFix);
+		if(newXSlide < 0)
+		{
+			mapXSlideStart = (int) xFix;
+			newXSlide = 0;
+		}
+		if(newYSlide < 0)
+		{
+			mapYSlideStart = (int) yFix;
+			newYSlide = 0;
+		}
+		if(newXSlide > levelWidth - newPlayScreenSize*phoneWidth)
+		{
+			mapXSlideStart = (int)(levelWidth - newPlayScreenSize*phoneWidth + xFix);
+			newXSlide = (int)(mapXSlideStart - xFix);
+		}
+		if(newYSlide > levelHeight - newPlayScreenSize*phoneHeight)
+		{
+			mapYSlideStart = (int)(levelHeight - newPlayScreenSize*phoneHeight + yFix);
+			newYSlide = (int)(mapYSlideStart - yFix);
+		}
+		controller.graphicsController.playScreenSize = newPlayScreenSize;
+		controller.graphicsController.mapXSlide = newXSlide;
+		controller.graphicsController.mapYSlide = newYSlide;
     }
 }
