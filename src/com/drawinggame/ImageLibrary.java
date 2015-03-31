@@ -32,13 +32,6 @@ public final class ImageLibrary extends ImageLoader
 		loadAllImages();
 	}
 	/**
-	 * loads a selection into enemyImages
-	 */
-	protected void loadEnemy(int length, String start, int width, int height, int index)
-	{
-		enemyImages[index]= loadArray1D(length, start, width, height);
-	}
-	/**
 	 * loads all required images for all games
 	 */
 	protected void loadAllImages()
@@ -48,10 +41,9 @@ public final class ImageLibrary extends ImageLoader
 		shotAOEPlayer = loadImage("shootplayeraoe", 80, 80);
 		shotPlayer = loadArray1D(5, "shootplayer", 35, 15);
 		backDrop = loadImage("leveltile1", 100, 100);
-
-		loadEnemy(55, "goblin_swordsman", 110, 70, 0); // length, name,width, height, index
-		loadEnemy(49, "goblin_archer", 80, 50, 1);
-		loadEnemy(31, "goblin_mage", 30, 34, 2);
+		enemyImages[0]= loadArray1D(55, "goblin_swordsman", 110, 70);
+		enemyImages[1]= loadArray1D(49, "goblin_archer", 80, 50);
+		enemyImages[2]= loadArray1D(31, "goblin_mage", 30, 34);
 		//loadEnemy(31, "goblin_cleric", 30, 34, 5);
 		//loadEnemy(65, "goblin_rogue", 60, 40, 4);
 	}

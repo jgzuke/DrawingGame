@@ -59,7 +59,6 @@ public final class LevelController
 		}
 		levelNum = toLoad;
 		WallController w = control.wallController;
-		control.imageLibrary.recycleEnemies();
 		switch(levelNum)
 		{
 		case 1:

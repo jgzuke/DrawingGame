@@ -176,15 +176,9 @@ public final class GraphicsController extends View
 			}
 		}
 		g.drawBitmap(imageLibrary.currentLevel, 0, 0, paint);
-		
-		//g.drawBitmap(imageLibrary.enemyImages[1][0], 0, 0, paint);
-		//g.drawBitmap(imageLibrary.enemyImages[2][0], 0, 0, paint);
-		//spriteController.drawStructures(g, paint, imageLibrary);
-		//spriteController.drawSprites(g, paint, imageLibrary, aoeRect);
+		spriteController.drawStructures(g, paint, imageLibrary);
+		spriteController.drawSprites(g, paint, imageLibrary, aoeRect);
 		g.drawBitmap(imageLibrary.currentLevelTop, 0, 0, paint);
-		g.drawBitmap(imageLibrary.shotAOEEnemy, 100, 100, paint);
-		g.drawBitmap(imageLibrary.shotPlayer[0], 200, 100, paint);
-		g.drawBitmap(imageLibrary.enemyImages[0][0], 300, 100, paint);
 		spriteController.drawHealthBars(g, paint);
 		return drawTo;
 	}
