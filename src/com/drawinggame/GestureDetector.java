@@ -70,6 +70,15 @@ public class GestureDetector implements OnTouchListener
     	{
     		paint.setColor(Color.BLUE);
     		g.drawPath(lastShape, paint);
+    		paint.setColor(Color.GREEN);
+    		g.drawPath(lastShapeDone, paint);
+    		paint.setColor(Color.MAGENTA);
+    		g.drawPath(getPathFromVector(recognizer.templates.get(0).Points, 400, 100), paint);
+    		g.drawPath(getPathFromVector(recognizer.templates.get(1).Points, 900, 100), paint);
+    		g.drawPath(getPathFromVector(recognizer.templates.get(2).Points, 1400, 100), paint);
+    		g.drawPath(getPathFromVector(recognizer.templates.get(3).Points, 400, 600), paint);
+    		g.drawPath(getPathFromVector(recognizer.templates.get(4).Points, 900, 600), paint);
+    		g.drawPath(getPathFromVector(recognizer.templates.get(5).Points, 1400, 600), paint);
     	}
 	}
     
@@ -174,6 +183,16 @@ public class GestureDetector implements OnTouchListener
         break;
 		}
 		return true;
+    }
+	protected Path getPathFromInt(int[] points, int x, int y)
+    {
+    	Path path = new Path();
+		path.moveTo(points[0]+x, points[1]+y);
+		for(int j = 2; j < points.length; j+=2)
+		{
+			path.lineTo(points[j]+x, points[j+1]+y);
+		}
+		return path;
     }
     protected Path getPathFromVector(Vector<Point> points, int x, int y)
     {

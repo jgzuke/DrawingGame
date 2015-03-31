@@ -11,7 +11,7 @@ public class Recognizer
 	//
 	// Recognizer class constants
 	//
-	int Numtemplates = 16;
+	int Numtemplates = 8;
 	public static int NumPoints = 64;
 	public static double SquareSize = 250.0;
 	double AngleRange = 0.0;
@@ -32,41 +32,15 @@ public class Recognizer
 	
 	void loadtemplates()
 	{
-		templates.addElement(loadTemplate("triangle", TemplateData.trianglePoints));
-		templates.addElement(loadTemplate("x", TemplateData.xPoints));
-		templates.addElement(loadTemplate("rectangle CCW", TemplateData.rectanglePointsCCW));
-		templates.addElement(loadTemplate("circle CCW", TemplateData.circlePointsCCW));
-		templates.addElement(loadTemplate("check", TemplateData.checkPoints));
-		templates.addElement(loadTemplate("caret CW", TemplateData.caretPointsCW));
-		templates.addElement(loadTemplate("question", TemplateData.questionPoints));
-		templates.addElement(loadTemplate("arrow", TemplateData.arrowPoints));
-		templates.addElement(loadTemplate("leftSquareBracket", TemplateData.leftSquareBracketPoints));
-		templates.addElement(loadTemplate("rightSquareBracket", TemplateData.rightSquareBracketPoints));
-		templates.addElement(loadTemplate("v", TemplateData.vPoints));
-		templates.addElement(loadTemplate("delete", TemplateData.deletePoints));	
-		templates.addElement(loadTemplate("leftCurlyBrace", TemplateData.leftCurlyBracePoints));
-		templates.addElement(loadTemplate("rightCurlyBrace", TemplateData.rightCurlyBracePoints));
-		templates.addElement(loadTemplate("star", TemplateData.starPoints));
-		templates.addElement(loadTemplate("pigTail", TemplateData.pigTailPoints));
+		templates.addElement(loadTemplate("lineRight", TemplateData.lineRight));
+		templates.addElement(loadTemplate("lineLeft", TemplateData.lineLeft));
+		templates.addElement(loadTemplate("lineDown", TemplateData.lineDown));
+		templates.addElement(loadTemplate("lineUp", TemplateData.lineUp));
+		templates.addElement(loadTemplate("arrowRight", TemplateData.arrowRight));
+		templates.addElement(loadTemplate("arrowLeft", TemplateData.arrowLeft));
+		templates.addElement(loadTemplate("leftCurlyBracePoints", TemplateData.leftCurlyBracePoints));
+		templates.addElement(loadTemplate("rightCurlyBracePoints", TemplateData.rightCurlyBracePoints));
 	}
-	
-	void loadtemplatesSimple()
-	{
-		templates.addElement(loadTemplate("circle CCW", TemplateData.circlePointsCCW));
-		templates.addElement(loadTemplate("circle CW", TemplateData.circlePointsCW));
-		templates.addElement(loadTemplate("rectangle CCW", TemplateData.rectanglePointsCCW));
-		templates.addElement(loadTemplate("rectangle CW", TemplateData.rectanglePointsCW));
-		templates.addElement(loadTemplate("caret CCW", TemplateData.caretPointsCCW));
-		templates.addElement(loadTemplate("caret CW", TemplateData.caretPointsCW));
-	}
-	
-
-	void loadtemplatesCircles()
-	{
-		templates.addElement(loadTemplate("circle CCW", TemplateData.circlePointsCCW));
-		templates.addElement(loadTemplate("circle CW", TemplateData.circlePointsCW));
-	}
-	
 	Template loadTemplate(String name, int[] array)
 	{
 		return new Template(name, loadArray(array));
