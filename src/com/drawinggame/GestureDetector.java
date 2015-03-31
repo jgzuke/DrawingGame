@@ -18,7 +18,7 @@ import lx.interaction.dollar.*;
 
 public class GestureDetector implements OnTouchListener
 {
-	private Controller controller;
+	private Controller control;
 	private double screenWidth;
 	private double screenHeight;
 	private int firstID = 0;
@@ -50,7 +50,7 @@ public class GestureDetector implements OnTouchListener
     	phoneWidth = widthSet;
     	phoneHeight = heightSet;
     	context = contextSet;
-    	controller = controllerSet;
+    	control = controllerSet;
     	recognizer = new Recognizer(this);
     	for(int i = average.size(); i < 64; i ++)
 		{
@@ -70,14 +70,6 @@ public class GestureDetector implements OnTouchListener
     	{
     		paint.setColor(Color.BLUE);
     		g.drawPath(lastShape, paint);
-    		paint.setColor(Color.GREEN);
-    		g.drawPath(lastShapeDone, paint);
-    		paint.setColor(Color.MAGENTA);
-    		g.drawPath(getPathFromVector(recognizer.templates.get(0).Points, 400, 100), paint);
-    		g.drawPath(getPathFromVector(recognizer.templates.get(1).Points, 900, 100), paint);
-    		g.drawPath(getPathFromVector(recognizer.templates.get(2).Points, 1400, 100), paint);
-    		g.drawPath(getPathFromVector(recognizer.templates.get(3).Points, 400, 600), paint);
-    		g.drawPath(getPathFromVector(recognizer.templates.get(4).Points, 900, 600), paint);
     	}
 	}
     
@@ -103,6 +95,16 @@ public class GestureDetector implements OnTouchListener
 	}
 	public void endShape(String type, Point p)
     {
+		if(type.equals("lineH"))
+		{
+			control.spriteController.makeEnemy(0, (int)p.X, (int)p.Y, -90, true);
+		} else if(type.equals("lineV"))
+		{
+			control.spriteController.makeEnemy(2, (int)p.X, (int)p.Y, -90, true);
+		} else if(type.equals("arrow"))
+		{
+			control.spriteController.makeEnemy(1, (int)p.X, (int)p.Y, -90, true);
+		}
     	Toast.makeText(context, type.concat(" ").concat(Double.toString(p.Y)).concat(", ").concat(Double.toString(p.X)), Toast.LENGTH_SHORT).show();
     }
 	public void click(Point p)
@@ -153,9 +155,9 @@ public class GestureDetector implements OnTouchListener
         		secondPoint = new Point((int)(e.getX(secondID)), (int)(e.getY(secondID)));
         		firstPointStart = new Point(firstPoint.X, firstPoint.Y);
         		secondPointStart = new Point(secondPoint.X, secondPoint.Y);
-        		playScreenSizeStart = controller.graphicsController.playScreenSize;
-        		mapXSlideStart = controller.graphicsController.mapXSlide;
-        		mapYSlideStart = controller.graphicsController.mapYSlide;
+        		playScreenSizeStart = control.graphicsController.playScreenSize;
+        		mapXSlideStart = control.graphicsController.mapXSlide;
+        		mapYSlideStart = control.graphicsController.mapYSlide;
         	}
         break;
         case MotionEvent.ACTION_MOVE:
@@ -172,9 +174,9 @@ public class GestureDetector implements OnTouchListener
         		firstPointStart.Y = (int)(e.getY(firstID));
         		secondPointStart.X = (int)(e.getX(secondID));
         		secondPointStart.Y = (int)(e.getY(secondID));
-        		playScreenSizeStart = controller.graphicsController.playScreenSize;
-        		mapXSlideStart = controller.graphicsController.mapXSlide;
-        		mapYSlideStart = controller.graphicsController.mapYSlide;
+        		playScreenSizeStart = control.graphicsController.playScreenSize;
+        		mapXSlideStart = control.graphicsController.mapXSlide;
+        		mapYSlideStart = control.graphicsController.mapYSlide;
         	}
         break;
         case MotionEvent.ACTION_POINTER_UP:
@@ -219,12 +221,12 @@ public class GestureDetector implements OnTouchListener
     }
     protected Point screenToMapPoint(Point p)
     {
-    	//controller.graphicsController.playScreenSize = levelWidth / levelPixels = gamePixel per phone pixel;
-		//controller.graphicsController.mapXSlide in phone pixels;
-		//controller.graphicsController.mapYSlide in phone pixels;
-    	double phoneToMap = controller.graphicsController.playScreenSize;
-    	double phoneX = controller.graphicsController.mapXSlide + p.X*phoneToMap;
-    	double phoneY = controller.graphicsController.mapYSlide + p.Y*phoneToMap;
+    	//control.graphicsController.playScreenSize = levelWidth / levelPixels = gamePixel per phone pixel;
+		//control.graphicsController.mapXSlide in phone pixels;
+		//control.graphicsController.mapYSlide in phone pixels;
+    	double phoneToMap = control.graphicsController.playScreenSize;
+    	double phoneX = control.graphicsController.mapXSlide + p.X*phoneToMap;
+    	double phoneY = control.graphicsController.mapYSlide + p.Y*phoneToMap;
     	return new Point(phoneX, phoneY);
     }
     protected void scaleMap()
@@ -238,18 +240,18 @@ public class GestureDetector implements OnTouchListener
 		double screenScale = startSeperation/endSeperation;
 		double screenRatio = endSeperation/startSeperation;
 		double newPlayScreenSize = playScreenSizeStart*screenScale;
-		double playScreenSizeMax = controller.graphicsController.playScreenSizeMax;
-		int levelWidth = controller.levelController.levelWidth;
-		int levelHeight = controller.levelController.levelHeight;
+		double playScreenSizeMax = control.graphicsController.playScreenSizeMax;
+		int levelWidth = control.levelController.levelWidth;
+		int levelHeight = control.levelController.levelHeight;
 		if(newPlayScreenSize > playScreenSizeMax)
 		{
 			playScreenSizeStart *= playScreenSizeMax/newPlayScreenSize;
 			newPlayScreenSize = playScreenSizeMax;
 		}
-		if(newPlayScreenSize < 0.2) 
+		if(newPlayScreenSize < 0.3) 
 		{
-			playScreenSizeStart *= 0.2/newPlayScreenSize;
-			newPlayScreenSize = 0.2;
+			playScreenSizeStart *= 0.3/newPlayScreenSize;
+			newPlayScreenSize = 0.3;
 		}
 		double xFix = (1-screenRatio)*(mapXSlideStart+startXAverage)*playScreenSizeStart;
 		double yFix = (1-screenRatio)*(mapYSlideStart+startYAverage)*playScreenSizeStart;
@@ -277,8 +279,8 @@ public class GestureDetector implements OnTouchListener
 			mapYSlideStart = (int)(levelHeight - newPlayScreenSize*phoneHeight + yFix);
 			newYSlide = (int)(mapYSlideStart - yFix);
 		}
-		controller.graphicsController.playScreenSize = newPlayScreenSize;
-		controller.graphicsController.mapXSlide = newXSlide;
-		controller.graphicsController.mapYSlide = newYSlide;
+		control.graphicsController.playScreenSize = newPlayScreenSize;
+		control.graphicsController.mapXSlide = newXSlide;
+		control.graphicsController.mapYSlide = newYSlide;
     }
 }

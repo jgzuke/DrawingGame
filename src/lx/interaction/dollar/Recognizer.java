@@ -3,6 +3,8 @@ package lx.interaction.dollar;
 import java.util.Vector;
 
 
+import android.util.Log;
+
 import com.drawinggame.Controller;
 import com.drawinggame.GestureDetector;
 
@@ -11,7 +13,6 @@ public class Recognizer
 	//
 	// Recognizer class constants
 	//
-	int Numtemplates = 8;
 	public static int NumPoints = 64;
 	public static double SquareSize = 250.0;
 	double AngleRange = 0.0;
@@ -22,7 +23,7 @@ public class Recognizer
 	public Rectangle boundingBox = new Rectangle(0, 0, 0, 0);
 	int bounds[] = { 0, 0, 0, 0 };
 	
-	public Vector<Template> templates = new Vector<Template>(Numtemplates);
+	public Vector<Template> templates = new Vector<Template>();
 	private GestureDetector gestureDetector;
 	public Recognizer(GestureDetector gestureDetectorSet)
 	{
@@ -32,11 +33,15 @@ public class Recognizer
 	
 	void loadtemplates()
 	{
-		templates.addElement(loadTemplate("lineHorizontal", TemplateData.lineHorizontal));
-		templates.addElement(loadTemplate("lineVertical", TemplateData.lineVertical));
+		templates.addElement(loadTemplate("lineH", TemplateData.lineHorizontal));
+		templates.addElement(loadTemplate("lineH", TemplateData.lineHorizontalR));
+		templates.addElement(loadTemplate("lineH", TemplateData.lineHorizontalL));
+		templates.addElement(loadTemplate("lineV", TemplateData.lineVertical));
+		templates.addElement(loadTemplate("lineV", TemplateData.lineVerticalU));
+		templates.addElement(loadTemplate("lineV", TemplateData.lineVerticalD));
 		templates.addElement(loadTemplate("arrow", TemplateData.arrow));
-		templates.addElement(loadTemplate("leftCurlyBracePoints", TemplateData.leftCurlyBracePoints));
-		templates.addElement(loadTemplate("rightCurlyBracePoints", TemplateData.rightCurlyBracePoints));
+		templates.addElement(loadTemplate("arrow", TemplateData.arrowLongLeft));
+		templates.addElement(loadTemplate("arrow", TemplateData.arrowLongRight));
 	}
 	Template loadTemplate(String name, int[] array)
 	{
@@ -81,13 +86,22 @@ public class Recognizer
 			for (int i = 0; i < templates.size(); i++)
 			{
 				double d = Utils.PathDistance(points, templates.elementAt(i).Points);
+				if((templates.elementAt(i)).Name.startsWith("line")) d *= 3;
 				if (d < b)
 				{
 					b = d;
 					t = i;
 				}
 			}
-			gestureDetector.endShape((templates.elementAt(t)).Name, moveCoords);
+			if(b > 40)
+			{
+				Log.e("myid", Double.toString(b).concat("unknown"));
+				gestureDetector.endShape("unknown", moveCoords);
+			} else
+			{
+				Log.e("myid", Double.toString(b).concat((templates.elementAt(t)).Name));
+				gestureDetector.endShape((templates.elementAt(t)).Name, moveCoords);
+			}
 		}
 	};
 }

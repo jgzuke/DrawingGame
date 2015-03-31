@@ -66,7 +66,7 @@ abstract public class EnemyShell extends Human
 		imageIndex = ImageIndex;
 		enemyType = ImageIndex;
 		myImage = creator.imageLibrary.enemyImages[ImageIndex];
-		image = myImage[frame];
+		image = myImage[0];
 		if(isOnPlayersTeam)
 		{
 			enemies = control.spriteController.enemies;

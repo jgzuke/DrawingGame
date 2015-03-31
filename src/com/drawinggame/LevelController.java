@@ -71,11 +71,6 @@ public final class LevelController
 			{
 				control.graphicsController.playScreenSize = 450;
 			}
-			//ENEMIES
-			control.imageLibrary.loadEnemy(55, "goblin_swordsman", 110, 70, 0); // length, name,width, height, index
-			control.imageLibrary.loadEnemy(49, "goblin_archer", 80, 50, 3);
-			control.imageLibrary.loadEnemy(31, "goblin_mage", 30, 34, 2);
-			control.imageLibrary.loadEnemy(31, "goblin_cleric", 30, 34, 5);
 			//WALLS
 			w.makeWall_Rectangle(-85, -182, 111, 528, true);
 			w.makeWall_Rectangle(-85, 455, 111, 528, true);
@@ -147,10 +142,6 @@ public final class LevelController
 			levelWidth = 930; // height of level
 			levelHeight = 780; // width of level
 			control.graphicsController.playScreenSize = 300;
-			control.imageLibrary.loadEnemy(55, "goblin_swordsman", 110, 70, 0); // length, name,width, height, index
-			control.imageLibrary.loadEnemy(49, "goblin_archer", 80, 50, 1);
-			control.imageLibrary.loadEnemy(31, "goblin_mage", 30, 34, 2);
-			control.imageLibrary.loadEnemy(31, "goblin_cleric", 30, 34, 5);
 			w.makeWall_Ring(319, 507, 253, 273, true); // outer circle
 			w.makeWall_Pass(-6, 398, 80, 211, true, 0);
 			w.makeWall_Pass(350, 164, 34, 111, true, 0);
@@ -188,9 +179,6 @@ public final class LevelController
 			levelWidth = 350; // height of level
 			levelHeight = 250; // width of level
 			control.graphicsController.playScreenSize = 250;
-			//ENEMIES
-			control.imageLibrary.loadEnemy(65, "goblin_rogue", 60, 40, 4); // length, name,width, height, index
-			control.imageLibrary.loadEnemy(49, "goblin_archer", 80, 50, 3);
 			//WALLS
 			w.makeWall_Circle(126, 217, 39, false);
 			w.makeWall_Circle(60, 51, 39, false);
