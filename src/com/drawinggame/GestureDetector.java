@@ -109,6 +109,7 @@ public class GestureDetector implements OnTouchListener
 			else  toAdd = toAdd.concat("};");
 			start = start.concat(toAdd);
 		}
+		Point p2 = screenToMapPoint(p);
     }
     
 	/**
@@ -198,6 +199,16 @@ public class GestureDetector implements OnTouchListener
 		}
 		return path;
     }
+    protected Point screenToMapPoint(Point p)
+    {
+    	//controller.graphicsController.playScreenSize = levelWidth / levelPixels = gamePixel per phone pixel;
+		//controller.graphicsController.mapXSlide in phone pixels;
+		//controller.graphicsController.mapYSlide in phone pixels;
+    	double phoneToMap = controller.graphicsController.playScreenSize;
+    	double phoneX = controller.graphicsController.mapXSlide + p.X*phoneToMap;
+    	double phoneY = controller.graphicsController.mapYSlide + p.Y*phoneToMap;
+    	return new Point(phoneX, phoneY);
+    }
     protected void scaleMap()
     {
 		double startXAverage = (firstPointStart.X + secondPointStart.X)/2;
@@ -217,27 +228,17 @@ public class GestureDetector implements OnTouchListener
 			playScreenSizeStart *= playScreenSizeMax/newPlayScreenSize;
 			newPlayScreenSize = playScreenSizeMax;
 		}
-		if(newPlayScreenSize < 0.2) // playScreenSizeStart*screenScale
+		if(newPlayScreenSize < 0.2) 
 		{
 			playScreenSizeStart *= 0.2/newPlayScreenSize;
 			newPlayScreenSize = 0.2;
 		}
 		double xFix = (1-screenRatio)*(mapXSlideStart+startXAverage)*playScreenSizeStart;
 		double yFix = (1-screenRatio)*(mapYSlideStart+startYAverage)*playScreenSizeStart;
-		Log.e("myid", "");
-		Log.e("myid", "start");
-		//Log.e("myid", "size ".concat(Double.toString(1/playScreenSize)));
-		Log.e("myid", "sizeChange ".concat(Double.toString(screenScale)));
-		Log.e("myid", "startY ".concat(Double.toString(startYAverage)));
-		Log.e("myid", "mapY   ".concat(Double.toString(mapYSlideStart)));
-		Log.e("myid", "p1 ".concat(Double.toString(screenScale-1)));
-		Log.e("myid", "p2 ".concat(Double.toString(mapYSlideStart+startYAverage)));
-		Log.e("myid", "yFix ".concat(Double.toString(yFix)));
 		xFix += (endXAverage-startXAverage)*playScreenSizeStart;
 		yFix += (endYAverage-startYAverage)*playScreenSizeStart;
 		int newXSlide = (int)(mapXSlideStart - xFix);
 		int newYSlide = (int)(mapYSlideStart - yFix);
-		Log.e("myid", "end ".concat(Integer.toString(newYSlide)));
 		if(newXSlide < 0)
 		{
 			mapXSlideStart = (int) xFix;
