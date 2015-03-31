@@ -35,6 +35,7 @@ public class GestureDetector implements OnTouchListener
 	private Vector<Point> pointsList = new Vector<Point>(1000);
 	private int actionMask;
 	protected Recognizer recognizer;
+	protected String selectType = "none";
 	int ID = 0;
 	
 	private Path lastShape;
@@ -98,29 +99,38 @@ public class GestureDetector implements OnTouchListener
 		Point p = screenToMapPoint(screenPoint);
 		if(type.equals("lineH"))
 		{
-			control.spriteController.makeEnemy(0, (int)p.X, (int)p.Y, -90, true);
+			if(!control.wallController.checkHitBack(p.X, p.Y, true))
+			{
+				control.spriteController.makeEnemy(0, (int)p.X, (int)p.Y, -90, true);
+			}
 		} else if(type.equals("lineV"))
 		{
-			control.spriteController.makeEnemy(2, (int)p.X, (int)p.Y, -90, true);
+			if(!control.wallController.checkHitBack(p.X, p.Y, true))
+			{
+				control.spriteController.makeEnemy(2, (int)p.X, (int)p.Y, -90, true);
+			}
 		} else if(type.equals("arrow"))
 		{
-			control.spriteController.makeEnemy(1, (int)p.X, (int)p.Y, -90, true);
+			if(!control.wallController.checkHitBack(p.X, p.Y, true))
+			{
+				control.spriteController.makeEnemy(1, (int)p.X, (int)p.Y, -90, true);
+			}
 		}
     	Toast.makeText(context, type.concat(" ").concat(Double.toString(p.Y)).concat(", ").concat(Double.toString(p.X)), Toast.LENGTH_SHORT).show();
     }
-	public void click(Point p)
+	public void click(Point pPhone)
     {
-    	Toast.makeText(context, "Click: ".concat(Double.toString(p.Y)).concat(", ").concat(Double.toString(p.X)), Toast.LENGTH_SHORT).show();
-    	String start = "{";
-		for(int i = 0; i < 64; i ++)
-		{
-			Point q = average.get(i);
-			String toAdd = Integer.toString((int)q.X).concat(",").concat(Integer.toString((int)q.Y));
-			if(i < 63) toAdd = toAdd.concat(",");
-			else  toAdd = toAdd.concat("};");
-			start = start.concat(toAdd);
-		}
-		Point p2 = screenToMapPoint(p);
+    	Point p = screenToMapPoint(pPhone);
+    	if(selectType.equals("none"))
+    	{
+    		control.spriteController.selectEnemy(p.X, p.Y);
+    	} else if(selectType.equals("single"))
+    	{
+    		
+    	} else if(selectType.equals("group"))
+    	{
+    		
+    	}
     }
     
 	/**
@@ -140,7 +150,7 @@ public class GestureDetector implements OnTouchListener
         	firstPoint = new Point((int)(e.getX(ID)), (int)(e.getY(ID)));
         break;
         case MotionEvent.ACTION_UP:
-        	if(secondID == 0) recognizer.Recognize(pointsList);
+        	if(secondID == 0) recognizer.Recognize(pointsList, selectType);
         	pointsList.clear();
         	pointersDown = 0;
         	secondID = 0;
@@ -244,18 +254,21 @@ public class GestureDetector implements OnTouchListener
 		double playScreenSizeMax = control.graphicsController.playScreenSizeMax;
 		int levelWidth = control.levelController.levelWidth;
 		int levelHeight = control.levelController.levelHeight;
+		double xFix = 0;
+		double yFix = 0;
 		if(newPlayScreenSize > playScreenSizeMax)
 		{
 			playScreenSizeStart *= playScreenSizeMax/newPlayScreenSize;
 			newPlayScreenSize = playScreenSizeMax;
-		}
-		if(newPlayScreenSize < 0.3) 
+		} else if(newPlayScreenSize < 0.3) 
 		{
 			playScreenSizeStart *= 0.3/newPlayScreenSize;
 			newPlayScreenSize = 0.3;
+		} else
+		{
+			xFix = (1-screenRatio)*(mapXSlideStart+startXAverage)*playScreenSizeStart;
+			yFix = (1-screenRatio)*(mapYSlideStart+startYAverage)*playScreenSizeStart;
 		}
-		double xFix = (1-screenRatio)*(mapXSlideStart+startXAverage)*playScreenSizeStart;
-		double yFix = (1-screenRatio)*(mapYSlideStart+startYAverage)*playScreenSizeStart;
 		xFix += (endXAverage-startXAverage)*playScreenSizeStart;
 		yFix += (endYAverage-startYAverage)*playScreenSizeStart;
 		int newXSlide = (int)(mapXSlideStart - xFix);

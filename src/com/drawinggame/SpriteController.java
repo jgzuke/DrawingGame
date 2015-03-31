@@ -53,6 +53,7 @@ public final class SpriteController extends SpriteDrawer
 	protected ArrayList<Proj_Tracker_AOE> proj_TrackerA_AOEs = new ArrayList<Proj_Tracker_AOE>();
 	protected ArrayList<Proj_Tracker_AOE> proj_TrackerE_AOEs = new ArrayList<Proj_Tracker_AOE>();
 	protected Bitmap playerBlessing;
+	protected Bitmap isSelected;
 	/**
 	 * Initializes all undecided variables, loads level, creates player and enemy objects, and starts frameCaller
 	 */
@@ -76,19 +77,27 @@ public final class SpriteController extends SpriteDrawer
 	}
 	protected void makeEnemy(int type, int x, int y, int r, boolean isOnPlayersTeam)
 	{
+		ArrayList<Enemy> toAdd;
+		if(isOnPlayersTeam)
+		{
+			toAdd = allies;
+		} else 
+		{
+			toAdd = enemies;
+		}
 		switch(type)
 		{
 		case 0:
-			enemies.add(new Enemy_Sheild(control, x, y, r, 3000, type, isOnPlayersTeam)); //x, y, hp, sick, type is ImageIndex
+			toAdd.add(new Enemy_Sheild(control, x, y, r, 3000, type, isOnPlayersTeam)); //x, y, hp, sick, type is ImageIndex
 			break;
 		case 1:
-			enemies.add(new Enemy_Archer(control, x, y, r, 1700, type, isOnPlayersTeam));
+			toAdd.add(new Enemy_Archer(control, x, y, r, 1700, type, isOnPlayersTeam));
 			break;
 		case 2:
-			enemies.add(new Enemy_Mage(control, x, y, r, 700, type, isOnPlayersTeam));
+			toAdd.add(new Enemy_Mage(control, x, y, r, 700, type, isOnPlayersTeam));
 			break;
 		case 5:
-			enemies.add(new Enemy_Cleric(control, x, y, r, 700, type, isOnPlayersTeam));
+			toAdd.add(new Enemy_Cleric(control, x, y, r, 700, type, isOnPlayersTeam));
 			break;
 		}
 	}
@@ -290,6 +299,15 @@ public final class SpriteController extends SpriteDrawer
 	}
 	protected void drawSprites(Canvas g, Paint paint, ImageLibrary imageLibrary, Rect aoeRect)
 	{
+		for(int i = 0; i < allies.size(); i++)
+		{
+			EnemyShell enemy = allies.get(i);
+			if(enemy != null)
+			{
+				draw(enemy, g, paint);
+				if(enemy.selected) g.drawBitmap(control.imageLibrary.isSelected, (int)enemy.x-40, (int)enemy.y-40, paint);
+			}
+		}
 		for(int i = 0; i < enemies.size(); i++)
 		{
 			if(enemies.get(i) != null)
@@ -378,5 +396,13 @@ public final class SpriteController extends SpriteDrawer
 	protected boolean onScreen(double x, double y, int width, int height) {
 		// TODO Auto-generated method stub
 		return true;
+	}
+	protected void selectEnemy(double x, double y)
+	{
+		
+	}
+	protected void deselectEnemies(double x, double y)
+	{
+		
 	}
 }

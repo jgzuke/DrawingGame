@@ -10,7 +10,7 @@ public final class ImageLibrary extends ImageLoader
 {
 	protected Bitmap[][] enemyImages = new Bitmap[10][100]; //array holding videos for each enemy, null when uneeded
 	protected Bitmap structure_Spawn;
-	protected Bitmap isPlayer;
+	protected Bitmap isSelected;
 	protected int isPlayerWidth;
 	protected Bitmap[] shotPlayer;
 	protected Bitmap shotAOEPlayer;
@@ -36,6 +36,7 @@ public final class ImageLibrary extends ImageLoader
 	 */
 	protected void loadAllImages()
 	{
+		isSelected = loadImage("icon_isselected", 80, 80);
 		shotAOEEnemy = loadImage("shootenemyaoe", 80, 80);
 		shotEnemy = loadArray1D(5, "shootenemy", 35, 15);
 		shotAOEPlayer = loadImage("shootplayeraoe", 80, 80);

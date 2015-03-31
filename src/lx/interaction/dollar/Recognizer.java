@@ -58,8 +58,48 @@ public class Recognizer
 		}
 		return v;
 	}
+	public void recognizeNoSelect(Vector<Point> points)
+	{
+		Point moveCoords = Utils.getCentre(points);					// use this to get the x, y of the gestures centre
+		points = Utils.ScaleToSquare(points, SquareSize);
+		points = Utils.TranslateToOrigin(points);
+		gestureDetector.setLastShapeDone((Vector<Point>) points.clone());
 	
-	public void Recognize(Vector<Point> points)
+		bounds[0] = (int)boundingBox.X;
+		bounds[1] = (int)boundingBox.Y;
+		bounds[2] = (int)boundingBox.X + (int)boundingBox.Width;
+		bounds[3] = (int)boundingBox.Y + (int)boundingBox.Height;
+		int t = 0;
+		double b = Double.MAX_VALUE;
+		for (int i = 0; i < templates.size(); i++)
+		{
+			double d = Utils.PathDistance(points, templates.elementAt(i).Points);
+			if((templates.elementAt(i)).Name.startsWith("line")) d *= 3;
+			if (d < b)
+			{
+				b = d;
+				t = i;
+			}
+		}
+		if(b > 40)
+		{
+			//Log.e("myid", Double.toString(b).concat("unknown"));
+			gestureDetector.endShape("unknown", moveCoords);
+		} else
+		{
+			//Log.e("myid", Double.toString(b).concat((templates.elementAt(t)).Name));
+			gestureDetector.endShape((templates.elementAt(t)).Name, moveCoords);
+		}
+	}
+	public void recognizeSingleSelect(Vector<Point> points)
+	{
+		
+	}
+	public void recognizeGroupSelect(Vector<Point> points)
+	{
+		
+	}
+	public void Recognize(Vector<Point> points, String selectType)
 	{
 		if(points.size() == 0) return;
 		Rectangle myBounds = new Rectangle(0,0,0,0);
@@ -72,36 +112,17 @@ public class Recognizer
 		{
 			points = Utils.Resample(points, NumPoints);
 			gestureDetector.setLastShape((Vector<Point>) points.clone());
-			Point moveCoords = Utils.getCentre(points);					// use this to get the x, y of the gestures centre
-			points = Utils.ScaleToSquare(points, SquareSize);
-			points = Utils.TranslateToOrigin(points);
-			gestureDetector.setLastShapeDone((Vector<Point>) points.clone());
-		
-			bounds[0] = (int)boundingBox.X;
-			bounds[1] = (int)boundingBox.Y;
-			bounds[2] = (int)boundingBox.X + (int)boundingBox.Width;
-			bounds[3] = (int)boundingBox.Y + (int)boundingBox.Height;
-			int t = 0;
-			double b = Double.MAX_VALUE;
-			for (int i = 0; i < templates.size(); i++)
-			{
-				double d = Utils.PathDistance(points, templates.elementAt(i).Points);
-				if((templates.elementAt(i)).Name.startsWith("line")) d *= 3;
-				if (d < b)
-				{
-					b = d;
-					t = i;
-				}
-			}
-			if(b > 40)
-			{
-				//Log.e("myid", Double.toString(b).concat("unknown"));
-				gestureDetector.endShape("unknown", moveCoords);
-			} else
-			{
-				//Log.e("myid", Double.toString(b).concat((templates.elementAt(t)).Name));
-				gestureDetector.endShape((templates.elementAt(t)).Name, moveCoords);
-			}
+			if(selectType.equals("none"))
+	    	{
+				recognizeNoSelect(points);
+	    	} else if(selectType.equals("single"))
+	    	{
+	    		recognizeSingleSelect(points);
+	    	} else if(selectType.equals("group"))
+	    	{
+	    		recognizeGroupSelect(points);
+	    	}
+			points = Utils.RotateToZero(points, centroid, boundingBox);
 		}
 	};
 }

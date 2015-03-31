@@ -191,7 +191,7 @@ public final class R {
         public static final int goblin_swordsman0055=0x7f0200a6;
         public static final int ic_launcher=0x7f0200a7;
         public static final int icon_gameicon=0x7f0200a8;
-        public static final int icon_isplayer=0x7f0200a9;
+        public static final int icon_isselected=0x7f0200a9;
         public static final int level1=0x7f0200aa;
         public static final int level2=0x7f0200ab;
         public static final int level3=0x7f0200ac;

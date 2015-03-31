@@ -15,6 +15,7 @@ import android.widget.Toast;
 abstract public class EnemyShell extends Human
 {
 	protected int fromWall = 5;
+	protected boolean selected = false;
 	protected int runTimer = 0;
 	protected int rollTimer = 0;
 	protected int worth = 3;
