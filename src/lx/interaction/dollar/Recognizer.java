@@ -2,7 +2,6 @@ package lx.interaction.dollar;
 
 import java.util.Vector;
 
-import android.util.Log;
 
 import com.drawinggame.Controller;
 import com.drawinggame.GestureDetector;
@@ -90,7 +89,6 @@ public class Recognizer
 		Rectangle myBounds = new Rectangle(0,0,0,0);
 		Utils.BoundingBox(points, myBounds);
 		double distMax = Math.pow(myBounds.Width, 2) + Math.pow(myBounds.Height, 2);
-		Log.e("myid", Double.toString(distMax));
 		if(distMax < 2000)			// a click
 		{
 			gestureDetector.click(new Point(myBounds.X+(myBounds.Width/2), myBounds.Y+(myBounds.Height/2)));

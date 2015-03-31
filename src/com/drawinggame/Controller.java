@@ -35,7 +35,6 @@
 package com.drawinggame;
 import android.content.Context;
 import android.os.Handler;
-import android.util.Log;
 
 import java.util.Random;
 public final class Controller
@@ -98,7 +97,6 @@ public final class Controller
 	}
 	protected void pause()
 	{
-		if(paused)Log.e("mine", "waspaused");
 		paused = true;
 		activity.pause();
 	}
