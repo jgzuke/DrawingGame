@@ -32,12 +32,9 @@ public class Recognizer
 	
 	void loadtemplates()
 	{
-		templates.addElement(loadTemplate("lineRight", TemplateData.lineRight));
-		templates.addElement(loadTemplate("lineLeft", TemplateData.lineLeft));
-		templates.addElement(loadTemplate("lineDown", TemplateData.lineDown));
-		templates.addElement(loadTemplate("lineUp", TemplateData.lineUp));
-		templates.addElement(loadTemplate("arrowRight", TemplateData.arrowRight));
-		templates.addElement(loadTemplate("arrowLeft", TemplateData.arrowLeft));
+		templates.addElement(loadTemplate("lineHorizontal", TemplateData.lineHorizontal));
+		templates.addElement(loadTemplate("lineVertical", TemplateData.lineVertical));
+		templates.addElement(loadTemplate("arrow", TemplateData.arrow));
 		templates.addElement(loadTemplate("leftCurlyBracePoints", TemplateData.leftCurlyBracePoints));
 		templates.addElement(loadTemplate("rightCurlyBracePoints", TemplateData.rightCurlyBracePoints));
 	}
@@ -83,7 +80,7 @@ public class Recognizer
 			double b = Double.MAX_VALUE;
 			for (int i = 0; i < templates.size(); i++)
 			{
-				double d = Utils.DistanceAtAngle(points, (Template)templates.elementAt(i), 0);
+				double d = Utils.PathDistance(points, templates.elementAt(i).Points);
 				if (d < b)
 				{
 					b = d;

@@ -303,10 +303,13 @@ public class Utils
 	public static double PathDistance(Vector<Point> path1, Vector<Point> path2)
 	{            
 		double distance = 0;
+		double distance2 = 0;
 		for (int i = 0; i < path1.size(); i++)
 		{
 			distance += Distance((Point) path1.elementAt(i), (Point) path2.elementAt(i));
+			distance2 += Distance((Point) path1.elementAt(path1.size()-1-i), (Point) path2.elementAt(i));
 		}
+		if(distance > distance2) return distance2 / path1.size();
 		return distance / path1.size();
 	}
 

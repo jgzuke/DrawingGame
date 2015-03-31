@@ -78,7 +78,6 @@ public class GestureDetector implements OnTouchListener
     		g.drawPath(getPathFromVector(recognizer.templates.get(2).Points, 1400, 100), paint);
     		g.drawPath(getPathFromVector(recognizer.templates.get(3).Points, 400, 600), paint);
     		g.drawPath(getPathFromVector(recognizer.templates.get(4).Points, 900, 600), paint);
-    		g.drawPath(getPathFromVector(recognizer.templates.get(5).Points, 1400, 600), paint);
     	}
 	}
     
