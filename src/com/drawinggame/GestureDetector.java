@@ -207,6 +207,7 @@ public class GestureDetector implements OnTouchListener
 		double startSeperation = Math.sqrt(Math.pow(firstPointStart.X - secondPointStart.X, 2)+Math.pow(firstPointStart.Y - secondPointStart.Y, 2));
 		double endSeperation = Math.sqrt(Math.pow(firstPoint.X - secondPoint.X, 2)+Math.pow(firstPoint.Y - secondPoint.Y, 2));
 		double screenScale = startSeperation/endSeperation;
+		double screenRatio = endSeperation/startSeperation;
 		double newPlayScreenSize = playScreenSizeStart*screenScale;
 		double playScreenSizeMax = controller.graphicsController.playScreenSizeMax;
 		int levelWidth = controller.levelController.levelWidth;
@@ -216,26 +217,28 @@ public class GestureDetector implements OnTouchListener
 			playScreenSizeStart *= playScreenSizeMax/newPlayScreenSize;
 			newPlayScreenSize = playScreenSizeMax;
 		}
-		double xFix = (screenScale-1)*(mapXSlideStart+startXAverage);
-		double yFix = (screenScale-1)*(mapYSlideStart+startYAverage);
-		
-		//double xFix = sizeChange*(mapXSlideStart + startXAverage) - startXAverage;
-		
-		
+		if(newPlayScreenSize < 0.2) // playScreenSizeStart*screenScale
+		{
+			playScreenSizeStart *= 0.2/newPlayScreenSize;
+			newPlayScreenSize = 0.2;
+		}
+		double xFix = (1-screenRatio)*(mapXSlideStart+startXAverage)*playScreenSizeStart;
+		double yFix = (1-screenRatio)*(mapYSlideStart+startYAverage)*playScreenSizeStart;
+		Log.e("myid", "");
 		Log.e("myid", "start");
 		//Log.e("myid", "size ".concat(Double.toString(1/playScreenSize)));
 		Log.e("myid", "sizeChange ".concat(Double.toString(screenScale)));
-		Log.e("myid", "startXAverage ".concat(Double.toString(startXAverage)));
-		Log.e("myid", "mapXSlideStart ".concat(Double.toString(mapXSlideStart)));
-		Log.e("myid", "p1 ".concat(Double.toString(1-screenScale)));
-		Log.e("myid", "p2 ".concat(Double.toString(mapXSlideStart+startXAverage)));
-		Log.e("myid", "xFix ".concat(Double.toString(xFix)));
-		//double yFix = sizeChange*(mapYSlideStart + startYAverage) - startYAverage;
-		//xFix += (endXAverage-startXAverage)*playScreenSizeStart;
-		//yFix += (endYAverage-startYAverage)*playScreenSizeStart;
-		int newXSlide = (int)(mapXSlideStart + xFix);
-		int newYSlide = (int)(mapYSlideStart + yFix);
-		/*if(newXSlide < 0)
+		Log.e("myid", "startY ".concat(Double.toString(startYAverage)));
+		Log.e("myid", "mapY   ".concat(Double.toString(mapYSlideStart)));
+		Log.e("myid", "p1 ".concat(Double.toString(screenScale-1)));
+		Log.e("myid", "p2 ".concat(Double.toString(mapYSlideStart+startYAverage)));
+		Log.e("myid", "yFix ".concat(Double.toString(yFix)));
+		xFix += (endXAverage-startXAverage)*playScreenSizeStart;
+		yFix += (endYAverage-startYAverage)*playScreenSizeStart;
+		int newXSlide = (int)(mapXSlideStart - xFix);
+		int newYSlide = (int)(mapYSlideStart - yFix);
+		Log.e("myid", "end ".concat(Integer.toString(newYSlide)));
+		if(newXSlide < 0)
 		{
 			mapXSlideStart = (int) xFix;
 			newXSlide = 0;
@@ -254,7 +257,7 @@ public class GestureDetector implements OnTouchListener
 		{
 			mapYSlideStart = (int)(levelHeight - newPlayScreenSize*phoneHeight + yFix);
 			newYSlide = (int)(mapYSlideStart - yFix);
-		}*/
+		}
 		controller.graphicsController.playScreenSize = newPlayScreenSize;
 		controller.graphicsController.mapXSlide = newXSlide;
 		controller.graphicsController.mapYSlide = newYSlide;
