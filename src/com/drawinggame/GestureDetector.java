@@ -93,8 +93,9 @@ public class GestureDetector implements OnTouchListener
 	{
 		lastShape = getPathFromVector(points);
 	}
-	public void endShape(String type, Point p)
+	public void endShape(String type, Point screenPoint)
     {
+		Point p = screenToMapPoint(screenPoint);
 		if(type.equals("lineH"))
 		{
 			control.spriteController.makeEnemy(0, (int)p.X, (int)p.Y, -90, true);

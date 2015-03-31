@@ -8,7 +8,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 public final class ImageLibrary extends ImageLoader
 {
-	protected Bitmap[] player_Image = new Bitmap[32]; //TODO make images smaller
 	protected Bitmap[][] enemyImages = new Bitmap[10][100]; //array holding videos for each enemy, null when uneeded
 	protected Bitmap structure_Spawn;
 	protected Bitmap isPlayer;
@@ -30,15 +29,7 @@ public final class ImageLibrary extends ImageLoader
 	{
 		super(contextSet);
 		control = controlSet;
-	}
-	/**
-	 * loads players current animation
-	 */
-	protected void loadPlayerImage()
-	{
-		player_Image = loadArray1D(32, "human_playerzack", 35, 40);
-		isPlayerWidth = 30;
-		isPlayer = loadImage("icon_isplayer", 2*isPlayerWidth, 2*isPlayerWidth);
+		loadAllImages();
 	}
 	/**
 	 * loads a selection into enemyImages
@@ -52,7 +43,6 @@ public final class ImageLibrary extends ImageLoader
 	 */
 	protected void loadAllImages()
 	{
-		loadPlayerImage();
 		shotAOEEnemy = loadImage("shootenemyaoe", 80, 80);
 		shotEnemy = loadArray1D(5, "shootenemy", 35, 15);
 		shotAOEPlayer = loadImage("shootplayeraoe", 80, 80);
@@ -129,7 +119,6 @@ public final class ImageLibrary extends ImageLoader
 			currentLevelTop.recycle();
 			currentLevelTop = null;
 		}
-		recycleArray(player_Image);
 		recycleEnemies();
 	}
 }

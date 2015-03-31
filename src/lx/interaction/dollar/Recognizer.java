@@ -95,11 +95,11 @@ public class Recognizer
 			}
 			if(b > 40)
 			{
-				Log.e("myid", Double.toString(b).concat("unknown"));
+				//Log.e("myid", Double.toString(b).concat("unknown"));
 				gestureDetector.endShape("unknown", moveCoords);
 			} else
 			{
-				Log.e("myid", Double.toString(b).concat((templates.elementAt(t)).Name));
+				//Log.e("myid", Double.toString(b).concat((templates.elementAt(t)).Name));
 				gestureDetector.endShape((templates.elementAt(t)).Name, moveCoords);
 			}
 		}

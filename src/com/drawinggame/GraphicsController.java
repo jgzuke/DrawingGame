@@ -176,9 +176,15 @@ public final class GraphicsController extends View
 			}
 		}
 		g.drawBitmap(imageLibrary.currentLevel, 0, 0, paint);
-		spriteController.drawStructures(g, paint, imageLibrary);
-		spriteController.drawSprites(g, paint, imageLibrary, aoeRect);
+		
+		//g.drawBitmap(imageLibrary.enemyImages[1][0], 0, 0, paint);
+		//g.drawBitmap(imageLibrary.enemyImages[2][0], 0, 0, paint);
+		//spriteController.drawStructures(g, paint, imageLibrary);
+		//spriteController.drawSprites(g, paint, imageLibrary, aoeRect);
 		g.drawBitmap(imageLibrary.currentLevelTop, 0, 0, paint);
+		g.drawBitmap(imageLibrary.shotAOEEnemy, 100, 100, paint);
+		g.drawBitmap(imageLibrary.shotPlayer[0], 200, 100, paint);
+		g.drawBitmap(imageLibrary.enemyImages[0][0], 300, 100, paint);
 		spriteController.drawHealthBars(g, paint);
 		return drawTo;
 	}
@@ -194,13 +200,7 @@ public final class GraphicsController extends View
 	 */
 	private void drawNotPaused(Canvas g)
 	{
-		int xShift = mapXSlide;
-		int yShift = mapYSlide;
-		if(xShift < 0)
-		{
-			xShift = 0;
-		}
-		Rect src = new Rect(xShift, yShift, xShift+(int)(playScreenSize*phoneWidth), yShift+(int)(playScreenSize*phoneHeight));
+		Rect src = new Rect(mapXSlide, mapYSlide, mapXSlide+(int)(playScreenSize*phoneWidth), mapYSlide+(int)(playScreenSize*phoneHeight));
 		Rect dst = new Rect(0, 0, phoneWidth, phoneHeight);
 		g.drawBitmap(drawLevel(), src, dst, paint);
 	}
