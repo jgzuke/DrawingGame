@@ -40,10 +40,6 @@ public final class Enemy_Mage extends Enemy
 		int[][] temp = {{0, 19}, {20, 31}, e, e, e, e, e};
 		return temp;
 	}
-	@Override
-	protected void attacking() {}
-	@Override
-	protected void shooting() {}
 	protected void shoot(EnemyShell target)
 	{
 		shoot-=4;
@@ -58,6 +54,4 @@ public final class Enemy_Mage extends Enemy
 		rads = saveRads;
 		rotation = rads*r2d;
 	}
-	@Override
-	protected void blocking() {}
 }

@@ -41,10 +41,6 @@ public final class Enemy_Cleric extends Enemy
 		int[][] temp = {{0, 19}, {20, 31}, e, e, e, e, e};
 		return temp;
 	}
-	@Override
-	protected void attacking() {}
-	@Override
-	protected void shooting() {}
 	protected void shoot(EnemyShell target)
 	{
 		shoot-=6;
@@ -86,6 +82,4 @@ public final class Enemy_Cleric extends Enemy
 			target = null;
 		}
 	}
-	@Override
-	protected void blocking() {}
 }

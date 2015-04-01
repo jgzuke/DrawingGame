@@ -20,7 +20,18 @@ public final class Enemy_Sheild extends Enemy
 		rotation = control.getRandomInt(360);
 		rads = rotation/r2d;
 		frames = makeFrames();
-		
+	}
+	@Override
+	protected void frameCall()
+	{
+		super.frameCall();
+		if(action.equals("Melee"))
+		{
+			attacking();
+		} else if(action.equals("Sheild"))
+		{
+			blocking();
+		}
 	}
 	private int[][] makeFrames()
 	{
@@ -29,7 +40,6 @@ public final class Enemy_Sheild extends Enemy
 		int[][] temp = {{0, 19}, e, e, {20, 45, 27, 36}, {46, 55}, e, e};
 		return temp;
 	}
-	@Override
 	protected void attacking()
 	{
 		for(int i = 2; i < frames[3].length; i++)
@@ -40,9 +50,6 @@ public final class Enemy_Sheild extends Enemy
 			}
 		}
 	}
-	@Override
-	protected void shooting() {}
-	@Override
 	protected void blocking()
 	{
 		turnToward();

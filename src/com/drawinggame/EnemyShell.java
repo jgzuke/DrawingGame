@@ -41,12 +41,16 @@ abstract public class EnemyShell extends Human
 	protected double yMove;
 	protected int enemyType;
 	protected int hadLOSLastTime=-1;
+	protected boolean hasDestination = true;
+	protected int destinationX;
+	protected int destinationY;
 	protected ArrayList<Enemy> enemies;
 	protected ArrayList<Enemy> allies;
 	protected ArrayList<Structure> enemyStructures;
 	protected ArrayList<Structure> allyStructures;
 	protected ArrayList<Proj_Tracker> proj_Trackers;
 	protected ArrayList<Proj_Tracker_AOE> proj_Tracker_AOEs;
+	protected Control_Main myController;
 	
 	int [][] frames;
 	protected String action = "Nothing"; //"Nothing", "Move", "Alert", "Shoot", "Melee", "Roll", "Hide", "Sheild", "Stun"
@@ -58,8 +62,18 @@ abstract public class EnemyShell extends Human
 	{
 		super(X, Y, 0, 0, true, false, creator.imageLibrary.enemyImages[ImageIndex][0], isOnPlayersTeam);
 		control = creator;
-		x = X;
-		y = Y;
+		destinationX = (int)X;
+		destinationY = (int)Y;
+		if(isOnPlayersTeam)
+		{
+			x = 100;
+			y = control.levelController.levelHeight-100;
+		} else
+		{
+			x = control.levelController.levelWidth-100;
+			y = 100;
+		}
+		
 		width = 30;
 		height = 30;
 		lastX = x;
@@ -87,6 +101,13 @@ abstract public class EnemyShell extends Human
 		}
 	}
 	/**
+	 * sets new object as controller
+	 */
+	protected void setController(Control_Main myControllerSet)
+	{
+		myController = myControllerSet;
+	}
+	/**
 	 * Clears danger arrays, sets current dimensions, and counts timers
 	 */
 	@
@@ -111,9 +132,6 @@ abstract public class EnemyShell extends Human
 		sizeImage();
 		pushOtherPeople();
 	}
-	abstract protected void attacking();
-	abstract protected void shooting();
-	abstract protected void blocking();
 	abstract protected void otherActions();
 	/**
 	 * checks who else this guy is getting in the way of and pushes em

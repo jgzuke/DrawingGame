@@ -58,7 +58,6 @@ abstract public class Enemy extends EnemyShell
 		} else if(action.equals("Melee"))
 		{
 			frame++;
-			attacking();
 			if(frame==frames[3][1])
 			{
 				action = "Nothing";	//attack over
@@ -67,7 +66,6 @@ abstract public class Enemy extends EnemyShell
 		} else if(action.equals("Sheild"))
 		{
 			frame++;
-			blocking();
 			if(frame==frames[4][1])
 			{
 				action = "Nothing";	//block done
@@ -76,22 +74,10 @@ abstract public class Enemy extends EnemyShell
 		} else if(action.equals("Shoot"))
 		{
 			frame++;
-			shooting();
 			if(frame==frames[6][1])
 			{
 				action = "Nothing"; // attack done
 				frame = 0;
-			}
-		} else if(action.equals("Run"))
-		{
-			frame++;
-			if(frame == frames[0][1]) frame = 0; // restart walking motion
-			x += xMove*1.2;
-			y += yMove*1.2;
-			runTimer--;
-			if(runTimer<1)
-			{
-				action = "Nothing"; // stroll done
 			}
 		} else if(action.equals("Move"))
 		{
@@ -164,7 +150,7 @@ abstract public class Enemy extends EnemyShell
 	protected void run(int time)
 	{
 		runTimer = time;
-		action = "Run";
+		action = "Move";
 		xMove = Math.cos(rads) * speedCur;
 		yMove = Math.sin(rads) * speedCur;
         if(frame>17) frame = 0;
@@ -381,6 +367,16 @@ abstract public class Enemy extends EnemyShell
 	protected void runTowards(EnemyShell target)
 	{
 		runTowards(target.x, target.y);
+	}
+	protected void runTowardsDestination()
+	{
+		runTowards(destinationX, destinationY);
+		if(distanceTo(destinationX, destinationY) < 20)
+		{
+			hasDestination = false;
+			action = "Nothing";
+			frame = 0;
+		}
 	}
 	/**
 	 * Runs towards player, if you cant, run randomly

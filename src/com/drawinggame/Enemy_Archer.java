@@ -25,18 +25,16 @@ public final class Enemy_Archer extends Enemy
 		rotation = control.getRandomInt(360);
 		rads = rotation/r2d;
 		frames = makeFrames();
-		
 	}
-	private int[][] makeFrames()
+	@Override
+	protected void frameCall()
 	{
-		//				 move	  roll	  stun	 melee		sheild	  hide	 shoot
-		int[] e = {0, 0};
-		int[][] temp = {{0, 19}, e, e, e, e, e, {20, 49}};
-		return temp;
+		super.frameCall();
+		if(action.equals("Shoot"))
+		{
+			shooting();
+		}
 	}
-	@Override
-	protected void attacking() {}
-	@Override
 	protected void shooting()
 	{
 		int v = 10; //projectile velocity
@@ -64,7 +62,11 @@ public final class Enemy_Archer extends Enemy
 				for(int i = 0; i < allEnemies.size(); i++)
 				{
 					checkLOS(allEnemies.get(i));
-					if(LOS) break;
+					if(LOS)
+					{
+						target = (EnemyShell) allEnemies.get(i);
+						break;
+					}
 				}
 				if(!LOS) return;
 			}
@@ -74,6 +76,18 @@ public final class Enemy_Archer extends Enemy
 			if(hp>600&&distance<160&&distance>50) frame=25; // shoots again
 		}
 	}
-	@Override
-	protected void blocking() {}
+	private int[][] makeFrames()
+	{
+		//				 move	  roll	  stun	 melee		sheild	  hide	 shoot
+		int[] e = {0, 0};
+		int[][] temp = {{0, 19}, e, e, e, e, e, {20, 49}};
+		return temp;
+	}
+	protected void shoot(EnemyShell targetSet)
+	{
+		target = targetSet;
+		turnToward(target);
+		action = "Shoot";
+		frame=frames[6][0];
+	}
 }

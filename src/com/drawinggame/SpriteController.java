@@ -51,6 +51,7 @@ import com.spritelib.SpriteDrawer;
 public final class SpriteController extends SpriteDrawer
 {
 	protected Controller control;
+	protected ArrayList<Control_Main> humanControllers = new ArrayList<Control_Main>();
 	protected ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 	protected ArrayList<Enemy> allies = new ArrayList<Enemy>();
 	protected ArrayList<Structure> enemyStructures = new ArrayList<Structure>();
@@ -106,15 +107,15 @@ public final class SpriteController extends SpriteDrawer
 		{
 		case 0:
 			toAdd.add(new Enemy_Sheild(control, x, y, r, 3000, type, isOnPlayersTeam)); //x, y, hp, sick, type is ImageIndex
+			humanControllers.add(new Control_Sheild(control, (Enemy_Sheild) toAdd.get(toAdd.size()-1)));
 			break;
 		case 1:
 			toAdd.add(new Enemy_Archer(control, x, y, r, 1700, type, isOnPlayersTeam));
+			humanControllers.add(new Control_Archer(control, (Enemy_Archer) toAdd.get(toAdd.size()-1)));
 			break;
 		case 2:
 			toAdd.add(new Enemy_Mage(control, x, y, r, 700, type, isOnPlayersTeam));
-			break;
-		case 5:
-			toAdd.add(new Enemy_Cleric(control, x, y, r, 700, type, isOnPlayersTeam));
+			humanControllers.add(new Control_Mage(control, (Enemy_Mage) toAdd.get(toAdd.size()-1)));
 			break;
 		}
 	}
@@ -167,6 +168,30 @@ public final class SpriteController extends SpriteDrawer
 		for(int i = 0; i < allyStructures.size(); i++)
 		{
 			allyStructures.get(i).frameCall();
+		}
+		for(int i = 0; i < humanControllers.size(); i++)
+		{
+			if(humanControllers.get(i).isGroup)
+			{
+				if(((Control_Group)humanControllers.get(i)).humans.size() == 0)
+				{
+					humanControllers.remove(i);
+					i--;
+				} else
+				{
+					humanControllers.get(i).frameCall();
+				}
+			} else
+			{
+				if(((Control_Induvidual)humanControllers.get(i)).human.deleted)
+				{
+					humanControllers.remove(i);
+					i--;
+				} else
+				{
+					humanControllers.get(i).frameCall();
+				}
+			}
 		}
 	}
 	/**

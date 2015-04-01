@@ -1,5 +1,4 @@
 package lx.interaction.dollar;
-import lx.util.Trigonometric;
 
 import java.util.Vector;
 import java.util.Enumeration;

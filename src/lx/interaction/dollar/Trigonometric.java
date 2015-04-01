@@ -1,4 +1,4 @@
-package lx.util;
+package lx.interaction.dollar;
 
 import java.lang.Math;
 
