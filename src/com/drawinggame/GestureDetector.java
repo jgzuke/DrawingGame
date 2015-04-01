@@ -33,6 +33,7 @@ public class GestureDetector implements OnTouchListener
 	private int phoneWidth;
 	private int phoneHeight;
 	private Vector<Point> pointsList = new Vector<Point>(1000);
+	private int timeSinceDraw = 50;
 	private int actionMask;
 	protected Recognizer recognizer;
 	protected String selectType = "none";
@@ -60,17 +61,22 @@ public class GestureDetector implements OnTouchListener
     }
     protected void drawGestures(Canvas g, Paint paint)
 	{
-    	paint.setColor(Color.RED);
+    	g.saveLayerAlpha(0, 0, g.getWidth(), g.getHeight(), 0x66, Canvas.HAS_ALPHA_LAYER_SAVE_FLAG);
+    	timeSinceDraw++;
+    	paint.setColor(Color.CYAN);
     	paint.setStyle(Style.STROKE);
     	paint.setStrokeWidth(4);
     	if(pointsList.size() != 0)
     	{
     		g.drawPath(getPathFromVector(pointsList), paint);
     	}
-    	if(lastShape != null)
+    	if(lastShape != null && timeSinceDraw < 50)
     	{
+    		//TODO fade drawn gesture
+    		paint.setAlpha(255 - 5*timeSinceDraw);
     		paint.setColor(Color.BLUE);
     		g.drawPath(lastShape, paint);
+    		paint.setAlpha(255);
     	}
 	}
     
@@ -116,7 +122,8 @@ public class GestureDetector implements OnTouchListener
 				control.spriteController.makeEnemy(1, (int)p.X, (int)p.Y, -90, true);
 			}
 		}
-    	Toast.makeText(context, type.concat(" ").concat(Double.toString(p.Y)).concat(", ").concat(Double.toString(p.X)), Toast.LENGTH_SHORT).show();
+		timeSinceDraw = 0;
+    	//Toast.makeText(context, type.concat(" ").concat(Double.toString(p.Y)).concat(", ").concat(Double.toString(p.X)), Toast.LENGTH_SHORT).show();
     }
 	public void click(Point pPhone)
     {
@@ -126,13 +133,30 @@ public class GestureDetector implements OnTouchListener
     		control.spriteController.selectEnemy(p.X, p.Y);
     	} else if(selectType.equals("single"))
     	{
+    		if(clickedTopLeft(pPhone)) return;
+    		if(control.spriteController.selectEnemy(p.X, p.Y)) return;
     		
     	} else if(selectType.equals("group"))
     	{
+    		if(clickedTopLeft(pPhone)) return;
+    		if(control.spriteController.selectEnemy(p.X, p.Y)) return;
     		
     	}
     }
-    
+    public boolean clickedTopLeft(Point p)
+    {
+    	if(p.X > 150 || p.Y > 150) return false;
+    	control.spriteController.deselectEnemies();
+    	return true;
+    }
+	public void endCircle(Vector<Point> points)
+	{
+		for(int i = 0; i < points.size(); i++)
+		{
+			screenToMapPointInPlace(points.get(i));
+		}
+		control.spriteController.selectCircle(points);
+	}
 	/**
 	 * decides which gesture capture is appropriate to call, drags or changes to position are done here
 	 */
@@ -229,6 +253,12 @@ public class GestureDetector implements OnTouchListener
 			path.lineTo((int)p.X, (int)p.Y);
 		}
 		return path;
+    }
+    protected void screenToMapPointInPlace(Point p)
+    {
+    	double phoneToMap = control.graphicsController.playScreenSize;
+    	p.X = control.graphicsController.mapXSlide + p.X*phoneToMap;
+    	p.Y = control.graphicsController.mapYSlide + p.Y*phoneToMap;
     }
     protected Point screenToMapPoint(Point p)
     {

@@ -39,7 +39,14 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
+
 import java.util.ArrayList;
+import java.util.Vector;
+
+import lx.interaction.dollar.Point;
+
+import com.spritelib.Sprite;
 import com.spritelib.SpriteDrawer;
 public final class SpriteController extends SpriteDrawer
 {
@@ -52,6 +59,7 @@ public final class SpriteController extends SpriteDrawer
 	protected ArrayList<Proj_Tracker> proj_TrackerAs = new ArrayList<Proj_Tracker>();
 	protected ArrayList<Proj_Tracker_AOE> proj_TrackerA_AOEs = new ArrayList<Proj_Tracker_AOE>();
 	protected ArrayList<Proj_Tracker_AOE> proj_TrackerE_AOEs = new ArrayList<Proj_Tracker_AOE>();
+	protected ArrayList<CreationMarker> creationMarkers = new ArrayList<CreationMarker>();
 	protected Bitmap playerBlessing;
 	protected Bitmap isSelected;
 	/**
@@ -62,8 +70,8 @@ public final class SpriteController extends SpriteDrawer
 		super();
 		control = controlSet;
 	}
-	/*
-	 * 
+	/**
+	 * clears all arrays to restart game
 	 */
 	void clearObjectArrays()
 	{
@@ -75,12 +83,21 @@ public final class SpriteController extends SpriteDrawer
 		proj_TrackerA_AOEs.clear();
 		proj_TrackerE_AOEs.clear();
 	}
+	/**
+	 * creates person
+	 * @param type whether they are warrior, archer, mage etc
+	 * @param x x to walk to
+	 * @param y y to wakl to
+	 * @param r rotation
+	 * @param isOnPlayersTeam which team they are on
+	 */
 	protected void makeEnemy(int type, int x, int y, int r, boolean isOnPlayersTeam)
 	{
 		ArrayList<Enemy> toAdd;
 		if(isOnPlayersTeam)
 		{
 			toAdd = allies;
+			creationMarkers.add(new CreationMarker(x, y, control.imageLibrary.createMarkers[type]));
 		} else 
 		{
 			toAdd = enemies;
@@ -106,106 +123,70 @@ public final class SpriteController extends SpriteDrawer
 	 */
 	protected void frameCall()
 	{
+		cleanCallOnArray(creationMarkers);
+		for(int i = 0; i < creationMarkers.size(); i++)
+		{
+			creationMarkers.get(i).frameCall();
+		}
+		cleanCallOnArray(proj_TrackerEs);
 		for(int i = 0; i < proj_TrackerEs.size(); i++)
 		{
-			if(proj_TrackerEs.get(i) != null)
-			{
-				if(proj_TrackerEs.get(i).deleted)
-				{
-					proj_TrackerEs.remove(i);
-				}
-				else
-				{
-					proj_TrackerEs.get(i).frameCall();
-				}
-			}
+			proj_TrackerEs.get(i).frameCall();
 		}
+		cleanCallOnArray(proj_TrackerAs);
 		for(int i = 0; i < proj_TrackerAs.size(); i++)
 		{
-			if(proj_TrackerAs.get(i) != null)
-			{
-				if(proj_TrackerAs.get(i).deleted)
-				{
-					proj_TrackerAs.remove(i);
-				}
-				else
-				{
-					proj_TrackerAs.get(i).frameCall();
-				}
-			}
+			proj_TrackerAs.get(i).frameCall();
 		}
+		cleanCallOnArray(proj_TrackerE_AOEs);
 		for(int i = 0; i < proj_TrackerE_AOEs.size(); i++)
 		{
-			if(proj_TrackerE_AOEs.get(i) != null)
-			{
-				if(proj_TrackerE_AOEs.get(i).deleted)
-				{
-					proj_TrackerE_AOEs.remove(i);
-				}
-				else
-				{
-					proj_TrackerE_AOEs.get(i).frameCall();
-				}
-			}
+			proj_TrackerE_AOEs.get(i).frameCall();
 		}
+		cleanCallOnArray(proj_TrackerA_AOEs);
 		for(int i = 0; i < proj_TrackerA_AOEs.size(); i++)
 		{
-			if(proj_TrackerA_AOEs.get(i) != null)
-			{
-				if(proj_TrackerA_AOEs.get(i).deleted)
-				{
-					proj_TrackerA_AOEs.remove(i);
-				}
-				else
-				{
-					proj_TrackerA_AOEs.get(i).frameCall();
-				}
-			}
+			proj_TrackerA_AOEs.get(i).frameCall();
 		}
+		cleanCallOnArray(allies);
+		for(int i = 0; i < allies.size(); i++)
+		{
+			allies.get(i).frameCall();
+		}
+		cleanCallOnArray(enemies);
 		for(int i = 0; i < enemies.size(); i++)
 		{
-			if(enemies.get(i) != null)
-			{
-				if(enemies.get(i).deleted)
-				{
-					enemies.remove(i);
-					i--;
-				} else
-				{
-					if(enemies.get(i).x < 10) enemies.get(i).x = 10;
-					if(enemies.get(i).x > control.levelController.levelWidth - 10) enemies.get(i).x = (control.levelController.levelWidth - 10);
-					if(enemies.get(i).y < 10) enemies.get(i).y = 10;
-					if(enemies.get(i).y > control.levelController.levelHeight - 10) enemies.get(i).y = (control.levelController.levelHeight - 10);
-					enemies.get(i).frameCall();
-				}
-			}
+			enemies.get(i).frameCall();
 		}
+		cleanCallOnArray(enemyStructures);
 		for(int i = 0; i < enemyStructures.size(); i++)
 		{
-			if(enemyStructures.get(i) != null)
-			{
-				if(enemyStructures.get(i).deleted)
-				{
-					enemyStructures.remove(i);
-				}
-				else
-				{
-					enemyStructures.get(i).frameCall();
-				}
-			}
+			enemyStructures.get(i).frameCall();
 		}
+		cleanCallOnArray(allyStructures);
 		for(int i = 0; i < allyStructures.size(); i++)
 		{
-			if(allyStructures.get(i) != null)
+			allyStructures.get(i).frameCall();
+		}
+	}
+	/**
+	 * calls frameCall for each member of array, deletes if flagged
+	 */
+	private void cleanCallOnArray(ArrayList<? extends Sprite> array)
+	{
+		for(int i = 0; i < array.size(); i++)
+		{
+			if(array.get(i) != null)
 			{
-				if(allyStructures.get(i).deleted)
+				if(array.get(i).deleted)
 				{
-					allyStructures.remove(i);
+					array.remove(i);
+					i--;
 				}
-				else
-				{
-					allyStructures.get(i).frameCall();
-				}
+			} else
+			{
+				array.remove(i);
+				i--;
 			}
 		}
 	}
@@ -249,6 +230,7 @@ public final class SpriteController extends SpriteDrawer
 					paint.setStyle(Paint.Style.FILL);
 					g.drawRect(minX, minY, minX + (40 * allies.get(i).hp / allies.get(i).hpMax), maxY, paint);
 					paint.setColor(Color.BLACK);
+					paint.setStrokeWidth(1);
 					paint.setStyle(Paint.Style.STROKE);
 					g.drawRect(minX, minY, maxX, maxY, paint);
 			}
@@ -286,6 +268,12 @@ public final class SpriteController extends SpriteDrawer
 			}
 		}
 	}
+	/**
+	 * draws all the structures onto the map
+	 * @param g canvas to use
+	 * @param paint paint to use
+	 * @param imageLibrary imageLibrary to use
+	 */
 	protected void drawStructures(Canvas g, Paint paint, ImageLibrary imageLibrary)
 	{
 		for(int i = 0; i < allyStructures.size(); i++)
@@ -297,61 +285,76 @@ public final class SpriteController extends SpriteDrawer
 			drawFlat(enemyStructures.get(i), g, paint);
 		}
 	}
-	protected void drawSprites(Canvas g, Paint paint, ImageLibrary imageLibrary, Rect aoeRect)
+	/**
+	 * draws all the sprites onto the canvas
+	 * @param g canvas to use
+	 * @param paint paint to use
+	 * @param imageLibrary imageLibrary to use
+	 */
+	protected void drawSprites(Canvas g, Paint paint, ImageLibrary imageLibrary)
 	{
+		Rect aoeRect = new Rect();
+		for(int i = 0; i < creationMarkers.size(); i++)
+		{
+			paint.setAlpha(creationMarkers.get(i).getAlpha());
+			//if(proj_TrackerEs.get(i) != null)
+			//{
+				draw(creationMarkers.get(i), g, paint);
+			//}
+		}
+		paint.setAlpha(255);
 		for(int i = 0; i < allies.size(); i++)
 		{
-			EnemyShell enemy = allies.get(i);
-			if(enemy != null)
-			{
-				draw(enemy, g, paint);
-				if(enemy.selected) g.drawBitmap(control.imageLibrary.isSelected, (int)enemy.x-40, (int)enemy.y-40, paint);
-			}
+			//if(allies.get(i) != null)
+			//{
+				if(allies.get(i).selected) g.drawBitmap(control.imageLibrary.isSelected, (int)allies.get(i).x-30, (int)allies.get(i).y-30, paint);
+				draw(allies.get(i), g, paint);
+			//}
 		}
 		for(int i = 0; i < enemies.size(); i++)
 		{
-			if(enemies.get(i) != null)
-			{
+			//if(enemies.get(i) != null)
+			//{
 				draw(enemies.get(i), g, paint);
-			}
+			//}
 		}
 		for(int i = 0; i < proj_TrackerAs.size(); i++)
 		{
-			if(proj_TrackerAs.get(i) != null)
-			{
+			//if(proj_TrackerAs.get(i) != null)
+			//{
 				draw(proj_TrackerAs.get(i), g, paint);
-			}
+			//}
 		}
 		for(int i = 0; i < proj_TrackerEs.size(); i++)
 		{
-			if(proj_TrackerEs.get(i) != null)
-			{
+			//if(proj_TrackerEs.get(i) != null)
+			//{
 				draw(proj_TrackerEs.get(i), g, paint);
-			}
+			//}
 		}
 		for(int i = 0; i < proj_TrackerE_AOEs.size(); i++)
 		{
-			if(proj_TrackerE_AOEs.get(i) != null)
-			{
+			//if(proj_TrackerE_AOEs.get(i) != null)
+			//{
 				aoeRect.top = (int)(proj_TrackerE_AOEs.get(i).y - (proj_TrackerE_AOEs.get(i).getHeight() / 2.5));
 				aoeRect.bottom = (int)(proj_TrackerE_AOEs.get(i).y + (proj_TrackerE_AOEs.get(i).getHeight() / 2.5));
 				aoeRect.left = (int)(proj_TrackerE_AOEs.get(i).x - (proj_TrackerE_AOEs.get(i).getWidth() / 2.5));
 				aoeRect.right = (int)(proj_TrackerE_AOEs.get(i).x + (proj_TrackerE_AOEs.get(i).getWidth() / 2.5));
 				paint.setAlpha(proj_TrackerE_AOEs.get(i).getAlpha());
 				drawRect(proj_TrackerE_AOEs.get(i).image, aoeRect, g, paint);
-			}
+			//}
 		}
 		for(int i = 0; i < proj_TrackerA_AOEs.size(); i++)
 		{
-			if(proj_TrackerA_AOEs.get(i) != null)
-			{
+			//if(proj_TrackerA_AOEs.get(i) != null)
+			//{
 				aoeRect.top = (int)(proj_TrackerA_AOEs.get(i).y - (proj_TrackerA_AOEs.get(i).getHeight() / 2.5));
 				aoeRect.bottom = (int)(proj_TrackerA_AOEs.get(i).y + (proj_TrackerA_AOEs.get(i).getHeight() / 2.5));
 				aoeRect.left = (int)(proj_TrackerA_AOEs.get(i).x - (proj_TrackerA_AOEs.get(i).getWidth() / 2.5));
 				aoeRect.right = (int)(proj_TrackerA_AOEs.get(i).x + (proj_TrackerA_AOEs.get(i).getWidth() / 2.5));
 				paint.setAlpha(proj_TrackerA_AOEs.get(i).getAlpha());
 				drawRect(proj_TrackerA_AOEs.get(i).image, aoeRect, g, paint);
-			}
+			//}
 		}
 		paint.setAlpha(255);
 	}
@@ -393,16 +396,112 @@ public final class SpriteController extends SpriteDrawer
 		else proj_TrackerE_AOEs.add(new Proj_Tracker_AOE(control, (int) x, (int) y, power, false, this, control.imageLibrary.shotAOEEnemy, true, onPlayersTeam));
 	}
 	@Override
-	protected boolean onScreen(double x, double y, int width, int height) {
-		// TODO Auto-generated method stub
-		return true;
-	}
-	protected void selectEnemy(double x, double y)
+	protected boolean onScreen(double x, double y, int width, int height) {return true;}
+	/**
+	 * selects enemy with click
+	 * @param x click x
+	 * @param y click y
+	 * @return whether anything was selected
+	 */
+	protected void selectCircle(Vector<Point> points)
 	{
-		
+		Log.e("myid", "wasACircle");
+		deselectEnemies();
+		ArrayList<Enemy> group = new ArrayList<Enemy>();
+		for(int i = 0; i < allies.size(); i++)
+		{
+			if(allies.get(i) != null)
+			{
+				if(enemyInsideCircle(points, allies.get(i).x, allies.get(i).y))
+				{
+					group.add(allies.get(i));
+				}
+			}
+		}
+		selectGroup(group);
 	}
-	protected void deselectEnemies(double x, double y)
+	protected boolean enemyInsideCircle(Vector<Point> p, double x, double y)
 	{
-		
+		boolean lastAbove = p.get(0).Y < y;
+		boolean lastToLeft = p.get(0).X < x;
+		boolean above, toLeft;
+		boolean hitTop = false;
+		boolean hitBottom = false;
+		boolean hitLeft = false;
+		boolean hitRight = false;
+		for(int i = 1; i < p.size(); i++)
+		{
+			above = p.get(i).Y < y;
+			toLeft = p.get(i).X < x;
+			if(toLeft!=lastToLeft)
+			{
+				hitTop = (above && lastAbove) || hitTop;
+				hitBottom = ((!above) && (!lastAbove)) || hitBottom;
+			}
+			if(above!=lastAbove)
+			{
+				hitLeft = (toLeft && lastToLeft) || hitLeft;
+				hitRight = ((!toLeft) && (!lastToLeft)) || hitRight;
+			}
+			lastAbove = above;
+			lastToLeft = toLeft;
+		}
+		if(hitTop) Log.e("myid", "top");
+		if(hitBottom) Log.e("myid", "hitBottom");
+		if(hitLeft) Log.e("myid", "hitLeft");
+		if(hitRight) Log.e("myid", "hitRight");
+		return hitTop&&hitBottom&&hitLeft&&hitRight;
+	}
+	/**
+	 * selects enemy with click
+	 * @param x click x
+	 * @param y click y
+	 * @return whether anything was selected
+	 */
+	protected boolean selectEnemy(double x, double y)
+	{
+		ArrayList<Enemy> group = new ArrayList<Enemy>();
+		for(int i = 0; i < allies.size(); i++)
+		{
+			if(allies.get(i) != null)
+			{
+				if(Math.pow(x-allies.get(i).x, 2) + Math.pow(y-allies.get(i).y, 2) < 400)
+				{
+					group.add(allies.get(i));
+				}
+			}
+		}
+		if(group.size()!=0) deselectEnemies();
+		selectGroup(group);
+		return group.size()!=0;
+	}
+	protected void selectGroup(ArrayList<Enemy> group)
+	{
+		if(group.size() == 0) return;
+		if(group.size() == 1)
+		{
+			group.get(0).selected = true;
+			control.gestureDetector.selectType = "single";
+		}			// More than one selected
+		control.gestureDetector.selectType = "group";
+		for(int i = 0; i < group.size(); i++)
+		{
+			group.get(i).selected = true;
+		}
+		//TODO make group
+	}
+	/**
+	 * deslects all enemies
+	 */
+	protected void deselectEnemies()
+	{
+		control.gestureDetector.selectType = "none";
+		for(int i = 0; i < allies.size(); i++)
+		{
+			if(allies.get(i) != null)
+			{
+				allies.get(i).selected = false;
+			}
+		}
 	}
 }

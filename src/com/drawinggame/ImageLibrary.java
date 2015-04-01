@@ -19,6 +19,7 @@ public final class ImageLibrary extends ImageLoader
 	protected Bitmap currentLevel;
 	protected Bitmap currentLevelTop;
 	protected Bitmap backDrop;
+	protected Bitmap[] createMarkers = new Bitmap[3];
 	private Controller control;
 	/**
 	 * loads in images and optimizes settings for loading
@@ -36,17 +37,19 @@ public final class ImageLibrary extends ImageLoader
 	 */
 	protected void loadAllImages()
 	{
-		isSelected = loadImage("icon_isselected", 80, 80);
+		isSelected = loadImage("icon_isselected", 60, 60);
 		shotAOEEnemy = loadImage("shootenemyaoe", 80, 80);
 		shotEnemy = loadArray1D(5, "shootenemy", 35, 15);
 		shotAOEPlayer = loadImage("shootplayeraoe", 80, 80);
 		shotPlayer = loadArray1D(5, "shootplayer", 35, 15);
+		
+		createMarkers[0] = loadImage("createswordsman", 44, 66);
+		createMarkers[1] = loadImage("createarcher", 35, 64);
+		createMarkers[2] = loadImage("createmage", 36, 62);
 		backDrop = loadImage("leveltile1", 100, 100);
 		enemyImages[0]= loadArray1D(55, "goblin_swordsman", 110, 70);
 		enemyImages[1]= loadArray1D(49, "goblin_archer", 80, 50);
 		enemyImages[2]= loadArray1D(31, "goblin_mage", 30, 34);
-		//loadEnemy(31, "goblin_cleric", 30, 34, 5);
-		//loadEnemy(65, "goblin_rogue", 60, 40, 4);
 	}
 	/**
 	 * loads level image layers and background image

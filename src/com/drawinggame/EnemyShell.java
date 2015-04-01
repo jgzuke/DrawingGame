@@ -93,6 +93,11 @@ abstract public class EnemyShell extends Human
 	Override
 	protected void frameCall()
 	{
+		if(x < 10) x = 10;
+		if(x > control.levelController.levelWidth - 10) x = (control.levelController.levelWidth - 10);
+		if(y < 10) y = 10;
+		if(y > control.levelController.levelHeight - 10) y = (control.levelController.levelHeight - 10);
+		
 		otherActions();
 		image = myImage[frame];
 		rollTimer --;

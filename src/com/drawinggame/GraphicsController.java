@@ -30,7 +30,7 @@
  * @param screenMinX Start of game on screen horizontally
  * @param screenMinY Start of game on screen vertically
  * @param screenDimensionMultiplier
- * @param frameCaller Calls objects and controllers frameCalls
+ * @param frameCaller Calls objects and controls frameCalls
  */
 package com.drawinggame;
 import android.app.AlertDialog;
@@ -63,7 +63,7 @@ public final class GraphicsController extends View
 	private int healthColor = Color.rgb(170, 0, 0);
 	private int cooldownColor = Color.rgb(0, 0, 170);
 	private ImageLibrary imageLibrary;
-	private Controller controller;
+	private Controller control;
 	private SpriteController spriteController;
 	private LevelController levelController;
 	private Context context;
@@ -73,7 +73,7 @@ public final class GraphicsController extends View
 	public GraphicsController(Controller c, ImageLibrary i, SpriteController s, WallController w, LevelController l, Context co, double [] dims)
 	{
 		super(co);
-		controller = c;
+		control = c;
 		imageLibrary = i;
 		spriteController = s;
 		levelController = l;
@@ -177,7 +177,7 @@ public final class GraphicsController extends View
 		}
 		g.drawBitmap(imageLibrary.currentLevel, 0, 0, paint);
 		spriteController.drawStructures(g, paint, imageLibrary);
-		spriteController.drawSprites(g, paint, imageLibrary, aoeRect);
+		spriteController.drawSprites(g, paint, imageLibrary);
 		g.drawBitmap(imageLibrary.currentLevelTop, 0, 0, paint);
 		spriteController.drawHealthBars(g, paint);
 		return drawTo;
@@ -185,18 +185,17 @@ public final class GraphicsController extends View
 	@Override
 	protected void onDraw(Canvas g)
 	{
-		drawNotPaused(g);
-		controller.gestureDetector.drawGestures(g, paint);
-	}
-	/**
-	 * draw normal unpaused screen
-	 * @param g canvas to draw to
-	 */
-	private void drawNotPaused(Canvas g)
-	{
 		Rect src = new Rect(mapXSlide, mapYSlide, mapXSlide+(int)(playScreenSize*phoneWidth), mapYSlide+(int)(playScreenSize*phoneHeight));
 		Rect dst = new Rect(0, 0, phoneWidth, phoneHeight);
 		g.drawBitmap(drawLevel(), src, dst, paint);
+		paint.setAlpha(255);
+		paint.setStyle(Style.FILL);
+		paint.setColor(Color.GRAY);
+		if(!control.gestureDetector.selectType.equals("none")) // something selected
+		{
+			g.drawRect(0, 0, 150, 150, paint);
+		}
+		control.gestureDetector.drawGestures(g, paint);
 	}
 	/**
 	 * Starts warning label

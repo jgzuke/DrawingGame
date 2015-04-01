@@ -93,7 +93,7 @@ public class Recognizer
 	}
 	public void recognizeSingleSelect(Vector<Point> points)
 	{
-		
+		points = Utils.RotateToZero(points, centroid, boundingBox);
 	}
 	public void recognizeGroupSelect(Vector<Point> points)
 	{
@@ -104,25 +104,52 @@ public class Recognizer
 		if(points.size() == 0) return;
 		Rectangle myBounds = new Rectangle(0,0,0,0);
 		Utils.BoundingBox(points, myBounds);
+		if(isClick(myBounds)) return;
+		points = Utils.Resample(points, NumPoints);
+		gestureDetector.setLastShape((Vector<Point>) points.clone());
+		if(isCircle(points)) return;
+		
+		if(selectType.equals("none"))
+	    {
+			recognizeNoSelect(points);
+	    } else if(selectType.equals("single"))
+	    {
+	    	recognizeSingleSelect(points);
+	    } else if(selectType.equals("group"))
+	    {
+	    	recognizeGroupSelect(points);
+	    }
+	}
+	public boolean isClick(Rectangle myBounds)
+	{
 		double distMax = Math.pow(myBounds.Width, 2) + Math.pow(myBounds.Height, 2);
 		if(distMax < 2000)			// a click
 		{
 			gestureDetector.click(new Point(myBounds.X+(myBounds.Width/2), myBounds.Y+(myBounds.Height/2)));
-		} else
-		{
-			points = Utils.Resample(points, NumPoints);
-			gestureDetector.setLastShape((Vector<Point>) points.clone());
-			if(selectType.equals("none"))
-	    	{
-				recognizeNoSelect(points);
-	    	} else if(selectType.equals("single"))
-	    	{
-	    		recognizeSingleSelect(points);
-	    	} else if(selectType.equals("group"))
-	    	{
-	    		recognizeGroupSelect(points);
-	    	}
-			points = Utils.RotateToZero(points, centroid, boundingBox);
+			return true;
 		}
-	};
+		return false; 
+	}
+	public boolean isCircle(Vector<Point> points)
+	{
+		double pointSeperation = 10*distanceBetweenPoints(points, 0, 1);
+		for(int i = 0; i < points.size()-40; i++)
+		{
+			for(int j = i+40; j < points.size(); j++)
+			{
+				if(distanceBetweenPoints(points, i, j) < pointSeperation) // we made a circle, end points are close to start points
+				{
+					gestureDetector.endCircle(points);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	public double distanceBetweenPoints(Vector<Point> points, int index1, int index2)
+	{
+		double xDif = points.get(index1).X - points.get(index2).X;
+		double yDif = points.get(index1).Y - points.get(index2).Y;
+		return Math.sqrt(Math.pow(xDif, 2) + Math.pow(yDif, 2));
+	}
 }

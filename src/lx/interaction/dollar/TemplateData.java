@@ -9,8 +9,8 @@ public class TemplateData
 	public static int lineVerticalU[] = {80,0,0,250};
 	public static int lineVerticalD[] = {0,0,80,250};
 	public static int arrow[] = {0,250,125,0,250,250};
-	public static int arrowLongLeft[] = {0,125,85,0,250,250};
-	public static int arrowLongRight[] = {0,250,165,0,250,125};
+	public static int arrowLongLeft[] = {0,165,100,0,250,250};
+	public static int arrowLongRight[] = {0,250,150,0,250,165};
 	}
 
 
