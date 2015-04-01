@@ -171,26 +171,13 @@ public final class SpriteController extends SpriteDrawer
 		}
 		for(int i = 0; i < humanControllers.size(); i++)
 		{
-			if(humanControllers.get(i).isGroup)
+			if(humanControllers.get(i).deleted)
 			{
-				if(((Control_Group)humanControllers.get(i)).humans.size() == 0)
-				{
-					humanControllers.remove(i);
-					i--;
-				} else
-				{
-					humanControllers.get(i).frameCall();
-				}
+				humanControllers.remove(i);
+				i--;
 			} else
 			{
-				if(((Control_Induvidual)humanControllers.get(i)).human.deleted)
-				{
-					humanControllers.remove(i);
-					i--;
-				} else
-				{
-					humanControllers.get(i).frameCall();
-				}
+				humanControllers.get(i).frameCall();
 			}
 		}
 	}
@@ -505,6 +492,7 @@ public final class SpriteController extends SpriteDrawer
 		if(group.size() == 0) return;
 		if(group.size() == 1)
 		{
+			control.selected = group.get(0).myController;
 			group.get(0).selected = true;
 			control.gestureDetector.selectType = "single";
 		}			// More than one selected
@@ -520,6 +508,7 @@ public final class SpriteController extends SpriteDrawer
 	 */
 	protected void deselectEnemies()
 	{
+		control.selected = null;
 		control.gestureDetector.selectType = "none";
 		for(int i = 0; i < allies.size(); i++)
 		{

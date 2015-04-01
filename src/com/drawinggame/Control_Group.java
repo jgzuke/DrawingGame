@@ -22,4 +22,13 @@ public final class Control_Group extends Control_Main
 		human.destinationX = (int)x;
 		human.destinationY = (int)y;*/
 	}
+	@Override
+	protected void removeHuman(EnemyShell target)
+	{
+		humans.remove(target);
+		if(humans.isEmpty())
+		{
+			deleted = true;
+		}
+	}
 }

@@ -41,6 +41,7 @@ public final class Controller
 {
 	protected int curXShift;
 	protected int curYShift;
+	protected Control_Main selected = null;
 	protected StartActivity activity;
 	protected GestureDetector gestureDetector;
 	protected Context context;

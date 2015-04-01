@@ -7,6 +7,7 @@ abstract public class Control_Induvidual extends Control_Main
 	{
 		super(controlSet);
 		human = humanSet;
+		human.setController(this);
 		isGroup = false;
 	}
 	abstract protected void frameCall();
@@ -16,5 +17,10 @@ abstract public class Control_Induvidual extends Control_Main
 		human.hasDestination = true;
 		human.destinationX = (int)x;
 		human.destinationY = (int)y;
+	}
+	@Override
+	protected void removeHuman(EnemyShell target)
+	{
+		deleted = true;
 	}
 }

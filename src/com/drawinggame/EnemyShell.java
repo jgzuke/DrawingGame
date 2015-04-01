@@ -105,6 +105,10 @@ abstract public class EnemyShell extends Human
 	 */
 	protected void setController(Control_Main myControllerSet)
 	{
+		if(myController != null)
+		{
+			myController.removeHuman(this);
+		}
 		myController = myControllerSet;
 	}
 	/**
