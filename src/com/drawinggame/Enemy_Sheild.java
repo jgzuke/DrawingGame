@@ -59,4 +59,14 @@ public final class Enemy_Sheild extends Enemy
 			if(inDanger>0) frame = 50;
 		}
 	}
+	/**
+	 * select this enemy, take it out of a group if need be
+	 */
+	@Override
+	protected void selectSingle()
+	{
+		if(!myController.isGroup) return;
+		Control_Sheild newControl = new Control_Sheild(control, this);
+		control.spriteController.humanControllers.add(newControl);
+	}
 }

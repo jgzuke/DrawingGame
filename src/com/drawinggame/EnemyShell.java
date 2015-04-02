@@ -111,6 +111,7 @@ abstract public class EnemyShell extends Human
 		}
 		myController = myControllerSet;
 	}
+	abstract protected void selectSingle();
 	/**
 	 * Clears danger arrays, sets current dimensions, and counts timers
 	 */

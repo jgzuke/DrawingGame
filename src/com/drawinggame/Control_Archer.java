@@ -6,7 +6,6 @@ public final class Control_Archer extends Control_Induvidual
 	{
 		super(control, humanSet);
 		archer = humanSet;
-		archer.setController(this);
 	}
 	@Override
 	protected void frameCall()

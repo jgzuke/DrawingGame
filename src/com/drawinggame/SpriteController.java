@@ -492,11 +492,16 @@ public final class SpriteController extends SpriteDrawer
 		if(group.size() == 0) return;
 		if(group.size() == 1)
 		{
-			control.selected = group.get(0).myController;
 			group.get(0).selected = true;
+			group.get(0).selectSingle();
+			control.selected = group.get(0).myController;
 			control.gestureDetector.selectType = "single";
+			return;
 		}			// More than one selected
 		control.gestureDetector.selectType = "group";
+		Control_Group newGroup = new Control_Group(control, group);
+		control.selected = newGroup;
+		humanControllers.add(newGroup);
 		for(int i = 0; i < group.size(); i++)
 		{
 			group.get(i).selected = true;

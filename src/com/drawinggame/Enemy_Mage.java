@@ -4,6 +4,7 @@
 package com.drawinggame;
 
 
+
 public final class Enemy_Mage extends Enemy
 {
 	int shoot = 4;
@@ -27,11 +28,11 @@ public final class Enemy_Mage extends Enemy
 	@ Override
 	protected void frameCall()
 	{
+		super.frameCall();
 		shoot++;
 		if(shoot>4) shoot = 4;
 		energy++;
 		if (energy>45) energy=45;
-		super.frameCall();
 	}
 	private int[][] makeFrames()
 	{
@@ -53,5 +54,15 @@ public final class Enemy_Mage extends Enemy
 		control.soundController.playEffect("arrowrelease");
 		rads = saveRads;
 		rotation = rads*r2d;
+	}
+	/**
+	 * select this enemy, take it out of a group if need be
+	 */
+	@Override
+	protected void selectSingle()
+	{
+		if(!myController.isGroup) return;
+		Control_Mage newControl = new Control_Mage(control, this);
+		control.spriteController.humanControllers.add(newControl);
 	}
 }
