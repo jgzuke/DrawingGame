@@ -9,7 +9,6 @@ public final class Enemy_Sheild extends Enemy
 	public Enemy_Sheild(Controller creator, double X, double Y, double R, int HP, int ImageIndex, boolean isOnPayersTeam)
 	{
 		super(creator, X, Y, R, HP, ImageIndex, isOnPayersTeam);
-		speedCur = 3.8;
 		frame=0;
 		baseHp(HP);
 		worth = 5;

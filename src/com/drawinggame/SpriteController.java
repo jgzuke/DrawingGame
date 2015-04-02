@@ -417,7 +417,6 @@ public final class SpriteController extends SpriteDrawer
 	 */
 	protected void selectCircle(Vector<Point> points)
 	{
-		Log.e("myid", "wasACircle");
 		deselectEnemies();
 		ArrayList<Enemy> group = new ArrayList<Enemy>();
 		for(int i = 0; i < allies.size(); i++)
@@ -458,10 +457,6 @@ public final class SpriteController extends SpriteDrawer
 			lastAbove = above;
 			lastToLeft = toLeft;
 		}
-		if(hitTop) Log.e("myid", "top");
-		if(hitBottom) Log.e("myid", "hitBottom");
-		if(hitLeft) Log.e("myid", "hitLeft");
-		if(hitRight) Log.e("myid", "hitRight");
 		return hitTop&&hitBottom&&hitLeft&&hitRight;
 	}
 	/**

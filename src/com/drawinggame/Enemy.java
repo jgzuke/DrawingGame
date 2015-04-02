@@ -371,8 +371,10 @@ abstract public class Enemy extends EnemyShell
 	protected void runTowardsDestination()
 	{
 		runTowards(destinationX, destinationY);
-		if(distanceTo(destinationX, destinationY) < 20)
+		if(distanceTo(destinationX, destinationY) < 7)
 		{
+			x = destinationX;
+			y = destinationY;
 			hasDestination = false;
 			action = "Nothing";
 			frame = 0;
