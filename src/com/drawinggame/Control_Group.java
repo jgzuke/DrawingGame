@@ -19,6 +19,7 @@ public final class Control_Group extends Control_Main
 	private static double r2d = 180/Math.PI;
 	private boolean hasDestination = false;
 	private boolean hasLostMembers = false;
+	private int layoutType = 0;
 	private double destX;
 	private double destY;
 	private boolean organizing = false;
@@ -45,7 +46,7 @@ public final class Control_Group extends Control_Main
 		groupY = averageY();
 		groupRotation = averageRotation();
 		Log.e("myid", "test12");
-		formUp(groupRotation, groupX, groupY);
+		formUp();
 		isGroup = true;
 	}
 	protected void frameCall()
@@ -85,8 +86,12 @@ public final class Control_Group extends Control_Main
 		if(hasLostMembers)
 		{
 			hasLostMembers = false;
-			formUp(groupRotation, groupX, groupY);
+			formUp();
 		}
+	}
+	protected void formUp()
+	{
+		formUp(groupRotation, groupX, groupY);
 	}
 	/**
 	 * forms this group around given x, y, rotation
@@ -99,7 +104,16 @@ public final class Control_Group extends Control_Main
 		Log.e("myid", "test13");
 		organizing = true;
 		groupRotationAfterOrganize = (int) rotation;
-		setGroupLayoutNormal(rotation);
+		if(layoutType == 0)
+		{
+			setGroupLayoutNormal(rotation);
+		} else if(layoutType == 1)
+		{
+			setGroupLayoutAttack(rotation);
+		} else if(layoutType == 2)
+		{
+			setGroupLayoutDefend(rotation);
+		}
 	}
 	private void setGroupLayoutNormal(double rotation)
 	{
@@ -174,20 +188,162 @@ public final class Control_Group extends Control_Main
 			}
 			pX -= spacing;
 		}
-		Log.e("myid", "mageRows.size(): ".concat(   Integer.toString(mageRows)   ));
-		Log.e("myid", "magesPerRow.size(): ".concat(   Integer.toString(magesPerRow)   ));
-		Log.e("myid", "magePositions.size(): ".concat(   Integer.toString(magePositions.size())   ));
-		Log.e("myid", "mages.size(): ".concat(   Integer.toString(mages.size())   ));
 		
-		Log.e("myid", "archerRows.size(): ".concat(   Integer.toString(archerRows)   ));
-		Log.e("myid", "archersPerRow.size(): ".concat(   Integer.toString(archersPerRow)   ));
-		Log.e("myid", "archerPositions.size(): ".concat(   Integer.toString(archerPositions.size())   ));
-		Log.e("myid", "archers.size(): ".concat(   Integer.toString(archers.size())   ));
+		averageX /= (magePositions.size()+archerPositions.size()+sheildPositions.size());
+		averageY /= (magePositions.size()+archerPositions.size()+sheildPositions.size());
+		startOrganizing(sheildPositions, archerPositions, magePositions, groupX-averageX, groupY-averageY);
+	}
+	private void setGroupLayoutDefend(double rotation)
+	{
+		Log.e("myid", "test14");
+		double bestScore = Double.MAX_VALUE;
+		int bestRows = 0;
+		int archerRows = 0, mageRows = 0, sheildRows = 0;
+		int archersPerRow = 0, magesPerRow = 0, sheildsPerRow = 0;
+		for(double i = 1; i <= humans.size(); i++)
+		{
+			double rows = Math.ceil(((double)archers.size())/i) + Math.ceil(((double)mages.size())/i) + Math.ceil(((double)sheilds.size())/i);
+			double score = 0.5*i + rows;
+			if(score < bestScore)
+			{
+				bestRows = (int)rows;
+				bestScore = score;
+				archerRows = (int) Math.ceil(((double)archers.size())/i);
+				mageRows = (int) Math.ceil(((double)mages.size())/i);
+				sheildRows = (int) Math.ceil(((double)sheilds.size())/i);
+			}					//i is best number of people in a row
+		}
 		
-		Log.e("myid", "sheildRows.size(): ".concat(   Integer.toString(sheildRows)   ));
-		Log.e("myid", "sheildsPerRow.size(): ".concat(   Integer.toString(sheildsPerRow)   ));
-		Log.e("myid", "sheildPositions.size(): ".concat(   Integer.toString(sheildPositions.size())   ));
-		Log.e("myid", "sheilds.size(): ".concat(   Integer.toString(sheilds.size())   ));
+		archersPerRow = (int) Math.ceil(((double)archers.size())/archerRows);
+		magesPerRow = (int) Math.ceil(((double)mages.size())/mageRows);
+		sheildsPerRow = (int) Math.ceil(((double)sheilds.size())/sheildRows);
+		int spacing = 30;
+		ArrayList<Point> sheildPositions = new ArrayList<Point>();
+		ArrayList<Point> archerPositions = new ArrayList<Point>();
+		ArrayList<Point> magePositions = new ArrayList<Point>();
+		double pX = (spacing/2) * (bestRows-1);
+		double pY;
+		double cosT = Math.cos(rotation/r2d);
+		double sinT = Math.sin(rotation/r2d);
+		double averageX = 0;
+		double averageY = 0;
+		for(int i = 0; i < sheildRows; i++)
+		{
+			pY = -(spacing/2) * (sheildsPerRow-1);
+			if(i == sheildRows-1) pY += (spacing/2) * (sheildsPerRow*sheildRows - sheilds.size());
+			for(int j = 0; j < sheildsPerRow; j++)
+			{
+				averageX += cosT*pX - sinT*pY;
+				averageY += sinT*pX + cosT*pY;
+				sheildPositions.add(new Point(cosT*pX - sinT*pY, sinT*pX + cosT*pY));
+				pY += spacing;
+			}
+			pX -= spacing;
+		}
+		for(int i = 0; i < archerRows; i++)
+		{
+			pY = -(spacing/2) * (archersPerRow-1);
+			if(i == archerRows-1) pY += (spacing/2) * (archersPerRow*archerRows - archers.size());
+			for(int j = 0; j < archersPerRow; j++)
+			{
+				averageX += cosT*pX - sinT*pY;
+				averageY += sinT*pX + cosT*pY;
+				archerPositions.add(new Point(cosT*pX - sinT*pY, sinT*pX + cosT*pY));
+				pY += spacing;
+			}
+			pX -= spacing;
+		}
+		for(int i = 0; i < mageRows; i++)
+		{
+			pY = -(spacing/2) * (magesPerRow-1);
+			if(i == mageRows-1) pY += (spacing/2) * (magesPerRow*mageRows - mages.size());
+			for(int j = 0; j < magesPerRow; j++)
+			{
+				averageX += cosT*pX - sinT*pY;
+				averageY += sinT*pX + cosT*pY;
+				magePositions.add(new Point(cosT*pX - sinT*pY, sinT*pX + cosT*pY));
+				pY += spacing;
+			}
+			pX -= spacing;
+		}
+		
+		averageX /= (magePositions.size()+archerPositions.size()+sheildPositions.size());
+		averageY /= (magePositions.size()+archerPositions.size()+sheildPositions.size());
+		startOrganizing(sheildPositions, archerPositions, magePositions, groupX-averageX, groupY-averageY);
+	}
+	private void setGroupLayoutAttack(double rotation)
+	{
+		Log.e("myid", "test14");
+		double bestScore = Double.MAX_VALUE;
+		int bestRows = 0;
+		int archerRows = 0, mageRows = 0, sheildRows = 0;
+		int archersPerRow = 0, magesPerRow = 0, sheildsPerRow = 0;
+		for(double i = 1; i <= humans.size(); i++)
+		{
+			double rows = Math.ceil(((double)archers.size())/i) + Math.ceil(((double)mages.size())/i) + Math.ceil(((double)sheilds.size())/i);
+			double score = 0.5*i + rows;
+			if(score < bestScore)
+			{
+				bestRows = (int)rows;
+				bestScore = score;
+				archerRows = (int) Math.ceil(((double)archers.size())/i);
+				mageRows = (int) Math.ceil(((double)mages.size())/i);
+				sheildRows = (int) Math.ceil(((double)sheilds.size())/i);
+			}					//i is best number of people in a row
+		}
+		
+		archersPerRow = (int) Math.ceil(((double)archers.size())/archerRows);
+		magesPerRow = (int) Math.ceil(((double)mages.size())/mageRows);
+		sheildsPerRow = (int) Math.ceil(((double)sheilds.size())/sheildRows);
+		int spacing = 30;
+		ArrayList<Point> sheildPositions = new ArrayList<Point>();
+		ArrayList<Point> archerPositions = new ArrayList<Point>();
+		ArrayList<Point> magePositions = new ArrayList<Point>();
+		double pX = (spacing/2) * (bestRows-1);
+		double pY;
+		double cosT = Math.cos(rotation/r2d);
+		double sinT = Math.sin(rotation/r2d);
+		double averageX = 0;
+		double averageY = 0;
+		for(int i = 0; i < sheildRows; i++)
+		{
+			pY = -(spacing/2) * (sheildsPerRow-1);
+			if(i == sheildRows-1) pY += (spacing/2) * (sheildsPerRow*sheildRows - sheilds.size());
+			for(int j = 0; j < sheildsPerRow; j++)
+			{
+				averageX += cosT*pX - sinT*pY;
+				averageY += sinT*pX + cosT*pY;
+				sheildPositions.add(new Point(cosT*pX - sinT*pY, sinT*pX + cosT*pY));
+				pY += spacing;
+			}
+			pX -= spacing;
+		}
+		for(int i = 0; i < archerRows; i++)
+		{
+			pY = -(spacing/2) * (archersPerRow-1);
+			if(i == archerRows-1) pY += (spacing/2) * (archersPerRow*archerRows - archers.size());
+			for(int j = 0; j < archersPerRow; j++)
+			{
+				averageX += cosT*pX - sinT*pY;
+				averageY += sinT*pX + cosT*pY;
+				archerPositions.add(new Point(cosT*pX - sinT*pY, sinT*pX + cosT*pY));
+				pY += spacing;
+			}
+			pX -= spacing;
+		}
+		for(int i = 0; i < mageRows; i++)
+		{
+			pY = -(spacing/2) * (magesPerRow-1);
+			if(i == mageRows-1) pY += (spacing/2) * (magesPerRow*mageRows - mages.size());
+			for(int j = 0; j < magesPerRow; j++)
+			{
+				averageX += cosT*pX - sinT*pY;
+				averageY += sinT*pX + cosT*pY;
+				magePositions.add(new Point(cosT*pX - sinT*pY, sinT*pX + cosT*pY));
+				pY += spacing;
+			}
+			pX -= spacing;
+		}
 		
 		averageX /= (magePositions.size()+archerPositions.size()+sheildPositions.size());
 		averageY /= (magePositions.size()+archerPositions.size()+sheildPositions.size());
@@ -195,6 +351,7 @@ public final class Control_Group extends Control_Main
 	}
 	protected void startOrganizing(ArrayList<Point> sheildPositions, ArrayList<Point> archerPositions, ArrayList<Point> magePositions, double addX, double addY)
 	{
+		Log.e("myid", "testqwet");
 		for(int i = 0; i < humans.size(); i++)
 		{
 			humans.get(i).hasDestination = true;
@@ -233,6 +390,12 @@ public final class Control_Group extends Control_Main
 			humans.get(i).destinationX += destX-groupX;
 			humans.get(i).destinationY += destY-groupY;
 		}
+	}
+	protected void setLayoutType(int type) // 0 in norm, 1 is v, 2 is defend
+	{
+		layoutType = type;
+		formUp();
+		Log.e("myid", "type:".concat(Integer.toString(type)));
 	}
 	protected double averageX()
 	{

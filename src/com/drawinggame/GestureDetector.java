@@ -100,7 +100,27 @@ public class GestureDetector implements OnTouchListener
 	{
 		lastShape = getPathFromVector(points);
 	}
-	public void endShape(String type, Point screenPoint)
+	public void endShape(Point screenPoint)
+    {
+		Point p = screenToMapPoint(screenPoint);
+		timeSinceDraw = 0;
+    }
+	public void endShapeGroup(String type, Point screenPoint)
+    {
+		Point p = screenToMapPoint(screenPoint);
+		if(type.equals("lineH"))
+		{
+			((Control_Group)control.selected).setLayoutType(0);
+		} else if(type.equals("lineV"))
+		{
+			((Control_Group)control.selected).setLayoutType(2);
+		} else if(type.equals("arrow"))
+		{
+			((Control_Group)control.selected).setLayoutType(1);
+		}
+		timeSinceDraw = 0;
+    }
+	public void endShapeSingle(String type, Point screenPoint)
     {
 		Point p = screenToMapPoint(screenPoint);
 		if(type.equals("lineH"))
@@ -123,7 +143,6 @@ public class GestureDetector implements OnTouchListener
 			}
 		}
 		timeSinceDraw = 0;
-    	//Toast.makeText(context, type.concat(" ").concat(Double.toString(p.Y)).concat(", ").concat(Double.toString(p.X)), Toast.LENGTH_SHORT).show();
     }
 	public void click(Point pPhone)
     {

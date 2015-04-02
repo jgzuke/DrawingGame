@@ -90,7 +90,7 @@ abstract public class Enemy extends EnemyShell
 			{
 				action = "Nothing";
 			}
-			if(hasDestination && distanceTo(destinationX, destinationY) < 6)
+			if(hasDestination && distanceTo(destinationX, destinationY) < 8)
 			{
 				x = destinationX;
 				y = destinationY;
