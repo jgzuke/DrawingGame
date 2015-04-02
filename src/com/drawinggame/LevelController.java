@@ -60,8 +60,8 @@ public final class LevelController
 		{
 		case 1:
 			//LEVEL
-			levelWidth = 1400; // height of level
-			levelHeight = 1400; // width of level
+			levelWidth = 2400; // height of level
+			levelHeight = 2400; // width of level
 			
 			if(control.graphicsController != null)
 			{

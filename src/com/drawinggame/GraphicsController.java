@@ -160,12 +160,12 @@ public final class GraphicsController extends View
 	{
 		paint.setColor(Color.GREEN);
 		paint.setStyle(Style.FILL);
-		gLevel.drawRect(0, 0, levelController.levelWidth, levelController.levelHeight, paint);
+		//gLevel.drawRect(0, 0, levelController.levelWidth, levelController.levelHeight, paint);
 		for(int w = 0; w<levelController.levelWidth; w+=100)
 		{
 			for(int h = 0; h<levelController.levelHeight; h+=100)
 			{
-				//drawBitmapLevel(imageLibrary.backDrop, w, h, g);
+				drawBitmapLevel(imageLibrary.backDrop, w, h, gLevel);
 			}
 		}
 		//g.drawBitmap(imageLibrary.currentLevel, 0, 0, paint);

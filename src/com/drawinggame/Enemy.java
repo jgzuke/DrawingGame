@@ -90,7 +90,7 @@ abstract public class Enemy extends EnemyShell
 			{
 				action = "Nothing";
 			}
-			if(hasDestination && distanceTo(destinationX, destinationY) < 3)
+			if(hasDestination && distanceTo(destinationX, destinationY) < 6)
 			{
 				x = destinationX;
 				y = destinationY;
@@ -378,6 +378,10 @@ abstract public class Enemy extends EnemyShell
 	}
 	protected void runTowardsDestination()
 	{
+		if(destinationX < 0) destinationX = 0;
+		if(destinationX > control.levelController.levelWidth) destinationX = control.levelController.levelWidth;
+		if(destinationY < 0) destinationY = 0;
+		if(destinationY > control.levelController.levelHeight) destinationY = control.levelController.levelHeight;
 		runTowards(destinationX, destinationY);
 	}
 	/**
