@@ -477,7 +477,7 @@ public final class SpriteController extends SpriteDrawer
 		{
 			if(allies.get(i) != null)
 			{
-				if(Math.pow(x-allies.get(i).x, 2) + Math.pow(y-allies.get(i).y, 2) < 400)
+				if(Math.pow(x-allies.get(i).x, 2) + Math.pow(y-allies.get(i).y, 2) < 800)
 				{
 					group.add(allies.get(i));
 				}

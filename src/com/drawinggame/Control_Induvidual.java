@@ -1,5 +1,7 @@
 package com.drawinggame;
 
+import lx.interaction.dollar.Point;
+
 abstract public class Control_Induvidual extends Control_Main
 {
 	protected EnemyShell human;

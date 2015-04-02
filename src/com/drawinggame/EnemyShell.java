@@ -44,6 +44,7 @@ abstract public class EnemyShell extends Human
 	protected boolean hasDestination = true;
 	protected int destinationX;
 	protected int destinationY;
+	protected int humanType;
 	protected ArrayList<Enemy> enemies;
 	protected ArrayList<Enemy> allies;
 	protected ArrayList<Structure> enemyStructures;
@@ -61,6 +62,7 @@ abstract public class EnemyShell extends Human
 	public EnemyShell(Controller creator, double X, double Y, double R, int HP, int ImageIndex, boolean isOnPlayersTeam)
 	{
 		super(X, Y, 0, 0, true, false, creator.imageLibrary.enemyImages[ImageIndex][0], isOnPlayersTeam);
+		humanType = ImageIndex;
 		control = creator;
 		destinationX = (int)X;
 		destinationY = (int)Y;
