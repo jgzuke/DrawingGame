@@ -11,7 +11,6 @@ public final class Enemy_Sheild extends Enemy
 		super(creator, X, Y, R, HP, ImageIndex, isOnPayersTeam);
 		frame=0;
 		baseHp(HP);
-		worth = 5;
 		if(control.getRandomInt(3) == 0)
 		{
 			runRandom();

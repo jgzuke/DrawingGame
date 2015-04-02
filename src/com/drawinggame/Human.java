@@ -23,7 +23,7 @@ abstract public class Human extends Sprite
 	protected int hpMax;
 	protected double r2d = 180 / Math.PI;
 	protected double rads;
-	protected double speedCur;
+	protected double speedCur = 3.5;
 	protected boolean hitBack;
 	protected boolean onPlayersTeam;
 	protected Controller control;

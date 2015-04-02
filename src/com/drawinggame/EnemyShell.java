@@ -18,7 +18,6 @@ abstract public class EnemyShell extends Human
 	protected boolean selected = false;
 	protected int runTimer = 0;
 	protected int rollTimer = 0;
-	protected int worth = 3;
 	protected double velocityX;
 	protected double velocityY;
 	protected double lastX;

@@ -309,64 +309,46 @@ public final class SpriteController extends SpriteDrawer
 		for(int i = 0; i < creationMarkers.size(); i++)
 		{
 			paint.setAlpha(creationMarkers.get(i).getAlpha());
-			//if(proj_TrackerEs.get(i) != null)
-			//{
-				draw(creationMarkers.get(i), g, paint);
-			//}
+			draw(creationMarkers.get(i), g, paint);
 		}
 		paint.setAlpha(255);
 		for(int i = 0; i < allies.size(); i++)
 		{
-			//if(allies.get(i) != null)
-			//{
-				if(allies.get(i).selected) g.drawBitmap(control.imageLibrary.isSelected, (int)allies.get(i).x-30, (int)allies.get(i).y-30, paint);
-				draw(allies.get(i), g, paint);
-			//}
+			if(allies.get(i).selected) g.drawBitmap(control.imageLibrary.isSelected, (int)allies.get(i).x-30, (int)allies.get(i).y-30, paint);
+		}
+		for(int i = 0; i < allies.size(); i++)
+		{
+			draw(allies.get(i), g, paint);
 		}
 		for(int i = 0; i < enemies.size(); i++)
 		{
-			//if(enemies.get(i) != null)
-			//{
-				draw(enemies.get(i), g, paint);
-			//}
+			draw(enemies.get(i), g, paint);
 		}
 		for(int i = 0; i < proj_TrackerAs.size(); i++)
 		{
-			//if(proj_TrackerAs.get(i) != null)
-			//{
-				draw(proj_TrackerAs.get(i), g, paint);
-			//}
+			draw(proj_TrackerAs.get(i), g, paint);
 		}
 		for(int i = 0; i < proj_TrackerEs.size(); i++)
 		{
-			//if(proj_TrackerEs.get(i) != null)
-			//{
-				draw(proj_TrackerEs.get(i), g, paint);
-			//}
+			draw(proj_TrackerEs.get(i), g, paint);
 		}
 		for(int i = 0; i < proj_TrackerE_AOEs.size(); i++)
 		{
-			//if(proj_TrackerE_AOEs.get(i) != null)
-			//{
 				aoeRect.top = (int)(proj_TrackerE_AOEs.get(i).y - (proj_TrackerE_AOEs.get(i).getHeight() / 2.5));
 				aoeRect.bottom = (int)(proj_TrackerE_AOEs.get(i).y + (proj_TrackerE_AOEs.get(i).getHeight() / 2.5));
 				aoeRect.left = (int)(proj_TrackerE_AOEs.get(i).x - (proj_TrackerE_AOEs.get(i).getWidth() / 2.5));
 				aoeRect.right = (int)(proj_TrackerE_AOEs.get(i).x + (proj_TrackerE_AOEs.get(i).getWidth() / 2.5));
 				paint.setAlpha(proj_TrackerE_AOEs.get(i).getAlpha());
 				drawRect(proj_TrackerE_AOEs.get(i).image, aoeRect, g, paint);
-			//}
 		}
 		for(int i = 0; i < proj_TrackerA_AOEs.size(); i++)
 		{
-			//if(proj_TrackerA_AOEs.get(i) != null)
-			//{
 				aoeRect.top = (int)(proj_TrackerA_AOEs.get(i).y - (proj_TrackerA_AOEs.get(i).getHeight() / 2.5));
 				aoeRect.bottom = (int)(proj_TrackerA_AOEs.get(i).y + (proj_TrackerA_AOEs.get(i).getHeight() / 2.5));
 				aoeRect.left = (int)(proj_TrackerA_AOEs.get(i).x - (proj_TrackerA_AOEs.get(i).getWidth() / 2.5));
 				aoeRect.right = (int)(proj_TrackerA_AOEs.get(i).x + (proj_TrackerA_AOEs.get(i).getWidth() / 2.5));
 				paint.setAlpha(proj_TrackerA_AOEs.get(i).getAlpha());
 				drawRect(proj_TrackerA_AOEs.get(i).image, aoeRect, g, paint);
-			//}
 		}
 		paint.setAlpha(255);
 	}

@@ -90,6 +90,14 @@ abstract public class Enemy extends EnemyShell
 			{
 				action = "Nothing";
 			}
+			if(hasDestination && distanceTo(destinationX, destinationY) < 3)
+			{
+				x = destinationX;
+				y = destinationY;
+				hasDestination = false;
+				action = "Nothing";
+				frame = 0;
+			}
 		}
 	}
 	protected void runAway(EnemyShell target)
@@ -371,14 +379,6 @@ abstract public class Enemy extends EnemyShell
 	protected void runTowardsDestination()
 	{
 		runTowards(destinationX, destinationY);
-		if(distanceTo(destinationX, destinationY) < 7)
-		{
-			x = destinationX;
-			y = destinationY;
-			hasDestination = false;
-			action = "Nothing";
-			frame = 0;
-		}
 	}
 	/**
 	 * Runs towards player, if you cant, run randomly
@@ -416,7 +416,7 @@ abstract public class Enemy extends EnemyShell
 			rads = Math.atan2(fy - y, fx - x);
 		}
 		rotation = rads * r2d;
-		run(2);
+		run(5);
 	}
 	private int iterateSearch(ArrayList<int[]> points, boolean[][] checked, int eX, int eY)
 	{
