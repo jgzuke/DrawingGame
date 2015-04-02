@@ -224,10 +224,6 @@ public final class SpriteController extends SpriteDrawer
 					paint.setColor(Color.RED);
 					paint.setStyle(Paint.Style.FILL);
 					g.drawRect(minX, minY, minX + (40 * enemies.get(i).hp / enemies.get(i).hpMax), maxY, paint);
-					paint.setColor(Color.BLACK);
-					paint.setStrokeWidth(1);
-					paint.setStyle(Paint.Style.STROKE);
-					g.drawRect(minX, minY, maxX, maxY, paint);
 			}
 		}
 		for(int i = 0; i < allies.size(); i++)

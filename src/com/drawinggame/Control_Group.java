@@ -124,7 +124,7 @@ public final class Control_Group extends Control_Main
 		for(double i = 1; i <= humans.size(); i++)
 		{
 			double rows = Math.ceil(((double)archers.size())/i) + Math.ceil(((double)mages.size())/i) + Math.ceil(((double)sheilds.size())/i);
-			double score = 0.8*i + rows;
+			double score = 0.5*i + rows;
 			if(score < bestScore)
 			{
 				bestRows = (int)rows;

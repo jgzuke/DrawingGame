@@ -85,7 +85,7 @@ public final class Controller
 		levelController = new LevelController(this);
 		
 		imageLibrary.loadAllImages();
-		levelController.loadLevel(2);
+		levelController.loadLevel(1);
 		
 		graphicsController = new GraphicsController(this, imageLibrary, spriteController, wallController, levelController, startSet, dimensions);
 		graphicsController.setOnTouchListener(gestureDetector);

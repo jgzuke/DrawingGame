@@ -16,8 +16,8 @@ public final class ImageLibrary extends ImageLoader
 	protected Bitmap shotAOEPlayer;
 	protected Bitmap[] shotEnemy;
 	protected Bitmap shotAOEEnemy;
-	protected Bitmap currentLevel;
-	protected Bitmap currentLevelTop;
+	//protected Bitmap currentLevel;
+	//protected Bitmap currentLevelTop;
 	protected Bitmap backDrop;
 	protected Bitmap[] createMarkers = new Bitmap[3];
 	private Controller control;
@@ -59,7 +59,7 @@ public final class ImageLibrary extends ImageLoader
 	 */
 	protected void loadLevel(int levelNum, int width, int height)
 	{
-		if(currentLevel != null)
+		/*if(currentLevel != null)
 		{
 			currentLevel.recycle();
 			currentLevel = null;
@@ -68,7 +68,7 @@ public final class ImageLibrary extends ImageLoader
 		{
 			currentLevelTop.recycle();
 			currentLevelTop = null;
-		}
+		}*/
 		if(backDrop!= null)
 		{
 			backDrop.recycle();
@@ -90,8 +90,8 @@ public final class ImageLibrary extends ImageLoader
 			backDrop = loadImage("leveltile1", 100, 100);
 			break;
 		}
-		currentLevel = loadImage("level"+Integer.toString(levelNum), width, height);
-		currentLevelTop = loadImage("leveltop"+Integer.toString(levelNum), width, height);
+		//currentLevel = loadImage("level"+Integer.toString(levelNum), width, height);
+		//currentLevelTop = loadImage("leveltop"+Integer.toString(levelNum), width, height);
 	}
 	protected void recycleEnemies()
 	{
@@ -105,7 +105,7 @@ public final class ImageLibrary extends ImageLoader
 	 */
 	protected void recycleImages()
 	{
-		if(currentLevel != null)
+		/*if(currentLevel != null)
 		{
 			currentLevel.recycle();
 			currentLevel = null;
@@ -114,7 +114,7 @@ public final class ImageLibrary extends ImageLoader
 		{
 			currentLevelTop.recycle();
 			currentLevelTop = null;
-		}
+		}*/
 		recycleEnemies();
 	}
 }

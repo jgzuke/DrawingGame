@@ -67,6 +67,8 @@ public final class GraphicsController extends View
 	private SpriteController spriteController;
 	private LevelController levelController;
 	private Context context;
+	private Bitmap drawToLevel;
+	private Canvas gLevel;
 	/** 
 	 * Initializes all undecided variables, loads level, creates player and enemy objects, and starts frameCaller
 	 */
@@ -93,6 +95,8 @@ public final class GraphicsController extends View
 		phoneHeight = (int) dimensions[1];
 		playScreenSize = (double)levelController.levelWidth/phoneWidth;
 		playScreenSizeMax = playScreenSize;
+		drawToLevel = Bitmap.createBitmap(levelController.levelWidth, levelController.levelHeight, Config.ARGB_8888);
+		gLevel = new Canvas(drawToLevel);
 	}
 	protected void frameCall()
 	{
@@ -149,38 +153,27 @@ public final class GraphicsController extends View
 		return Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2);
 	}
 	/**
-	 * draws background of play screen
-	 * @return bitmap of play screen
-	 */
-	protected Bitmap drawStart()
-	{
-		paint.setAlpha(255);
-		Bitmap drawTo = Bitmap.createBitmap(480, 320, Bitmap.Config.ARGB_8888);
-		Canvas g = new Canvas(drawTo);
-		g.drawBitmap(imageLibrary.loadImage("menu_screen", 480, 320), 0, 0, paint);
-		return drawTo;
-	}
-	/**
 	 * draws the level and objects in it
 	 * @return bitmap of level and objects
 	 */
 	protected Bitmap drawLevel()
 	{
-		Bitmap drawTo = Bitmap.createBitmap(levelController.levelWidth, levelController.levelHeight, Config.ARGB_8888);
-		Canvas g = new Canvas(drawTo);
+		paint.setColor(Color.GREEN);
+		paint.setStyle(Style.FILL);
+		gLevel.drawRect(0, 0, levelController.levelWidth, levelController.levelHeight, paint);
 		for(int w = 0; w<levelController.levelWidth; w+=100)
 		{
 			for(int h = 0; h<levelController.levelHeight; h+=100)
 			{
-				drawBitmapLevel(imageLibrary.backDrop, w, h, g);
+				//drawBitmapLevel(imageLibrary.backDrop, w, h, g);
 			}
 		}
-		g.drawBitmap(imageLibrary.currentLevel, 0, 0, paint);
-		spriteController.drawStructures(g, paint, imageLibrary);
-		spriteController.drawSprites(g, paint, imageLibrary);
-		g.drawBitmap(imageLibrary.currentLevelTop, 0, 0, paint);
-		spriteController.drawHealthBars(g, paint);
-		return drawTo;
+		//g.drawBitmap(imageLibrary.currentLevel, 0, 0, paint);
+		spriteController.drawStructures(gLevel, paint, imageLibrary);
+		spriteController.drawSprites(gLevel, paint, imageLibrary);
+		//g.drawBitmap(imageLibrary.currentLevelTop, 0, 0, paint);
+		spriteController.drawHealthBars(gLevel, paint);
+		return drawToLevel;
 	}
 	@Override
 	protected void onDraw(Canvas g)

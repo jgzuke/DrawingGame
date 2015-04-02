@@ -53,125 +53,71 @@ public final class LevelController
 	 */
 	protected void loadLevel(int toLoad)
 	{
-		if(levelNum != -1)
-		{
-			endFightSection();
-		}
+		endFightSection();
 		levelNum = toLoad;
 		WallController w = control.wallController;
 		switch(levelNum)
 		{
 		case 1:
 			//LEVEL
-			levelWidth = 800; // height of level
-			levelHeight = 800; // width of level
+			levelWidth = 1400; // height of level
+			levelHeight = 1400; // width of level
 			
 			if(control.graphicsController != null)
 			{
-				control.graphicsController.playScreenSize = 450;
+				control.graphicsController.playScreenSize = 1;
 			}
 			//WALLS
-			w.makeWall_Rectangle(-85, -182, 111, 528, true);
-			w.makeWall_Rectangle(-85, 455, 111, 528, true);
-			w.makeWall_Rectangle(-142, 241, 192, 105, true);
-			w.makeWall_Rectangle(-142, 456, 192, 105, true);
-			w.makeWall_Rectangle(343, 762, 307, 338, true);
-			w.makeWall_Rectangle(383, 717, 66, 168, true);
-			w.makeWall_Rectangle(515, 731, 87, 158, true);
-			w.makeWall_Rectangle(530, 696, 13, 70, true);
-			w.makeWall_Rectangle(575, 696, 13, 70, true);
-			w.makeWall_Rectangle(668, 489, 32, 12, false);
-			w.makeWall_Rectangle(671, 374, 22, 69, true);
-			w.makeWall_Rectangle(696, 495, 10, 47, false);
-			w.makeWall_Rectangle(664, 535, 37, 11, false);
-			w.makeWall_Rectangle(696, 592, 10, 47, false);
-			w.makeWall_Rectangle(741, 594, 10, 47, false);
-			w.makeWall_Rectangle(687, 634, 58, 11, false);
-			w.makeWall_Rectangle(701, 588, 45, 12, false);
-			w.makeWall_Rectangle(671, 374, 22, 69, false);
-			w.makeWall_Rectangle(660, 409, 22, 94, false);
-			w.makeWall_Rectangle(642, 483, 22, 125, false);
-			w.makeWall_Rectangle(663, 535, 22, 139, false);
-			w.makeWall_Rectangle(649, 602, 22, 48, false);
-			w.makeWall_Rectangle(685, 616, 20, 181, false);
-			w.makeWall_Rectangle(663, 708, 105, 181, false);
-			w.makeWall_Circle(396, 74, 8, true);
-			w.makeWall_Circle(478, 45, 8, true);
-			w.makeWall_Circle(607, 81, 8, true);
-			w.makeWall_Circle(719, 45, 8, true);
-			w.makeWall_Circle(698, 138, 8, true);
-			w.makeWall_Circle(605, 204, 8, true);
-			w.makeWall_Circle(772, 212, 8, true);
-			w.makeWall_Circle(737, 247, 8, true);
-
-			break;
-		case 2:
-			levelWidth = 800; // height of level
-			levelHeight = 800; // width of level
-			if(control.graphicsController != null)
-			{
-				control.graphicsController.playScreenSize = 650;
-			}
-			w.makeWall_Rectangle(-171, -214, 196, 483, true);
-			w.makeWall_Rectangle(-190, 236, 241, 109, true);
-			w.makeWall_Rectangle(-190, 450, 241, 109, true);
-			w.makeWall_Rectangle(-171, 523, 196, 483, true);
-			w.makeWall_Rectangle(-237, -104, 535, 130, true);
-			w.makeWall_Rectangle(236, -150, 109, 200, true);
-			w.makeWall_Rectangle(506, -104, 535, 130, true);
-			w.makeWall_Rectangle(453, -150, 109, 200, true);
-			w.makeWall_Rectangle(772, -214, 196, 483, true);
-			w.makeWall_Rectangle(747, 236, 241, 109, true);
-			w.makeWall_Rectangle(747, 450, 241, 109, true);
-			w.makeWall_Rectangle(772, 523, 196, 483, true);
-			w.makeWall_Rectangle(-237, 771, 535, 130, true);
-			w.makeWall_Rectangle(236, 747, 109, 200, true);
-			w.makeWall_Rectangle(506, 771, 535, 130, true);
-			w.makeWall_Rectangle(453, 747, 109, 200, true);
-			w.makeWall_Rectangle(-94, -276, 196, 483, true);
-			w.makeWall_Rectangle(578, 17, 279, 86, true);
-			w.makeWall_Rectangle(659, 148, 196, 25, true);
-			w.makeWall_Rectangle(719, 681, 328, 179, true);
-			w.makeWall_Rectangle(-64, 627, 194, 54, true);
-			w.makeWall_Rectangle(633, 681, 20, 179, true);
-			w.makeWall_Rectangle(-64, 731, 194, 210, true);
-			w.makeWall_Rectangle(158, -104, 27, 223, true);
-			break;
-		case 4:
-			levelWidth = 930; // height of level
-			levelHeight = 780; // width of level
-			control.graphicsController.playScreenSize = 300;
-			w.makeWall_Ring(319, 507, 253, 273, true); // outer circle
-			w.makeWall_Pass(-6, 398, 80, 211, true, 0);
-			w.makeWall_Pass(350, 164, 34, 111, true, 0);
-			w.makeWall_Pass(530, 497, 159, 31, true, 0);
-			
-			w.makeWall_Ring(319, 507, 176, 196, true); // inner circle
-			w.makeWall_Pass(294, 654, 32, 67, true, 1);
-			
-			w.makeWall_Ring(343, 137, 78, 98, true);   // top left
-			w.makeWall_Pass(350, 164, 34, 111, true, 2);
-			w.makeWall_Pass(382, 106, 204, 31, true, 2);
-			
-			w.makeWall_Ring(709, 218, 176, 196, true); // top right
-			w.makeWall_Pass(382, 106, 204, 31, true, 3);
-			w.makeWall_Pass(657, 338, 32, 174, true, 3);
-			
-			
-			w.makeWall_Circle(28, 413, 81, true);
-			w.makeWall_Rectangle(436, 137, 92, 24, true);
-			w.makeWall_Rectangle(327, 224, 23, 37, true);
-			w.makeWall_Rectangle(429, 82, 117, 24, true);
-			w.makeWall_Rectangle(386, 216, 53, 51, true);
-			w.makeWall_Rectangle(560, 473, 87, 24, true);
-			w.makeWall_Rectangle(558, 528, 145, 24, true);
-			w.makeWall_Rectangle(635, 397, 23, 84, true);
-			w.makeWall_Rectangle(691, 406, 23, 134, true);
-			w.makeWall_Rectangle(-8, 542, 143, 27, true);
-			w.makeWall_Rectangle(265, 682, 29, 133, true);
-			w.makeWall_Rectangle(326, 686, 29, 30, true);
-			
-			
+			w.makeWall_Circle(771, 90, 18, true);
+			w.makeWall_Circle(873, 280, 18, true);
+			w.makeWall_Circle(1332, 134, 18, true);
+			w.makeWall_Circle(511, 64, 18, true);
+			w.makeWall_Circle(493, 152, 18, true);
+			w.makeWall_Circle(419, 90, 18, true);
+			w.makeWall_Circle(401, 64, 18, true);
+			w.makeWall_Circle(327, 142, 18, true);
+			w.makeWall_Circle(244, 36, 18, true);
+			w.makeWall_Circle(459, 314, 18, true);
+			w.makeWall_Circle(425, 258, 18, true);
+			w.makeWall_Circle(327, 270, 18, true);
+			w.makeWall_Circle(234, 322, 18, true);
+			w.makeWall_Circle(180, 178, 18, true);
+			w.makeWall_Circle(96, 90, 18, true);
+			w.makeWall_Circle(104, 288, 18, true);
+			w.makeWall_Circle(429, 439, 18, true);
+			w.makeWall_Circle(280, 417, 18, true);
+			w.makeWall_Circle(198, 503, 18, true);
+			w.makeWall_Circle(327, 503, 18, true);
+			w.makeWall_Circle(327, 669, 18, true);
+			w.makeWall_Circle(935, 755, 18, true);
+			w.makeWall_Circle(384, 955, 18, true);
+			w.makeWall_Circle(180, 857, 18, true);
+			w.makeWall_Circle(1496, 773, 18, true);
+			w.makeWall_Circle(234, 1430, 18, true);
+			w.makeWall_Circle(2211, 1514, 18, true);
+			w.makeWall_Circle(2251, 1811, 18, true);
+			w.makeWall_Circle(2688, 1719, 18, true);
+			w.makeWall_Circle(1386, 2448, 18, true);
+			w.makeWall_Circle(2003, 2187, 18, true);
+			w.makeWall_Circle(1759, 2748, 18, true);
+			w.makeWall_Circle(2087, 2456, 18, true);
+			w.makeWall_Circle(2371, 2315, 18, true);
+			w.makeWall_Circle(2560, 2205, 18, true);
+			w.makeWall_Circle(2670, 2155, 18, true);
+			w.makeWall_Circle(2234, 2704, 18, true);
+			w.makeWall_Circle(2307, 2686, 18, true);
+			w.makeWall_Circle(2412, 2576, 18, true);
+			w.makeWall_Circle(2460, 2508, 18, true);
+			w.makeWall_Circle(2588, 2456, 18, true);
+			w.makeWall_Circle(2688, 2400, 18, true);
+			w.makeWall_Circle(2605, 2558, 18, true);
+			w.makeWall_Circle(2720, 2568, 18, true);
+			w.makeWall_Circle(2728, 2632, 18, true);
+			w.makeWall_Circle(2429, 2756, 18, true);
+			w.makeWall_Circle(2477, 2721, 18, true);
+			w.makeWall_Circle(2623, 2721, 18, true);
+			w.makeWall_Circle(2524, 2847, 18, true);
+			w.makeWall_Circle(2688, 2830, 18, true);
 			break;
 		case 3:
 			//LEVEL
@@ -180,64 +126,7 @@ public final class LevelController
 			control.graphicsController.playScreenSize = 250;
 			//WALLS
 			w.makeWall_Circle(126, 217, 39, false);
-			w.makeWall_Circle(60, 51, 39, false);
-			w.makeWall_Rectangle(-50, -6, 74, 250, true);
-			w.makeWall_Rectangle(-8, 2, 70, 84, true);
-			w.makeWall_Rectangle(45, -41, 103, 84, true);
-			w.makeWall_Rectangle(129, -13, 68, 103, true);
-			w.makeWall_Rectangle(142, -49, 68, 103, true);
-			w.makeWall_Rectangle(264, -47, 68, 103, true);
-			w.makeWall_Rectangle(282, -9, 68, 103, true);
-			w.makeWall_Rectangle(325, 37, 68, 141, true);
-			w.makeWall_Rectangle(282, 161, 68, 103, true);
-			w.makeWall_Rectangle(181, 193, 129, 103, true);
-			w.makeWall_Rectangle(-67, 169, 129, 103, true);
-			w.makeWall_Rectangle(37, 214, 129, 103, true);
 			w.makeWall_Rectangle(126, 171, 71, 110, true);
-			break;
-		case 5:
-			levelWidth = 276;
-			levelHeight = 303;
-			control.graphicsController.playScreenSize = 276;
-			w.makeWall_Rectangle(-49, -6, 74, 331, true);
-			w.makeWall_Rectangle(-43, -66, 398, 92, true);
-			w.makeWall_Rectangle(252, 0, 74, 331, true);
-			w.makeWall_Rectangle(-54, 278, 244, 86, true);
-			w.makeWall_Rectangle(128, 150, 41, 141, true);
-			w.makeWall_Rectangle(236, 150, 31, 141, true);
-			break;
-		case 6:
-			levelWidth = 304;
-			levelHeight = 248;
-			control.graphicsController.playScreenSize = 248;
-			w.makeWall_Rectangle(-49, 13, 74, 143, true);
-			w.makeWall_Rectangle(-28, -66, 398, 92, true);
-			w.makeWall_Rectangle(279, -11, 74, 205, true);
-			w.makeWall_Rectangle(-59, 117, 187, 12, true);
-			w.makeWall_Rectangle(102, 223, 194, 37, true);
-			w.makeWall_Rectangle(265, 181, 31, 141, true);
-			w.makeWall_Rectangle(-49, -22, 177, 71, true);
-			w.makeWall_Rectangle(-59, 166, 187, 33, true);
-			w.makeWall_Rectangle(74, 181, 70, 67, true);
-			break;
-		case 7:
-			levelWidth = 174;
-			levelHeight = 208;
-			control.graphicsController.playScreenSize = 174;
-			w.makeWall_Rectangle(-49, -33, 74, 331, true);
-			w.makeWall_Rectangle(-120, -66, 398, 92, true);
-			w.makeWall_Rectangle(149, 164, 74, 94, true);
-			w.makeWall_Rectangle(-23, 183, 244, 86, true);
-			w.makeWall_Rectangle(149, -20, 104, 131, true);
-			break;
-		case 8:
-			levelWidth = 162;
-			levelHeight = 125;
-			control.graphicsController.playScreenSize = 125;
-			w.makeWall_Rectangle(-49, -66, 74, 331, true);
-			w.makeWall_Rectangle(70, -66, 165, 92, true);
-			w.makeWall_Rectangle(138, -29, 74, 331, true);
-			w.makeWall_Rectangle(-35, 100, 244, 86, true);
 			break;
 		}
 		w.makePaths();
@@ -250,12 +139,9 @@ public final class LevelController
 		switch(toLoad)
 		{
 		case 1:
-			s.makeEnemy(0, 504, 677, -120, true);
-			s.makeEnemy(3, 678, 518, 180, true);
-			s.makeEnemy(5, 730, 551, -165, true);
-			s.makeEnemy(0, 607, 623, -135, true);
-			s.makeEnemy(3, 724, 617, 180, true);
-			s.makeEnemy(2, 623, 671, -165, true);
+			s.makeEnemy(0, 504, 677, -120, false);
+			s.makeEnemy(0, 607, 623, -135, false);
+			s.makeEnemy(2, 623, 671, -165, false);
 			break;
 		}
 	}
