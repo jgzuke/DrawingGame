@@ -78,6 +78,7 @@ public class StartActivity extends Activity
 	public void onStart()
 	{
 		super.onStart();
+		//control.frameCaller.run();
 		control.paused = false;
 	}
 	/**
@@ -88,6 +89,7 @@ public class StartActivity extends Activity
 	public void onResume()
 	{
 		super.onResume();
+		//control.frameCaller.run();
 		/*read();
 		if(savedData[0] == 1)
 		{
