@@ -13,26 +13,33 @@ public final class Control_Group extends Control_Main
 	protected ArrayList<Enemy_Archer> archers = new ArrayList<Enemy_Archer>();
 	protected ArrayList<Enemy_Mage> mages = new ArrayList<Enemy_Mage>();
 	protected ArrayList<Enemy_Sheild> sheilds = new ArrayList<Enemy_Sheild>();
-	protected int groupRotationAfterOrganize;
+	protected int destinationRotation;
 	protected int groupRotation;
 	protected double groupX;
 	protected double groupY;
 	private static double r2d = 180/Math.PI;
 	private boolean hasDestination = false;
-	private boolean hasLostMembers = false;
-	private int layoutType = 0;
+	private boolean hasChangedMembers = false;
+	protected int layoutType = 0;
 	private double destX;
 	private double destY;
 	private boolean organizing = false;
-	protected byte currentForm = 0; //0 is norm, 1 is standGround, 2 is V or attack
+	protected byte currentForm = 1; //1 is norm, 2 is standGround, 0 is V or attack
 	private static double spacing = 30;
 	private static double spacingSlanted = Math.sqrt(2)*30/2;
 	public Control_Group(Controller controlSet, ArrayList<Enemy> humansSet)
 	{
 		super(controlSet);
 		humans = humansSet;
+		double layoutMode = 0;
+		double inGroups = 0;
 		for(int i = 0; i < humans.size(); i++)
 		{
+			if(humans.get(i).myController.isGroup)
+			{
+				layoutMode += ((Control_Group)humans.get(i).myController).layoutType;
+				inGroups ++;
+			}
 			humans.get(i).setController(this);
 			if(humans.get(i).humanType==0)
 			{
@@ -45,12 +52,15 @@ public final class Control_Group extends Control_Main
 				mages.add((Enemy_Mage) humans.get(i));
 			}
 		}
+		humans = new ArrayList<Enemy>();
+		humans.addAll(mages);
+		humans.addAll(archers);
+		humans.addAll(sheilds);
 		groupX = averageX();
 		groupY = averageY();
 		groupRotation = averageRotation();
-		Log.e("myid", "test12");
-		formUp();
 		isGroup = true;
+		setLayoutType((int) Math.round(layoutMode/inGroups));
 	}
 	protected void frameCall()
 	{
@@ -86,15 +96,21 @@ public final class Control_Group extends Control_Main
 				hasDestination = false;
 			}
 		}
-		if(hasLostMembers)
+		if(hasChangedMembers)
 		{
-			hasLostMembers = false;
+			hasChangedMembers = false;
 			formUp();
 		}
 	}
 	protected void formUp()
 	{
-		formUp(groupRotation, groupX, groupY);
+		if(hasDestination)
+		{
+			formUp(destinationRotation, groupX, groupY);
+		} else
+		{
+			formUp(groupRotation, groupX, groupY);
+		}
 	}
 	/**
 	 * forms this group around given x, y, rotation
@@ -104,15 +120,14 @@ public final class Control_Group extends Control_Main
 	 */
 	protected void formUp(double rotation, double newX, double newY)
 	{
-		Log.e("myid", "test13");
 		organizing = true;
-		groupRotationAfterOrganize = (int) rotation;
+		destinationRotation = (int) rotation;
 		if(layoutType == 0)
 		{
-			setGroupLayoutNormal(rotation);
+			setGroupLayoutAttack(rotation);
 		} else if(layoutType == 1)
 		{
-			setGroupLayoutAttack(rotation);
+			setGroupLayoutNormal(rotation);
 		} else if(layoutType == 2)
 		{
 			setGroupLayoutDefend(rotation);
@@ -120,7 +135,6 @@ public final class Control_Group extends Control_Main
 	}
 	private void setGroupLayoutNormal(double rotation)
 	{
-		Log.e("myid", "test14");
 		double bestScore = Double.MAX_VALUE;
 		int bestRows = 0;
 		int archerRows = 0, mageRows = 0, sheildRows = 0;
@@ -182,55 +196,54 @@ public final class Control_Group extends Control_Main
 			pX -= spacing;
 		}
 		Point average = getAveragePoint(sheildPositions, archerPositions, magePositions);
-		startOrganizing(sheildPositions, archerPositions, magePositions, groupX-average.X, groupY-average.Y);
+		startOrganizing(sheildPositions, archerPositions, magePositions, groupX-average.X, groupY-average.Y, (int)rotation);
 	}
 	private void setGroupLayoutDefend(double rotation)
 	{
 	}
 	private void setGroupLayoutAttack(double rotation)
 	{
-		Log.e("myid", "test14");
 		double cosT = Math.cos(rotation/r2d);
 		double sinT = Math.sin(rotation/r2d);
-		ArrayList<Point> sheildPositions = new ArrayList<Point>();
-		ArrayList<Point> archerPositions = new ArrayList<Point>();
-		ArrayList<Point> magePositions = new ArrayList<Point>();
-		int unitsPlaced = 0; // how many of current unit have a location
+		ArrayList<Point> locations = new ArrayList<Point>();
 		int layer = 0;
-		while(unitsPlaced < mages.size())
+		boolean moreUnits = true;
+		int humansLeft = humans.size();
+		while(moreUnits)
 		{
-			fillLayer(magePositions, layer, cosT, sinT);
-			unitsPlaced += (layer*4 + 1); // enemies in each layer
+			double pX = 0; // how far out to start
+			double pY = spacingSlanted * layer * 2;
+			int skip = (layer*4 + 1) - humansLeft; // layersize - humans left
+			for(int i = 0; i < layer*2 + 1; i++)
+			{
+				for(int j = 0; j < 2; j++)
+				{
+					if(locations.size() == humans.size())
+					{
+						Point average = getAveragePoint(locations);
+						startOrganizing(locations, groupX-average.X, groupY-average.Y, (int)rotation);
+						return;
+					}
+					if(i!=layer*2 || j != 0)
+					{
+						skip --;
+						if(skip < 0)
+						{
+							humansLeft--;
+							if(j==0)
+							{
+								locations.add(pointAtAngle(pX, -pY, cosT, sinT));
+							} else
+							{
+								locations.add(pointAtAngle(pX, pY, cosT, sinT));
+							}
+						}
+					}
+				}
+				pX += spacingSlanted;
+				pY -= spacingSlanted;
+			}
 			layer ++;
-		}
-		unitsPlaced = 0;
-		while(unitsPlaced < archers.size())
-		{
-			fillLayer(archerPositions, layer, cosT, sinT);
-			unitsPlaced += (layer*4 + 1); // enemies in each layer
-			layer ++;
-		}
-		unitsPlaced = 0;
-		while(unitsPlaced < sheilds.size())
-		{
-			fillLayer(sheildPositions, layer, cosT, sinT);
-			unitsPlaced += (layer*4 + 1); // enemies in each layer
-			layer ++;
-		}
-		Point average = getAveragePoint(sheildPositions, archerPositions, magePositions);
-		startOrganizing(sheildPositions, archerPositions, magePositions, groupX-average.X, groupY-average.Y);
-	}
-	protected void fillLayer(ArrayList<Point> locations, int layer, double cosT, double sinT)
-	{
-		double pX = spacingSlanted * layer * 2; // how far out to start
-		double pY = 0;
-		locations.add(pointAtAngle(pX, pY, cosT, sinT));
-		for(int i = 0; i < layer*2; i++)
-		{
-			pX -= spacingSlanted;
-			pY += spacingSlanted;
-			locations.add(pointAtAngle(pX, pY, cosT, sinT));
-			locations.add(pointAtAngle(pX, -pY, cosT, sinT));
 		}
 	}
 	protected Point pointAtAngle(double pX, double pY, double cosT, double sinT)
@@ -260,12 +273,38 @@ public final class Control_Group extends Control_Main
 		averageY /= (magePositions.size()+archerPositions.size()+sheildPositions.size());
 		return new Point(averageX, averageY);
 	}
-	protected void startOrganizing(List<Point> sheildPositions,List<Point> archerPositions, List<Point> magePositions, double addX, double addY)
+	protected Point getAveragePoint(ArrayList<Point> positions)
+	{
+		double averageX = 0;
+		double averageY = 0;
+		for(int i = 0; i < positions.size(); i++)
+		{
+			averageX += positions.get(i).X;
+			averageY += positions.get(i).Y;
+		}
+		averageX /= positions.size();
+		averageY /= positions.size();
+		return new Point(averageX, averageY);
+	}
+	protected void startOrganizing(List<Point> positions, double addX, double addY, int setRotation)
 	{
 		Log.e("myid", "testqwet");
 		for(int i = 0; i < humans.size(); i++)
 		{
 			humans.get(i).hasDestination = true;
+			humans.get(i).destinationRotation = setRotation;
+			humans.get(i).speedCur = 5;			//faster to get in line
+			humans.get(i).destinationX = (int)(positions.get(i).X+addX);
+			humans.get(i).destinationY = (int)(positions.get(i).Y+addY);
+		}
+	}
+	protected void startOrganizing(List<Point> sheildPositions,List<Point> archerPositions, List<Point> magePositions, double addX, double addY, int setRotation)
+	{
+		Log.e("myid", "testqwet");
+		for(int i = 0; i < humans.size(); i++)
+		{
+			humans.get(i).hasDestination = true;
+			humans.get(i).destinationRotation = setRotation;
 			humans.get(i).speedCur = 5;			//faster to get in line
 		}
 		for(int i = 0; i < sheilds.size(); i++)
@@ -288,7 +327,6 @@ public final class Control_Group extends Control_Main
 	{
 		for(int i = 0; i < humans.size(); i++)
 		{
-			humans.get(i).rotation = groupRotationAfterOrganize;
 			humans.get(i).speedCur = 3.5;
 		}
 	}
@@ -362,21 +400,41 @@ public final class Control_Group extends Control_Main
 			humans.get(0).selectSingle();
 			deleted = true;
 		}
-		hasLostMembers = true;
+		hasChangedMembers = true;
 	}
-	
-
+	protected void addHuman(EnemyShell target)
+	{
+		target.selected = true;
+		target.setController(this);
+		if(target.humanType==0)
+		{
+			sheilds.add((Enemy_Sheild) target);
+			humans.add((Enemy) target); 			// add to different indecies of human
+		} else if(target.humanType==1)
+		{
+			archers.add((Enemy_Archer) target);
+			humans.add(mages.size(), (Enemy) target);
+		} else if(target.humanType==2)
+		{
+			mages.add((Enemy_Mage) target);
+			humans.add(0, (Enemy) target);
+		}
+		hasChangedMembers = true;
+	}
 	protected void archerFrame(Enemy_Archer archer)
 	{
 		if(archer.action.equals("Shoot"))
 		{
-		} else if(archer.action.equals("Move"))
+		} else				// INTERUPTABLE PART
 		{
-		} else
-		{
-			if(archer.hasDestination)
+			if(archer.action.equals("Move"))
 			{
-				archer.runTowardsDestination();
+			} else
+			{
+				if(archer.hasDestination)
+				{
+					archer.runTowardsDestination();
+				}
 			}
 		}
 	}
@@ -384,13 +442,16 @@ public final class Control_Group extends Control_Main
 	{
 		if(mage.action.equals("Roll"))
 		{
-		} else if(mage.action.equals("Move"))
+		} else				// INTERUPTABLE PART 
 		{
-		} else
-		{
-			if(mage.hasDestination)
+			if(mage.action.equals("Move"))
 			{
-				mage.runTowardsDestination();
+			} else
+			{
+				if(mage.hasDestination)
+				{
+					mage.runTowardsDestination();
+				}
 			}
 		}
 	}
@@ -400,13 +461,16 @@ public final class Control_Group extends Control_Main
 		{
 		} else if(sheild.action.equals("Sheild"))
 		{
-		} else if(sheild.action.equals("Move"))
+		} else				// INTERUPTABLE PART
 		{
-		} else
-		{
-			if(sheild.hasDestination)
+			if(sheild.action.equals("Move"))
 			{
-				sheild.runTowardsDestination();
+			} else
+			{
+				if(sheild.hasDestination)
+				{
+					sheild.runTowardsDestination();
+				}
 			}
 		}
 	}

@@ -90,6 +90,63 @@ public final class Controller
 		graphicsController = new GraphicsController(this, imageLibrary, spriteController, wallController, levelController, startSet, dimensions);
 		graphicsController.setOnTouchListener(gestureDetector);
 		frameCaller.run();
+		makeGroup();
+	}
+	public void makeGroup()
+	{
+		spriteController.makeEnemy(0, 500, 500, 0, true);
+		spriteController.makeEnemy(0, 500, 500, 0, true);
+		spriteController.makeEnemy(0, 500, 500, 0, true);
+		spriteController.makeEnemy(0, 500, 500, 0, true);
+		spriteController.makeEnemy(0, 500, 500, 0, true);
+		spriteController.makeEnemy(0, 500, 500, 0, true);
+		spriteController.makeEnemy(0, 500, 500, 0, true);
+		spriteController.makeEnemy(0, 500, 500, 0, true);
+		spriteController.makeEnemy(0, 500, 500, 0, true);
+		spriteController.makeEnemy(0, 500, 500, 0, true);
+		spriteController.makeEnemy(0, 500, 500, 0, true);
+		spriteController.makeEnemy(0, 500, 500, 0, true);
+		spriteController.makeEnemy(0, 500, 500, 0, true);
+		spriteController.makeEnemy(0, 500, 500, 0, true);
+		spriteController.makeEnemy(0, 500, 500, 0, true);
+		spriteController.makeEnemy(0, 500, 500, 0, true);
+		spriteController.makeEnemy(0, 500, 500, 0, true);
+		spriteController.makeEnemy(0, 500, 500, 0, true);
+		spriteController.makeEnemy(0, 500, 500, 0, true);
+		spriteController.makeEnemy(0, 500, 500, 0, true);
+		spriteController.makeEnemy(0, 500, 500, 0, true);
+		spriteController.makeEnemy(1, 500, 500, 0, true);
+		spriteController.makeEnemy(1, 500, 500, 0, true);
+		spriteController.makeEnemy(1, 500, 500, 0, true);
+		spriteController.makeEnemy(1, 500, 500, 0, true);
+		spriteController.makeEnemy(1, 500, 500, 0, true);
+		spriteController.makeEnemy(1, 500, 500, 0, true);
+		spriteController.makeEnemy(1, 500, 500, 0, true);
+		spriteController.makeEnemy(1, 500, 500, 0, true);
+		spriteController.makeEnemy(1, 500, 500, 0, true);
+		spriteController.makeEnemy(1, 500, 500, 0, true);
+		spriteController.makeEnemy(1, 500, 500, 0, true);
+		spriteController.makeEnemy(1, 500, 500, 0, true);
+		spriteController.makeEnemy(1, 500, 500, 0, true);
+		spriteController.makeEnemy(1, 500, 500, 0, true);
+		spriteController.makeEnemy(1, 500, 500, 0, true);
+		spriteController.makeEnemy(1, 500, 500, 0, true);
+		spriteController.makeEnemy(1, 500, 500, 0, true);
+		spriteController.makeEnemy(1, 500, 500, 0, true);
+		spriteController.makeEnemy(1, 500, 500, 0, true);
+		spriteController.makeEnemy(1, 500, 500, 0, true);
+		spriteController.makeEnemy(2, 500, 500, 0, true);
+		spriteController.makeEnemy(2, 500, 500, 0, true);
+		spriteController.makeEnemy(2, 500, 500, 0, true);
+		spriteController.makeEnemy(2, 500, 500, 0, true);
+		spriteController.makeEnemy(2, 500, 500, 0, true);
+		spriteController.makeEnemy(2, 500, 500, 0, true);
+		spriteController.makeEnemy(2, 500, 500, 0, true);
+		spriteController.makeEnemy(2, 500, 500, 0, true);
+		spriteController.makeEnemy(2, 500, 500, 0, true);
+		spriteController.makeEnemy(2, 500, 500, 0, true);
+		spriteController.makeEnemy(2, 500, 500, 0, true);
+		spriteController.makeEnemy(2, 500, 500, 0, true);
 	}
 	protected void die()
 	{

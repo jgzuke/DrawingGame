@@ -110,13 +110,32 @@ public class GestureDetector implements OnTouchListener
 		Point p = screenToMapPoint(screenPoint);
 		if(type.equals("lineH"))
 		{
-			((Control_Group)control.selected).setLayoutType(0);
+			if(!control.wallController.checkHitBack(p.X, p.Y, true))
+			{
+				((Control_Group)control.selected).addHuman(control.spriteController.makeEnemy(0, (int)p.X, (int)p.Y, -90, true));
+			}
+		} else if(type.equals("lineV"))
+		{
+			if(!control.wallController.checkHitBack(p.X, p.Y, true))
+			{
+				((Control_Group)control.selected).addHuman(control.spriteController.makeEnemy(2, (int)p.X, (int)p.Y, -90, true));
+			}
+		} else if(type.equals("arrow"))
+		{
+			if(!control.wallController.checkHitBack(p.X, p.Y, true))
+			{
+				((Control_Group)control.selected).addHuman(control.spriteController.makeEnemy(1, (int)p.X, (int)p.Y, -90, true));
+			}
+		}
+		if(type.equals("lineH"))
+		{
+			((Control_Group)control.selected).setLayoutType(1);
 		} else if(type.equals("lineV"))
 		{
 			((Control_Group)control.selected).setLayoutType(2);
 		} else if(type.equals("arrow"))
 		{
-			((Control_Group)control.selected).setLayoutType(1);
+			((Control_Group)control.selected).setLayoutType(0);
 		}
 		timeSinceDraw = 0;
     }

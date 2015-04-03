@@ -43,6 +43,7 @@ abstract public class EnemyShell extends Human
 	protected boolean hasDestination = true;
 	protected int destinationX;
 	protected int destinationY;
+	protected int destinationRotation;
 	protected int humanType;
 	protected ArrayList<Enemy> enemies;
 	protected ArrayList<Enemy> allies;

@@ -92,7 +92,7 @@ public final class SpriteController extends SpriteDrawer
 	 * @param r rotation
 	 * @param isOnPlayersTeam which team they are on
 	 */
-	protected void makeEnemy(int type, int x, int y, int r, boolean isOnPlayersTeam)
+	protected EnemyShell makeEnemy(int type, int x, int y, int r, boolean isOnPlayersTeam)
 	{
 		ArrayList<Enemy> toAdd;
 		if(isOnPlayersTeam)
@@ -103,21 +103,24 @@ public final class SpriteController extends SpriteDrawer
 		{
 			toAdd = enemies;
 		}
+		Enemy newEnemy = null;
 		switch(type)
 		{
 		case 0:
-			toAdd.add(new Enemy_Sheild(control, x, y, r, 3000, type, isOnPlayersTeam)); //x, y, hp, sick, type is ImageIndex
-			humanControllers.add(new Control_Sheild(control, (Enemy_Sheild) toAdd.get(toAdd.size()-1)));
+			newEnemy = new Enemy_Sheild(control, x, y, r, 3000, type, isOnPlayersTeam);
+			humanControllers.add(new Control_Sheild(control, (Enemy_Sheild) newEnemy));
 			break;
 		case 1:
-			toAdd.add(new Enemy_Archer(control, x, y, r, 1700, type, isOnPlayersTeam));
-			humanControllers.add(new Control_Archer(control, (Enemy_Archer) toAdd.get(toAdd.size()-1)));
+			newEnemy = new Enemy_Archer(control, x, y, r, 1700, type, isOnPlayersTeam);
+			humanControllers.add(new Control_Archer(control, (Enemy_Archer) newEnemy));
 			break;
 		case 2:
-			toAdd.add(new Enemy_Mage(control, x, y, r, 700, type, isOnPlayersTeam));
-			humanControllers.add(new Control_Mage(control, (Enemy_Mage) toAdd.get(toAdd.size()-1)));
+			newEnemy = new Enemy_Mage(control, x, y, r, 700, type, isOnPlayersTeam);
+			humanControllers.add(new Control_Mage(control, (Enemy_Mage) newEnemy));
 			break;
 		}
+		toAdd.add(newEnemy);
+		return newEnemy;
 	}
 	/**
 	 * calls all sprites frame methods
@@ -224,6 +227,10 @@ public final class SpriteController extends SpriteDrawer
 					paint.setColor(Color.RED);
 					paint.setStyle(Paint.Style.FILL);
 					g.drawRect(minX, minY, minX + (40 * enemies.get(i).hp / enemies.get(i).hpMax), maxY, paint);
+					paint.setColor(Color.BLACK);
+					paint.setStrokeWidth(1);
+					paint.setStyle(Paint.Style.STROKE);
+					g.drawRect(minX, minY, maxX, maxY, paint);
 			}
 		}
 		for(int i = 0; i < allies.size(); i++)
