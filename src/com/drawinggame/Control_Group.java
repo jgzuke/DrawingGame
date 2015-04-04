@@ -18,13 +18,12 @@ public final class Control_Group extends Control_Main
 	protected double groupX;
 	protected double groupY;
 	private static double r2d = 180/Math.PI;
-	private boolean hasDestination = false;
+	protected boolean hasDestination = false;
 	private boolean hasChangedMembers = false;
-	protected int layoutType = 0;
-	private double destX;
-	private double destY;
+	protected int layoutType = 1; //1 is norm, 2 is standGround, 0 is V or attack
+	protected double destX;
+	protected double destY;
 	private boolean organizing = false;
-	protected byte currentForm = 1; //1 is norm, 2 is standGround, 0 is V or attack
 	private static double spacing = 30;
 	private static double spacingSlanted = Math.sqrt(2)*30/2;
 	public Control_Group(Controller controlSet, ArrayList<Enemy> humansSet)

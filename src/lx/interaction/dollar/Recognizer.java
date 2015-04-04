@@ -53,8 +53,18 @@ public class Recognizer
 		groupSelectTemplates.addElement(loadTemplate("arrow", TemplateData.arrow));
 		groupSelectTemplates.addElement(loadTemplate("arrow", TemplateData.arrowLongLeft));
 		groupSelectTemplates.addElement(loadTemplate("arrow", TemplateData.arrowLongRight));
-		
-		
+		groupSelectTemplates.addElement(loadTemplate("n", TemplateData.n));
+		groupSelectTemplates.addElement(loadTemplate("s", TemplateData.s));
+		groupSelectTemplates.addElement(loadTemplate("v", TemplateData.v));
+		singleSelectTemplates.addElement(loadTemplate("lineH", TemplateData.lineHorizontal));
+		singleSelectTemplates.addElement(loadTemplate("lineH", TemplateData.lineHorizontalR));
+		singleSelectTemplates.addElement(loadTemplate("lineH", TemplateData.lineHorizontalL));
+		singleSelectTemplates.addElement(loadTemplate("lineV", TemplateData.lineVertical));
+		singleSelectTemplates.addElement(loadTemplate("lineV", TemplateData.lineVerticalU));
+		singleSelectTemplates.addElement(loadTemplate("lineV", TemplateData.lineVerticalD));
+		singleSelectTemplates.addElement(loadTemplate("arrow", TemplateData.arrow));
+		singleSelectTemplates.addElement(loadTemplate("arrow", TemplateData.arrowLongLeft));
+		singleSelectTemplates.addElement(loadTemplate("arrow", TemplateData.arrowLongRight));
 	}
 	Template loadTemplate(String name, int[] array)
 	{
@@ -101,13 +111,42 @@ public class Recognizer
 		} else
 		{
 			//Log.e("myid", Double.toString(b).concat((templates.elementAt(t)).Name));
-			gestureDetector.endShapeSingle((noSelectTemplates.elementAt(t)).Name, moveCoords);
+			gestureDetector.endShapeNone((noSelectTemplates.elementAt(t)).Name, moveCoords);
 		}
 	}
 	public void recognizeSingleSelect(Vector<Point> points)
 	{
-		points = Utils.RotateToZero(points, centroid, boundingBox);
-		
+		//points = Utils.RotateToZero(points, centroid, boundingBox);
+		Point moveCoords = Utils.getCentre(points);					// use this to get the x, y of the gestures centre
+		points = Utils.ScaleToSquare(points, SquareSize);
+		points = Utils.TranslateToOrigin(points);
+		gestureDetector.setLastShapeDone((Vector<Point>) points.clone());
+	
+		bounds[0] = (int)boundingBox.X;
+		bounds[1] = (int)boundingBox.Y;
+		bounds[2] = (int)boundingBox.X + (int)boundingBox.Width;
+		bounds[3] = (int)boundingBox.Y + (int)boundingBox.Height;
+		int t = 0;
+		double b = Double.MAX_VALUE;
+		for (int i = 0; i < noSelectTemplates.size(); i++)
+		{
+			double d = Utils.PathDistance(points, noSelectTemplates.elementAt(i).Points);
+			if((noSelectTemplates.elementAt(i)).Name.startsWith("line")) d *= 3;
+			if (d < b)
+			{
+				b = d;
+				t = i;
+			}
+		}
+		if(b > 40)
+		{
+			//Log.e("myid", Double.toString(b).concat("unknown"));
+			gestureDetector.endShape(moveCoords);
+		} else
+		{
+			//Log.e("myid", Double.toString(b).concat((templates.elementAt(t)).Name));
+			gestureDetector.endShapeSingle((noSelectTemplates.elementAt(t)).Name, moveCoords);
+		}
 	}
 	public void recognizeGroupSelect(Vector<Point> points)
 	{
@@ -151,9 +190,6 @@ public class Recognizer
 		points = Utils.Resample(points, NumPoints);
 		gestureDetector.setLastShape((Vector<Point>) points.clone());
 		if(isCircle(points)) return;
-		
-		
-		
 		if(selectType.equals("none"))
 	    {
 			recognizeNoSelect(points);
@@ -177,7 +213,7 @@ public class Recognizer
 	}
 	public boolean isCircle(Vector<Point> points)
 	{
-		double pointSeperation = 10*distanceBetweenPoints(points, 0, 1);
+		double pointSeperation = 5*distanceBetweenPoints(points, 0, 1);
 		for(int i = 0; i < points.size()-40; i++)
 		{
 			for(int j = i+40; j < points.size(); j++)

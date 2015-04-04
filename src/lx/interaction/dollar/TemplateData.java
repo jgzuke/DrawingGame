@@ -2,15 +2,18 @@ package lx.interaction.dollar;
 
 public class TemplateData
 {
-	public static int lineHorizontal[] = {0,0,250,0};
-	public static int lineHorizontalR[] = {0,80,250,0};
-	public static int lineHorizontalL[] = {0,0,250,80};
-	public static int lineVertical[] = {0,0,0,250};
-	public static int lineVerticalU[] = {80,0,0,250};
-	public static int lineVerticalD[] = {0,0,80,250};
-	public static int arrow[] = {0,250,125,0,250,250};
-	public static int arrowLongLeft[] = {0,165,100,0,250,250};
-	public static int arrowLongRight[] = {0,250,150,0,250,165};
+	public static int n[] = {0,250, 0,0, 250,250, 250,0};
+	public static int s[] = {250,0, 0,60, 125, 125, 250,190, 0, 250};
+	public static int v[] = {0,0, 125,250, 250,0};
+	public static int lineHorizontal[] = {0,0, 250,0};
+	public static int lineHorizontalR[] = {0,80, 250,0};
+	public static int lineHorizontalL[] = {0,0, 250,80};
+	public static int lineVertical[] = {0,0, 0,250};
+	public static int lineVerticalU[] = {80,0, 0,250};
+	public static int lineVerticalD[] = {0,0, 80,250};
+	public static int arrow[] = {0,250, 125,0, 250,250};
+	public static int arrowLongLeft[] = {0,165, 100,0, 250,250};
+	public static int arrowLongRight[] = {0,250, 150,0, 250,165};
 	}
 
 
