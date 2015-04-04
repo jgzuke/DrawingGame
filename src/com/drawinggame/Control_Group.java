@@ -205,6 +205,53 @@ public final class Control_Group extends Control_Main
 	}
 	private void setGroupLayoutDefend(double rotation)
 	{
+		double cosT = Math.cos(rotation/r2d);
+		double sinT = Math.sin(rotation/r2d);
+		ArrayList<Point> locations = new ArrayList<Point>();
+		int layer = 0;
+		boolean moreUnits = true;
+		int humansLeft = humans.size();
+		while(moreUnits)
+		{
+			double pX = 0; // how far out to start
+			double pY = spacing * layer;
+			int skip = (layer*4 + 1) - humansLeft; // layersize - humans left
+			for(int i = 0; i < layer*2 + 1; i++)
+			{
+				for(int j = 0; j < 2; j++)
+				{
+					if(locations.size() == humans.size())
+					{
+						Point average = getAveragePoint(locations);
+						startOrganizing(locations, groupX-average.X, groupY-average.Y, (int)rotation);
+						return;
+					}
+					if(i!=layer*2 || j != 0)
+					{
+						if(skip < 0)
+						{
+							skip --;
+							humansLeft--;
+							if(j==0)
+							{
+								locations.add(pointAtAngle(pX, -pY, cosT, sinT));
+							} else
+							{
+								locations.add(pointAtAngle(pX, pY, cosT, sinT));
+							}
+						}
+					}
+				}
+				if(i < layer)
+				{
+					pX += spacing;
+				} else
+				{
+					pY -= spacing;
+				}
+			}
+			layer ++;
+		}
 	}
 	private void setGroupLayoutAttack(double rotation)
 	{

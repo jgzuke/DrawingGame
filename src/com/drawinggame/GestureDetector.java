@@ -63,7 +63,7 @@ public class GestureDetector implements OnTouchListener
 	{
     	g.saveLayerAlpha(0, 0, g.getWidth(), g.getHeight(), 0x66, Canvas.HAS_ALPHA_LAYER_SAVE_FLAG);
     	timeSinceDraw++;
-    	paint.setColor(Color.CYAN);
+    	paint.setColor(Color.BLACK);
     	paint.setStyle(Style.STROKE);
     	paint.setStrokeWidth(4);
     	if(pointsList.size() != 0)
@@ -74,7 +74,7 @@ public class GestureDetector implements OnTouchListener
     	{
     		//TODO fade drawn gesture
     		paint.setAlpha(255 - 5*timeSinceDraw);
-    		paint.setColor(Color.BLUE);
+    		paint.setColor(Color.GRAY);
     		g.drawPath(lastShape, paint);
     		paint.setAlpha(255);
     	}
