@@ -218,7 +218,7 @@ public final class SpriteController extends SpriteDrawer
 		//int offset;
 		for(int i = 0; i < enemies.size(); i++)
 		{
-			if(enemies.get(i) != null)
+			if(enemies.get(i) != null && enemies.get(i).hp != enemies.get(i).hpMax)
 			{
 					minX = (int) enemies.get(i).x - 20;
 					maxX = (int) enemies.get(i).x + 20;
@@ -235,7 +235,7 @@ public final class SpriteController extends SpriteDrawer
 		}
 		for(int i = 0; i < allies.size(); i++)
 		{
-			if(allies.get(i) != null)
+			if(allies.get(i) != null && allies.get(i).hp != allies.get(i).hpMax)
 			{
 					minX = (int) allies.get(i).x - 20;
 					maxX = (int) allies.get(i).x + 20;

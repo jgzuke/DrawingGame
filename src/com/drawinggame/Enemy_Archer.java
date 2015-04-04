@@ -41,9 +41,10 @@ public final class Enemy_Archer extends Enemy
 			aimAheadOfTarget(v*2, target); //TODO add extra frames for when you aim
 		} else if(frame==36) // shoots
 		{
-			checkLOS(target);
-			if(!LOS)
+			boolean hasTarget = true;
+			if(!checkLOS(target))
 			{
+				hasTarget = false;
 				ArrayList<Sprite> allEnemies = new ArrayList<Sprite>();
 				for(int i = 0; i < enemies.size(); i++)
 				{
@@ -59,14 +60,14 @@ public final class Enemy_Archer extends Enemy
 				}
 				for(int i = 0; i < allEnemies.size(); i++)
 				{
-					checkLOS(allEnemies.get(i));
-					if(LOS)
+					if(checkLOS(allEnemies.get(i)))
 					{
+						hasTarget = true;
 						target = (EnemyShell) allEnemies.get(i);
 						break;
 					}
 				}
-				if(!LOS) return;
+				if(!hasTarget) return;
 			}
 			control.spriteController.createProj_Tracker(rotation, v, 130, x, y, onPlayersTeam);
 			control.soundController.playEffect("arrowrelease");

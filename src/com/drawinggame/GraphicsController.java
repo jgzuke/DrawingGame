@@ -88,9 +88,9 @@ public final class GraphicsController extends View
 		setKeepScreenOn(true); // so screen doesnt shut off when game is left inactive
 		phoneWidth = (int)dimensions[0];
 		phoneHeight = (int)dimensions[1];
-		paint.setAntiAlias(true);
-		paint.setDither(true);
-		paint.setFilterBitmap(true);
+		paint.setAntiAlias(false);
+		paint.setDither(false);
+		paint.setFilterBitmap(false);
 		phoneWidth = (int) dimensions[0];
 		phoneHeight = (int) dimensions[1];
 		playScreenSize = (double)levelController.levelWidth/phoneWidth;

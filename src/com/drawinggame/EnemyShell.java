@@ -22,24 +22,13 @@ abstract public class EnemyShell extends Human
 	protected double velocityY;
 	protected double lastX;
 	protected double lastY;
-	protected boolean checkedPlayerLast = true;
 	protected Bitmap [] myImage;
-	protected int imageIndex;
 	protected int inDanger = 0;
 	protected Point closestDanger = new Point();
-	protected boolean HasLocation = false;
-	protected double lastXSeen = 0;
-	protected double lastYSeen = 0;
-	protected boolean LOS = false;
 	protected double distanceFound;
-	private int dangerCheckCounter;
-	protected boolean onPlayersTeam;
-	protected boolean keyHolder = false;
 	protected int radius = 20;
 	protected double xMove;
 	protected double yMove;
-	protected int enemyType;
-	protected int hadLOSLastTime=-1;
 	protected boolean hasDestination = true;
 	protected int destinationX;
 	protected int destinationY;
@@ -52,7 +41,6 @@ abstract public class EnemyShell extends Human
 	protected ArrayList<Proj_Tracker> proj_Trackers;
 	protected ArrayList<Proj_Tracker_AOE> proj_Tracker_AOEs;
 	protected Control_Main myController;
-	
 	int [][] frames;
 	protected String action = "Nothing"; //"Nothing", "Move", "Alert", "Shoot", "Melee", "Roll", "Hide", "Sheild", "Stun"
 	/**
@@ -80,8 +68,6 @@ abstract public class EnemyShell extends Human
 		height = 30;
 		lastX = x;
 		lastY = y;
-		imageIndex = ImageIndex;
-		enemyType = ImageIndex;
 		myImage = creator.imageLibrary.enemyImages[ImageIndex];
 		image = myImage[frame];
 		if(isOnPlayersTeam)
@@ -129,7 +115,6 @@ abstract public class EnemyShell extends Human
 		otherActions();
 		image = myImage[frame];
 		rollTimer --;
-		hadLOSLastTime--;
 		velocityX = x - lastX;
 		velocityY = y - lastY;
 		lastX = x;
@@ -180,7 +165,6 @@ abstract public class EnemyShell extends Human
 		if(!deleted)
 		{
 			if(action.equals("Sheild")) damage /= 9;
-			getEnemyLocation(target);
 			if(action.equals("Hide")) action = "Nothing";
 			damage /= 1.2;
 			super.getHit(damage);
@@ -205,53 +189,11 @@ abstract public class EnemyShell extends Human
 	/**
 	 * Checks whether object can 'see' player
 	 */
-	protected void checkLOS(Sprite target)
+	protected boolean checkLOS(Sprite target)
 	{
 		int px = (int)target.x;
 		int py = (int)target.y;
-		if(!control.wallController.checkObstructionsPoint((float)x, (float)y, (float)px, (float)py, false, fromWall))
-		{
-			LOS = true;
-			hadLOSLastTime = 25;
-			lastXSeen = px;
-			lastYSeen = py;
-			checkedPlayerLast = false;
-		} else
-		{
-			LOS = false;
-		}
-		HasLocation = hadLOSLastTime>0;
-		if(HasLocation)	//tell others where player is
-		{
-			callPlayerLocation(target);
-		}
-	}
-	/**
-	 * tells other enemies where player is
-	 */
-	protected void callPlayerLocation(Sprite target)
-	{
-		for(int i = 0; i < control.spriteController.enemies.size(); i++)
-		{
-			Enemy enemy = control.spriteController.enemies.get(i);
-			if(!enemy.HasLocation&&checkDistance(x, y, enemy.x, enemy.y)<200)
-			{
-				enemy.getEnemyLocation(target);
-			}
-		}
-	}
-	/**
-	 * hears where player is
-	 */
-	protected void getEnemyLocation(Sprite target)
-	{
-		if(!LOS)
-		{
-			lastXSeen = target.x;
-			lastYSeen = target.y;
-			rads = Math.atan2((target.y - y), (target.x - x));
-			rotation = rads * r2d;
-		}
+		return !control.wallController.checkObstructionsPoint((float)x, (float)y, (float)px, (float)py, false, fromWall);
 	}
 	/**
 	 * what happens when an enemy hits a wall

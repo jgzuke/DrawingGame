@@ -228,9 +228,9 @@ public final class Control_Group extends Control_Main
 					}
 					if(i!=layer*2 || j != 0)
 					{
+						skip --;
 						if(skip < 0)
 						{
-							skip --;
 							humansLeft--;
 							if(j==0)
 							{

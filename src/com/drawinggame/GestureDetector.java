@@ -73,7 +73,7 @@ public class GestureDetector implements OnTouchListener
     	if(lastShape != null && timeSinceDraw < 50)
     	{
     		//TODO fade drawn gesture
-    		paint.setAlpha(255 - 5*timeSinceDraw);
+    		//paint.setAlpha(255 - 5*timeSinceDraw);
     		paint.setColor(Color.GRAY);
     		g.drawPath(lastShape, paint);
     		paint.setAlpha(255);
@@ -351,10 +351,10 @@ public class GestureDetector implements OnTouchListener
 		{
 			playScreenSizeStart *= playScreenSizeMax/newPlayScreenSize;
 			newPlayScreenSize = playScreenSizeMax;
-		} else if(newPlayScreenSize < 0.3) 
+		} else if(newPlayScreenSize < 0.5) 
 		{
-			playScreenSizeStart *= 0.3/newPlayScreenSize;
-			newPlayScreenSize = 0.3;
+			playScreenSizeStart *= 0.5/newPlayScreenSize;
+			newPlayScreenSize = 0.5;
 		} else
 		{
 			xFix = (1-screenRatio)*(mapXSlideStart+startXAverage)*playScreenSizeStart;
