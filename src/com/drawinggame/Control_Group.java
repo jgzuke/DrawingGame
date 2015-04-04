@@ -24,8 +24,8 @@ public final class Control_Group extends Control_Main
 	protected double destX;
 	protected double destY;
 	private boolean organizing = false;
-	private static double spacing = 30;
-	private static double spacingSlanted = Math.sqrt(2)*30/2;
+	private static double spacing = 40;
+	private static double spacingSlanted = Math.sqrt(2)*spacing/2;
 	public Control_Group(Controller controlSet, ArrayList<Enemy> humansSet)
 	{
 		super(controlSet);
@@ -59,7 +59,13 @@ public final class Control_Group extends Control_Main
 		groupY = averageY();
 		groupRotation = averageRotation();
 		isGroup = true;
-		setLayoutType((int) Math.round(layoutMode/inGroups));
+		if(inGroups == 0)			// if noone in a group
+		{
+			setLayoutType(1);
+		} else
+		{
+			setLayoutType((int) Math.round(layoutMode/inGroups));
+		}
 	}
 	protected void frameCall()
 	{
@@ -287,7 +293,6 @@ public final class Control_Group extends Control_Main
 	}
 	protected void startOrganizing(List<Point> positions, double addX, double addY, int setRotation)
 	{
-		Log.e("myid", "testqwet");
 		for(int i = 0; i < humans.size(); i++)
 		{
 			humans.get(i).hasDestination = true;

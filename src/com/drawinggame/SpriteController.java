@@ -481,14 +481,6 @@ public final class SpriteController extends SpriteDrawer
 		// check if one group dominates the selected people
 		control.gestureDetector.selectType = "group";
 		
-		Control_Group newGroup = new Control_Group(control, group);
-		humanControllers.add(newGroup);
-		control.selected = newGroup;
-		for(int i = 0; i < group.size(); i++)
-		{
-			group.get(i).selected = true;
-		}
-		
 		// check if this group is made from an old one, and use its destination
 		ArrayList<Control_Group> priorGroups = new ArrayList<Control_Group>();
 		ArrayList<Integer> groupCounts = new ArrayList<Integer>();
@@ -499,7 +491,7 @@ public final class SpriteController extends SpriteDrawer
 				boolean alreadyHere = false;
 				for(int j = 0; j < priorGroups.size(); j++)
 				{
-					if(priorGroups.get(j) == group.get(i).myController)
+					if(priorGroups.get(j).equals(group.get(i).myController))
 					{
 						groupCounts.set(j, groupCounts.get(j) + 1);
 						alreadyHere = true;
@@ -509,19 +501,30 @@ public final class SpriteController extends SpriteDrawer
 				if(!alreadyHere)
 				{
 					priorGroups.add((Control_Group) group.get(i).myController);
-					groupCounts.add(0);
+					groupCounts.add(1);
 				}
 			}
 		}
+		
+		Control_Group newGroup = new Control_Group(control, group);
+		humanControllers.add(newGroup);
+		control.selected = newGroup;
+		for(int i = 0; i < group.size(); i++)
+		{
+			group.get(i).selected = true;
+		}
+		
+		Log.e("myid", "testhjhgfsd");
+		Log.e("myid", Integer.toString(group.size()));
 		for(int i = 0; i < groupCounts.size(); i++)		// if this group is more than half of the new, use its settings
 		{
+			Log.e("myid", Integer.toString(groupCounts.get(i)));
 			if((double)groupCounts.get(i)/(double)group.size() > 0.6)
 			{
 				if(priorGroups.get(i).hasDestination)
 				{
 					newGroup.setDestination(new Point(priorGroups.get(i).destX, priorGroups.get(i).destY));
 				}
-				break;
 			}
 		}
 	}

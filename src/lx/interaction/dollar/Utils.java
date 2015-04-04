@@ -108,12 +108,22 @@ public class Utils
 		Rectangle B = BoundingBox(points);
 		Vector<Point> newpoints = new Vector<Point>(points.size());
 		Double biggerDist = B.Width;
-		if(biggerDist < B.Height) biggerDist = B.Height;
+		boolean isLine = B.Width/B.Height > 4;
+		if(biggerDist < B.Height)
+		{
+			biggerDist = B.Height;
+			isLine = B.Height/B.Width > 4;
+		}
 		for (int i = 0; i < points.size(); i++)
 		{
 			Point p = (Point)points.elementAt(i);
-			double qx = p.X * (size / biggerDist);
-			double qy = p.Y * (size / biggerDist);
+			double qx = p.X * (size / B.Width);
+			double qy = p.Y * (size / B.Height);
+			if(isLine)
+			{
+				qx = p.X * (size / biggerDist);
+				qy = p.Y * (size / biggerDist);
+			}
 			newpoints.addElement(new Point(qx, qy));
 		}
 		
