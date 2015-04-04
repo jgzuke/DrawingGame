@@ -14,4 +14,5 @@ abstract public class Control_Main
 	abstract protected void frameCall();
 	abstract protected void removeHuman(EnemyShell target);
 	abstract protected void setDestination(Point p);
+	abstract protected void cancelMove();
 }

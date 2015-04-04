@@ -447,6 +447,15 @@ public final class Control_Group extends Control_Main
 		}
 		hasChangedMembers = true;
 	}
+	@Override
+	protected void cancelMove()
+	{
+		hasDestination = false;
+		for(int i = 0; i < humans.size(); i++)
+		{
+			humans.get(i).hasDestination = false;
+		}
+	}
 	protected void archerFrame(Enemy_Archer archer)
 	{
 		if(archer.action.equals("Shoot"))

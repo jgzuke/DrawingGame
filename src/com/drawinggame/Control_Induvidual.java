@@ -25,4 +25,9 @@ abstract public class Control_Induvidual extends Control_Main
 	{
 		deleted = true;
 	}
+	@Override
+	protected void cancelMove()
+	{
+		human.hasDestination = false;
+	}
 }

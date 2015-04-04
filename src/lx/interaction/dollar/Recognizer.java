@@ -56,6 +56,7 @@ public class Recognizer
 		groupSelectTemplates.addElement(loadTemplate("n", TemplateData.n));
 		groupSelectTemplates.addElement(loadTemplate("s", TemplateData.s));
 		groupSelectTemplates.addElement(loadTemplate("v", TemplateData.v));
+		groupSelectTemplates.addElement(loadTemplate("c", TemplateData.c));
 		singleSelectTemplates.addElement(loadTemplate("lineH", TemplateData.lineHorizontal));
 		singleSelectTemplates.addElement(loadTemplate("lineH", TemplateData.lineHorizontalR));
 		singleSelectTemplates.addElement(loadTemplate("lineH", TemplateData.lineHorizontalL));
@@ -65,6 +66,7 @@ public class Recognizer
 		singleSelectTemplates.addElement(loadTemplate("arrow", TemplateData.arrow));
 		singleSelectTemplates.addElement(loadTemplate("arrow", TemplateData.arrowLongLeft));
 		singleSelectTemplates.addElement(loadTemplate("arrow", TemplateData.arrowLongRight));
+		singleSelectTemplates.addElement(loadTemplate("c", TemplateData.c));
 	}
 	Template loadTemplate(String name, int[] array)
 	{

@@ -5,6 +5,7 @@ public class TemplateData
 	public static int n[] = {0,250, 0,0, 250,250, 250,0};
 	public static int s[] = {250,0, 0,60, 125, 125, 250,190, 0, 250};
 	public static int v[] = {0,0, 125,250, 250,0};
+	public static int c[] = {0,250, 0,125, 250,250};
 	public static int lineHorizontal[] = {0,0, 250,0};
 	public static int lineHorizontalR[] = {0,50, 250,0};
 	public static int lineHorizontalL[] = {0,0, 250,50};

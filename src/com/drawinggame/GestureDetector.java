@@ -145,6 +145,9 @@ public class GestureDetector implements OnTouchListener
 		} else if(type.equals("v"))
 		{
 			((Control_Group)control.selected).setLayoutType(0);
+		} else if(type.equals("c"))
+		{
+			control.selected.cancelMove();
 		}
     }
 	public void endShapeSingle(String type, Point screenPoint)
@@ -152,6 +155,10 @@ public class GestureDetector implements OnTouchListener
 		Point p = screenToMapPoint(screenPoint);
 		timeSinceDraw = 0;
 		if(checkMadeEnemy(type, p)) return;
+		if(type.equals("c"))
+		{
+			control.selected.cancelMove();
+		}
     }
 	public void endShapeNone(String type, Point screenPoint)
     {
