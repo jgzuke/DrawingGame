@@ -14,11 +14,11 @@ abstract public class Control_Induvidual extends Control_Main
 	}
 	abstract protected void frameCall();
 	@Override
-	protected void setDestination(double x, double y)
+	protected void setDestination(Point p)
 	{
 		human.hasDestination = true;
-		human.destinationX = (int)x;
-		human.destinationY = (int)y;
+		human.destinationX = (int)p.X;
+		human.destinationY = (int)p.Y;
 	}
 	@Override
 	protected void removeHuman(EnemyShell target)

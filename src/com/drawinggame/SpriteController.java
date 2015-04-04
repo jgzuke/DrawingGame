@@ -404,12 +404,15 @@ public final class SpriteController extends SpriteDrawer
 	{
 		deselectEnemies();
 		ArrayList<Enemy> group = new ArrayList<Enemy>();
+		int countGroup = 0;
 		for(int i = 0; i < allies.size(); i++)
 		{
 			if(allies.get(i) != null)
 			{
 				if(enemyInsideCircle(points, allies.get(i).x, allies.get(i).y))
 				{
+					countGroup ++;
+					if(countGroup > 30) break;
 					group.add(allies.get(i));
 				}
 			}
@@ -453,12 +456,15 @@ public final class SpriteController extends SpriteDrawer
 	protected boolean selectEnemy(double x, double y)
 	{
 		ArrayList<Enemy> group = new ArrayList<Enemy>();
+		int countGroup = 0;
 		for(int i = 0; i < allies.size(); i++)
 		{
 			if(allies.get(i) != null)
 			{
 				if(Math.pow(x-allies.get(i).x, 2) + Math.pow(y-allies.get(i).y, 2) < 800)
 				{
+					countGroup ++;
+					if(countGroup > 30) break;
 					group.add(allies.get(i));
 				}
 			}
@@ -523,7 +529,7 @@ public final class SpriteController extends SpriteDrawer
 			{
 				if(priorGroups.get(i).hasDestination)
 				{
-					newGroup.setDestination(new Point(priorGroups.get(i).destX, priorGroups.get(i).destY));
+					newGroup.setDestination(priorGroups.get(i).destLocation.clone());
 				}
 			}
 		}

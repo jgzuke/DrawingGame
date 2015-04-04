@@ -13,9 +13,5 @@ abstract public class Control_Main
 	}
 	abstract protected void frameCall();
 	abstract protected void removeHuman(EnemyShell target);
-	abstract protected void setDestination(double x, double y);
-	protected void setDestination(Point p)
-	{
-		setDestination(p.X, p.Y);
-	}
+	abstract protected void setDestination(Point p);
 }

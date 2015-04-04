@@ -96,6 +96,7 @@ abstract public class Enemy extends EnemyShell
 				y = destinationY;
 				rotation = destinationRotation;
 				hasDestination = false;
+				joinedWithGroup = true;
 				action = "Nothing";
 				frame = 0;
 			}

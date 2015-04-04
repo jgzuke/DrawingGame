@@ -11,5 +11,9 @@ public class Point
 	{
 		X = src.X;
 		Y = src.Y;
+	}
+	public Point clone()
+	{
+		return new Point(X, Y);
 	}	
 }

@@ -196,12 +196,12 @@ public class GestureDetector implements OnTouchListener
     	{
     		if(clickedTopLeft(pPhone)) return;
     		if(control.spriteController.selectEnemy(p.X, p.Y)) return;
-    		control.selected.setDestination(p.X, p.Y);
+    		control.selected.setDestination(p);
     	} else if(selectType.equals("group"))
     	{
     		if(clickedTopLeft(pPhone)) return;
     		if(control.spriteController.selectEnemy(p.X, p.Y)) return;
-    		control.selected.setDestination(p.X, p.Y);
+    		control.selected.setDestination(p);
     	}
     }
     public boolean clickedTopLeft(Point p)

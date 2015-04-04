@@ -32,6 +32,7 @@ abstract public class EnemyShell extends Human
 	protected boolean hasDestination = true;
 	protected int destinationX;
 	protected int destinationY;
+	protected boolean joinedWithGroup = false;
 	protected int destinationRotation;
 	protected int humanType;
 	protected ArrayList<Enemy> enemies;
@@ -98,6 +99,10 @@ abstract public class EnemyShell extends Human
 			myController.removeHuman(this);
 		}
 		myController = myControllerSet;
+		if(myController.isGroup)
+		{
+			joinedWithGroup = false;
+		}
 	}
 	abstract protected void selectSingle();
 	/**
@@ -248,6 +253,14 @@ abstract public class EnemyShell extends Human
 	protected double distanceTo(double toX, double toY)
 	{
 		return checkDistance(x, y, toX, toY);
+	}
+	/**
+	 * Checks distance to destination
+	 * @return Returns distance
+	 */
+	protected double distanceToDestination()
+	{
+		return checkDistance(x, y, destinationX, destinationY);
 	}
 	/**
 	 * Checks distance between two points

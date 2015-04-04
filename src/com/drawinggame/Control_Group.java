@@ -15,14 +15,13 @@ public final class Control_Group extends Control_Main
 	protected ArrayList<Enemy_Sheild> sheilds = new ArrayList<Enemy_Sheild>();
 	protected int destinationRotation;
 	protected int groupRotation;
-	protected double groupX;
-	protected double groupY;
+	protected Point groupLocation;
+	protected double groupRadius;
 	private static double r2d = 180/Math.PI;
 	protected boolean hasDestination = false;
 	private boolean hasChangedMembers = false;
 	protected int layoutType = 1; //1 is norm, 2 is standGround, 0 is V or attack
-	protected double destX;
-	protected double destY;
+	protected Point destLocation;
 	private boolean organizing = false;
 	private static double spacing = 40;
 	private static double spacingSlanted = Math.sqrt(2)*spacing/2;
@@ -55,8 +54,7 @@ public final class Control_Group extends Control_Main
 		humans.addAll(mages);
 		humans.addAll(archers);
 		humans.addAll(sheilds);
-		groupX = averageX();
-		groupY = averageY();
+		groupLocation = averagePoint();
 		groupRotation = averageRotation();
 		isGroup = true;
 		if(inGroups == 0)			// if noone in a group
@@ -66,6 +64,7 @@ public final class Control_Group extends Control_Main
 		{
 			setLayoutType((int) Math.round(layoutMode/inGroups));
 		}
+		groupRadius = Math.sqrt(humans.size()) * spacing;
 	}
 	protected void frameCall()
 	{
@@ -74,7 +73,13 @@ public final class Control_Group extends Control_Main
 			boolean doneOrganizing = true;
 			for(int i = 0; i < humans.size(); i ++)
 			{
-				if(humans.get(i).hasDestination) doneOrganizing = false;
+				if(humans.get(i).hasDestination)
+				{
+					if(humans.get(i).distanceToDestination() < (groupRadius+30) * 3)
+					{
+						doneOrganizing = false;
+					}
+				}
 			}
 			if(doneOrganizing)
 			{
@@ -91,18 +96,18 @@ public final class Control_Group extends Control_Main
 		for(int i = 0; i < archers.size(); i ++) archerFrame(archers.get(i));
 		for(int i = 0; i < mages.size(); i ++) mageFrame(mages.get(i));
 		for(int i = 0; i < sheilds.size(); i ++) sheildFrame(sheilds.get(i));
-		groupX = averageX();
-		groupY = averageY();
+		groupLocation = averagePoint();
 		groupRotation = averageRotation();
 		if(hasDestination)
 		{
-			if(Math.sqrt(Math.pow(groupX-destX, 2)+Math.pow(groupY-destY, 2)) < 30) // reached destination
+			if(Math.sqrt(Math.pow(groupLocation.X-destLocation.X, 2)+Math.pow(groupLocation.Y-destLocation.Y, 2)) < 30) // reached destination
 			{
 				hasDestination = false;
 			}
 		}
 		if(hasChangedMembers)
 		{
+			groupRadius = Math.sqrt(humans.size()) * spacing;
 			hasChangedMembers = false;
 			formUp();
 		}
@@ -111,10 +116,10 @@ public final class Control_Group extends Control_Main
 	{
 		if(hasDestination)
 		{
-			formUp(destinationRotation, groupX, groupY);
+			formUp(destinationRotation, groupLocation.X, groupLocation.Y);
 		} else
 		{
-			formUp(groupRotation, groupX, groupY);
+			formUp(groupRotation, groupLocation.X, groupLocation.Y);
 		}
 	}
 	/**
@@ -201,7 +206,7 @@ public final class Control_Group extends Control_Main
 			pX -= spacing;
 		}
 		Point average = getAveragePoint(sheildPositions, archerPositions, magePositions);
-		startOrganizing(sheildPositions, archerPositions, magePositions, groupX-average.X, groupY-average.Y, (int)rotation);
+		startOrganizing(sheildPositions, archerPositions, magePositions, groupLocation.X-average.X, groupLocation.Y-average.Y, (int)rotation);
 	}
 	private void setGroupLayoutDefend(double rotation)
 	{
@@ -223,7 +228,7 @@ public final class Control_Group extends Control_Main
 					if(locations.size() == humans.size())
 					{
 						Point average = getAveragePoint(locations);
-						startOrganizing(locations, groupX-average.X, groupY-average.Y, (int)rotation);
+						startOrganizing(locations, groupLocation.X-average.X, groupLocation.Y-average.Y, (int)rotation);
 						return;
 					}
 					if(i!=layer*2 || j != 0)
@@ -273,7 +278,7 @@ public final class Control_Group extends Control_Main
 					if(locations.size() == humans.size())
 					{
 						Point average = getAveragePoint(locations);
-						startOrganizing(locations, groupX-average.X, groupY-average.Y, (int)rotation);
+						startOrganizing(locations, groupLocation.X-average.X, groupLocation.Y-average.Y, (int)rotation);
 						return;
 					}
 					if(i!=layer*2 || j != 0)
@@ -387,8 +392,8 @@ public final class Control_Group extends Control_Main
 		{
 			humans.get(i).hasDestination = true;
 			humans.get(i).speedCur = 3.5;
-			humans.get(i).destinationX += destX-groupX;
-			humans.get(i).destinationY += destY-groupY;
+			humans.get(i).destinationX += destLocation.X-groupLocation.X;
+			humans.get(i).destinationY += destLocation.Y-groupLocation.Y;
 		}
 	}
 	protected void setLayoutType(int type) // 0 in norm, 1 is v, 2 is defend
@@ -397,23 +402,21 @@ public final class Control_Group extends Control_Main
 		formUp();
 		Log.e("myid", "type:".concat(Integer.toString(type)));
 	}
-	protected double averageX()
+	protected Point averagePoint()
 	{
-		double sum = 0;
+		double sumX = 0;
+		double sumY = 0;
+		double count = 0;
 		for(int i = 0; i < humans.size(); i++)
 		{
-			sum += humans.get(i).x;
+			if(humans.get(i).joinedWithGroup)
+			{
+				sumX += humans.get(i).x;
+				sumY += humans.get(i).y;
+				count ++;
+			}
 		}
-		return sum/humans.size();
-	}
-	protected double averageY()
-	{
-		double sum = 0;
-		for(int i = 0; i < humans.size(); i++)
-		{
-			sum += humans.get(i).y;
-		}
-		return sum/humans.size();
+		return new Point(sumX/count, sumY/count);
 	}
 	protected int averageRotation()
 	{
@@ -425,12 +428,11 @@ public final class Control_Group extends Control_Main
 		return sum/humans.size();
 	}
 	@Override
-	protected void setDestination(double destXSet, double destYSet)
+	protected void setDestination(Point p)
 	{
 		hasDestination = true;
-		destX = destXSet;
-		destY = destYSet;
-		formUp(r2d*Math.atan2(destY-groupY, destX-groupX), destX, destY);
+		destLocation = p;
+		formUp(r2d*Math.atan2(destLocation.Y-groupLocation.Y, destLocation.X-groupLocation.X), destLocation.X, destLocation.Y);
 	}
 	@Override
 	protected void removeHuman(EnemyShell target)
