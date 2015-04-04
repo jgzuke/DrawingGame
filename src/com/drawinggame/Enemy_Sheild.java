@@ -64,7 +64,13 @@ public final class Enemy_Sheild extends Enemy
 	protected void selectSingle()
 	{
 		if(!myController.isGroup) return;
-		Control_Sheild newControl = new Control_Sheild(control, this);
-		control.spriteController.humanControllers.add(newControl);
+		Control_Sheild newControl = new Control_Sheild(control, this, onPlayersTeam);
+		if(onPlayersTeam)
+		{
+			control.spriteController.allyControllers.add(newControl);
+		} else
+		{
+			control.spriteController.enemyControllers.add(newControl);
+		}
 	}
 }

@@ -146,14 +146,19 @@ abstract public class EnemyShell extends Human {
 	 * if health below 0 kills enemy
 	 * @param damage amount of damage to take
 	 */
-	protected void getHit(double damage, EnemyShell target) {
-		if (!deleted) {
-			if (action.equals("Sheild")) damage /= 9;
-			if (action.equals("Hide")) action = "Nothing";
-			damage /= 1.2;
-			super.getHit(damage);
-			if (deleted) {
-				dieDrops();
+	protected void getHit(double damage)
+	{
+		if (action.equals("Sheild")) damage /= 9;
+		if (action.equals("Hide")) action = "Nothing";
+		hp -= damage*2;
+		if(hp < 1)
+		{
+			if(onPlayersTeam)
+			{
+				control.spriteController.allies.remove(this);
+			} else
+			{
+				control.spriteController.enemies.remove(this);
 			}
 		}
 	}

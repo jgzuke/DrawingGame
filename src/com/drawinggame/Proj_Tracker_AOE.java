@@ -92,7 +92,13 @@ public final class Proj_Tracker_AOE extends Sprite
 		alpha -= alphaDown;
 		if(timeToDeath == 0)
 		{
-			deleted = true;
+			if(onPlayersTeam)
+			{
+				control.spriteController.proj_TrackerA_AOEs.remove(this);
+			} else
+			{
+				control.spriteController.proj_TrackerE_AOEs.remove(this);
+			}
 		}
 		widthDone = 7.5 + (width / 2);
 		

@@ -96,7 +96,13 @@ public final class Enemy_Archer extends Enemy
 	protected void selectSingle()
 	{
 		if(!myController.isGroup) return;
-		Control_Archer newControl = new Control_Archer(control, this);
-		control.spriteController.humanControllers.add(newControl);
+		Control_Archer newControl = new Control_Archer(control, this, onPlayersTeam);
+		if(onPlayersTeam)
+		{
+			control.spriteController.allyControllers.add(newControl);
+		} else
+		{
+			control.spriteController.enemyControllers.add(newControl);
+		}
 	}
 }

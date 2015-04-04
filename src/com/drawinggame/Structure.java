@@ -43,16 +43,19 @@ abstract public class Structure extends Sprite
 	 */
 	protected void getHit(double damage)
 	{
-		if(!deleted)
+		hp -= damage;
+		if(hp < 1)
 		{
-			hp -= damage;
-			if(hp < 1)
+			hp = 0;
+			if(onPlayersTeam)
 			{
-				hp = 0;
-				deleted = true;
-				control.spriteController.createProj_TrackerAOE(x, y, 180, false, onPlayersTeam);
-				control.soundController.playEffect("burst");
+				control.spriteController.allyStructures.remove(this);
+			} else
+			{
+				control.spriteController.enemyStructures.remove(this);
 			}
+			control.spriteController.createProj_TrackerAOE(x, y, 180, false, onPlayersTeam);
+			control.soundController.playEffect("burst");
 		}
 	}
 }

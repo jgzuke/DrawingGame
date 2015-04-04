@@ -51,7 +51,8 @@ import com.spritelib.SpriteDrawer;
 public final class SpriteController extends SpriteDrawer
 {
 	protected Controller control;
-	protected ArrayList<Control_Main> humanControllers = new ArrayList<Control_Main>();
+	protected ArrayList<Control_Main> allyControllers = new ArrayList<Control_Main>();
+	protected ArrayList<Control_Main> enemyControllers = new ArrayList<Control_Main>();
 	protected ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 	protected ArrayList<Enemy> allies = new ArrayList<Enemy>();
 	protected ArrayList<Structure> enemyStructures = new ArrayList<Structure>();
@@ -95,12 +96,15 @@ public final class SpriteController extends SpriteDrawer
 	protected EnemyShell makeEnemy(int type, int x, int y, int r, boolean isOnPlayersTeam)
 	{
 		ArrayList<Enemy> toAdd;
+		ArrayList<Control_Main> toAddController;
 		if(isOnPlayersTeam)
 		{
 			toAdd = allies;
-			creationMarkers.add(new CreationMarker(x, y, control.imageLibrary.createMarkers[type]));
+			toAddController = allyControllers;
+			creationMarkers.add(new CreationMarker(x, y, control.imageLibrary.createMarkers[type], this));
 		} else 
 		{
+			toAddController = enemyControllers;
 			toAdd = enemies;
 		}
 		Enemy newEnemy = null;
@@ -108,15 +112,15 @@ public final class SpriteController extends SpriteDrawer
 		{
 		case 0:
 			newEnemy = new Enemy_Sheild(control, x, y, r, 3000, type, isOnPlayersTeam);
-			humanControllers.add(new Control_Sheild(control, (Enemy_Sheild) newEnemy));
+			toAddController.add(new Control_Sheild(control, (Enemy_Sheild) newEnemy, isOnPlayersTeam));
 			break;
 		case 1:
 			newEnemy = new Enemy_Archer(control, x, y, r, 1700, type, isOnPlayersTeam);
-			humanControllers.add(new Control_Archer(control, (Enemy_Archer) newEnemy));
+			toAddController.add(new Control_Archer(control, (Enemy_Archer) newEnemy, isOnPlayersTeam));
 			break;
 		case 2:
 			newEnemy = new Enemy_Mage(control, x, y, r, 700, type, isOnPlayersTeam);
-			humanControllers.add(new Control_Mage(control, (Enemy_Mage) newEnemy));
+			toAddController.add(new Control_Mage(control, (Enemy_Mage) newEnemy, isOnPlayersTeam));
 			break;
 		}
 		toAdd.add(newEnemy);
@@ -127,82 +131,49 @@ public final class SpriteController extends SpriteDrawer
 	 */
 	protected void frameCall()
 	{
-		cleanCallOnArray(creationMarkers);
 		for(int i = 0; i < creationMarkers.size(); i++)
 		{
 			creationMarkers.get(i).frameCall();
 		}
-		cleanCallOnArray(proj_TrackerEs);
 		for(int i = 0; i < proj_TrackerEs.size(); i++)
 		{
 			proj_TrackerEs.get(i).frameCall();
 		}
-		cleanCallOnArray(proj_TrackerAs);
 		for(int i = 0; i < proj_TrackerAs.size(); i++)
 		{
 			proj_TrackerAs.get(i).frameCall();
 		}
-		cleanCallOnArray(proj_TrackerE_AOEs);
 		for(int i = 0; i < proj_TrackerE_AOEs.size(); i++)
 		{
 			proj_TrackerE_AOEs.get(i).frameCall();
 		}
-		cleanCallOnArray(proj_TrackerA_AOEs);
 		for(int i = 0; i < proj_TrackerA_AOEs.size(); i++)
 		{
 			proj_TrackerA_AOEs.get(i).frameCall();
 		}
-		cleanCallOnArray(allies);
 		for(int i = 0; i < allies.size(); i++)
 		{
 			allies.get(i).frameCall();
 		}
-		cleanCallOnArray(enemies);
 		for(int i = 0; i < enemies.size(); i++)
 		{
 			enemies.get(i).frameCall();
 		}
-		cleanCallOnArray(enemyStructures);
 		for(int i = 0; i < enemyStructures.size(); i++)
 		{
 			enemyStructures.get(i).frameCall();
 		}
-		cleanCallOnArray(allyStructures);
 		for(int i = 0; i < allyStructures.size(); i++)
 		{
 			allyStructures.get(i).frameCall();
 		}
-		for(int i = 0; i < humanControllers.size(); i++)
+		for(int i = 0; i < allyControllers.size(); i++)
 		{
-			if(humanControllers.get(i).deleted)
-			{
-				humanControllers.remove(i);
-				i--;
-			} else
-			{
-				humanControllers.get(i).frameCall();
-			}
+			allyControllers.get(i).frameCall();
 		}
-	}
-	/**
-	 * calls frameCall for each member of array, deletes if flagged
-	 */
-	private void cleanCallOnArray(ArrayList<? extends Sprite> array)
-	{
-		for(int i = 0; i < array.size(); i++)
+		for(int i = 0; i < enemyControllers.size(); i++)
 		{
-			if(array.get(i) != null)
-			{
-				if(array.get(i).deleted)
-				{
-					array.remove(i);
-					i--;
-				}
-			} else
-			{
-				array.remove(i);
-				i--;
-			}
+			enemyControllers.get(i).frameCall();
 		}
 	}
 	/**
@@ -412,7 +383,7 @@ public final class SpriteController extends SpriteDrawer
 				if(enemyInsideCircle(points, allies.get(i).x, allies.get(i).y))
 				{
 					countGroup ++;
-					if(countGroup > 30) break;
+					if(countGroup > 28) break;
 					group.add(allies.get(i));
 				}
 			}
@@ -464,7 +435,7 @@ public final class SpriteController extends SpriteDrawer
 				if(Math.pow(x-allies.get(i).x, 2) + Math.pow(y-allies.get(i).y, 2) < 800)
 				{
 					countGroup ++;
-					if(countGroup > 30) break;
+					if(countGroup > 28) break;
 					group.add(allies.get(i));
 				}
 			}
@@ -512,8 +483,8 @@ public final class SpriteController extends SpriteDrawer
 			}
 		}
 		
-		Control_Group newGroup = new Control_Group(control, group);
-		humanControllers.add(newGroup);
+		Control_Group newGroup = new Control_Group(control, group, true);
+		allyControllers.add(newGroup);
 		control.selected = newGroup;
 		for(int i = 0; i < group.size(); i++)
 		{

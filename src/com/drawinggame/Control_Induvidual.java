@@ -5,9 +5,9 @@ import lx.interaction.dollar.Point;
 abstract public class Control_Induvidual extends Control_Main
 {
 	protected EnemyShell human;
-	public Control_Induvidual(Controller controlSet, EnemyShell humanSet)
+	public Control_Induvidual(Controller controlSet, EnemyShell humanSet, boolean onPlayersTeam)
 	{
-		super(controlSet);
+		super(controlSet, onPlayersTeam);
 		human = humanSet;
 		human.setController(this);
 		isGroup = false;
@@ -23,7 +23,13 @@ abstract public class Control_Induvidual extends Control_Main
 	@Override
 	protected void removeHuman(EnemyShell target)
 	{
-		deleted = true;
+		if(onPlayersTeam)
+		{
+			control.spriteController.allyControllers.remove(this);
+		} else
+		{
+			control.spriteController.enemyControllers.remove(this);
+		}
 	}
 	@Override
 	protected void cancelMove()

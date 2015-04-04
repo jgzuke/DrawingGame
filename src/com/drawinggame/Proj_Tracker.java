@@ -39,12 +39,14 @@ public final class Proj_Tracker extends Sprite
 		if(control.wallController.checkHitBack(x, y, false))
 		{
 			explodeBack();
+			return;
 		}
 		x +=(xForward);
 		y +=(yForward);
-		if(control.wallController.checkHitBack(x, y, false) && !deleted)
+		if(control.wallController.checkHitBack(x, y, false))
 		{
 			explodeBack();
+			return;
 		}
 		realX = x;
 		realY = y;
@@ -108,18 +110,30 @@ public final class Proj_Tracker extends Sprite
 	public void explodeBack()
 	{
 		spriteController.createProj_TrackerAOE((int) realX, (int) realY, 30, false, onPlayersTeam);
-		deleted = true;
+		if(onPlayersTeam)
+		{
+			control.spriteController.proj_TrackerAs.remove(this);
+		} else
+		{
+			control.spriteController.proj_TrackerEs.remove(this);
+		}
 	}
 	public void explode()
 	{
 		spriteController.createProj_TrackerAOE((int) realX, (int) realY, power/2, true, onPlayersTeam);
-		deleted = true;
+		if(onPlayersTeam)
+		{
+			control.spriteController.proj_TrackerAs.remove(this);
+		} else
+		{
+			control.spriteController.proj_TrackerEs.remove(this);
+		}
 	}
 	protected void hitTarget(int x, int y)
 	{
 		for(int i = 0; i < enemies.size(); i++)
 		{
-			if(enemies.get(i) != null && !deleted)
+			if(enemies.get(i) != null)
 			{
 				xDif = x - enemies.get(i).x;
 				yDif = y - enemies.get(i).y;
@@ -128,12 +142,13 @@ public final class Proj_Tracker extends Sprite
 				{
 					enemies.get(i).getHit((int)power);
 					explode();
+					return;
 				}
 			}
 		}
 		for(int i = 0; i < structures.size(); i++)
 		{
-			if(structures.get(i) != null && !deleted)
+			if(structures.get(i) != null)
 			{
 				xDif = x - structures.get(i).x;
 				yDif = y - structures.get(i).y;
@@ -142,13 +157,14 @@ public final class Proj_Tracker extends Sprite
 				{
 					structures.get(i).getHit((int)power);
 					explode();
+					return;
 				}
 			}
 		}
 	}
 	protected void hitBack(int x, int y)
 	{
-		if(control.wallController.checkHitBack(x, y, false) && !deleted)
+		if(control.wallController.checkHitBack(x, y, false))
 		{
 			explodeBack();
 		}

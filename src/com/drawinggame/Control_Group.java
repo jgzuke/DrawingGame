@@ -25,9 +25,9 @@ public final class Control_Group extends Control_Main
 	private boolean organizing = false;
 	private static double spacing = 40;
 	private static double spacingSlanted = Math.sqrt(2)*spacing/2;
-	public Control_Group(Controller controlSet, ArrayList<Enemy> humansSet)
+	public Control_Group(Controller controlSet, ArrayList<Enemy> humansSet, boolean onPlayersTeam)
 	{
-		super(controlSet);
+		super(controlSet, onPlayersTeam);
 		humans = humansSet;
 		double layoutMode = 0;
 		double inGroups = 0;
@@ -443,7 +443,13 @@ public final class Control_Group extends Control_Main
 		if(humans.size() == 1)
 		{
 			humans.get(0).selectSingle();
-			deleted = true;
+			if(onPlayersTeam)
+			{
+				control.spriteController.allyControllers.remove(this);
+			} else
+			{
+				control.spriteController.enemyControllers.remove(this);
+			}
 		}
 		hasChangedMembers = true;
 	}

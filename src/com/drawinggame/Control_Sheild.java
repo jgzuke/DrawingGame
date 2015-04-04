@@ -2,9 +2,9 @@ package com.drawinggame;
 public final class Control_Sheild extends Control_Induvidual
 {
 	protected Enemy_Sheild sheild;
-	public Control_Sheild(Controller control, Enemy_Sheild humanSet)
+	public Control_Sheild(Controller control, Enemy_Sheild humanSet, boolean onPlayersTeam)
 	{
-		super(control, humanSet);
+		super(control, humanSet, onPlayersTeam);
 		sheild = humanSet;
 	}
 	@Override

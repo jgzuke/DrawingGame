@@ -38,17 +38,4 @@ abstract public class Human extends Sprite
 			hp = hpMax;
 		}
 	}
-	/**
-	 * takes damage
-	 * @param damage amount of damage to take
-	 */
-	protected void getHit(double damage)
-	{
-		hp -= damage*2;
-		if(hp < 1)
-		{
-			hp = 0;
-			deleted = true;
-		}
-	}
 }

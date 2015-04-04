@@ -60,7 +60,13 @@ public final class Enemy_Mage extends Enemy
 	protected void selectSingle()
 	{
 		if(!myController.isGroup) return;
-		Control_Mage newControl = new Control_Mage(control, this);
-		control.spriteController.humanControllers.add(newControl);
+		Control_Mage newControl = new Control_Mage(control, this, onPlayersTeam);
+		if(onPlayersTeam)
+		{
+			control.spriteController.allyControllers.add(newControl);
+		} else
+		{
+			control.spriteController.enemyControllers.add(newControl);
+		}
 	}
 }

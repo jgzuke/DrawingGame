@@ -2,9 +2,9 @@ package com.drawinggame;
 public final class Control_Archer extends Control_Induvidual
 {
 	protected Enemy_Archer archer;
-	public Control_Archer(Controller control, Enemy_Archer humanSet)
+	public Control_Archer(Controller control, Enemy_Archer humanSet, boolean onPlayersTeam)
 	{
-		super(control, humanSet);
+		super(control, humanSet, onPlayersTeam);
 		archer = humanSet;
 	}
 	@Override
@@ -20,6 +20,7 @@ public final class Control_Archer extends Control_Induvidual
 			{
 				archer.runTowardsDestination();
 			}
+			//if()
 		}
 	}
 }
