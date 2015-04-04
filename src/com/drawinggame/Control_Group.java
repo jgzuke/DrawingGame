@@ -75,10 +75,7 @@ public final class Control_Group extends Control_Main
 			{
 				if(humans.get(i).hasDestination)
 				{
-					if(humans.get(i).distanceToDestination() < (groupRadius+30) * 3)
-					{
-						doneOrganizing = false;
-					}
+					doneOrganizing = false;
 				}
 			}
 			if(doneOrganizing)
@@ -406,17 +403,12 @@ public final class Control_Group extends Control_Main
 	{
 		double sumX = 0;
 		double sumY = 0;
-		double count = 0;
 		for(int i = 0; i < humans.size(); i++)
 		{
-			if(humans.get(i).joinedWithGroup)
-			{
-				sumX += humans.get(i).x;
-				sumY += humans.get(i).y;
-				count ++;
-			}
+			sumX += humans.get(i).x;
+			sumY += humans.get(i).y;
 		}
-		return new Point(sumX/count, sumY/count);
+		return new Point(sumX/(double)humans.size(), sumY/(double)humans.size());
 	}
 	protected int averageRotation()
 	{
@@ -452,25 +444,6 @@ public final class Control_Group extends Control_Main
 		{
 			humans.get(0).selectSingle();
 			deleted = true;
-		}
-		hasChangedMembers = true;
-	}
-	protected void addHuman(EnemyShell target)
-	{
-		target.selected = true;
-		target.setController(this);
-		if(target.humanType==0)
-		{
-			sheilds.add((Enemy_Sheild) target);
-			humans.add((Enemy) target); 			// add to different indecies of human
-		} else if(target.humanType==1)
-		{
-			archers.add((Enemy_Archer) target);
-			humans.add(mages.size(), (Enemy) target);
-		} else if(target.humanType==2)
-		{
-			mages.add((Enemy_Mage) target);
-			humans.add(0, (Enemy) target);
 		}
 		hasChangedMembers = true;
 	}

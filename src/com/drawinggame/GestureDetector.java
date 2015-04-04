@@ -105,28 +105,38 @@ public class GestureDetector implements OnTouchListener
 		Point p = screenToMapPoint(screenPoint);
 		timeSinceDraw = 0;
     }
-	public void endShapeGroup(String type, Point screenPoint)
+	public boolean checkMadeEnemy(String type, Point p)
     {
-		Point p = screenToMapPoint(screenPoint);
 		if(type.equals("lineH"))
 		{
 			if(!control.wallController.checkHitBack(p.X, p.Y, true))
 			{
-				((Control_Group)control.selected).addHuman(control.spriteController.makeEnemy(0, (int)p.X, (int)p.Y, -90, true));
+				control.spriteController.makeEnemy(0, (int)p.X, (int)p.Y, -90, true);
 			}
 		} else if(type.equals("lineV"))
 		{
 			if(!control.wallController.checkHitBack(p.X, p.Y, true))
 			{
-				((Control_Group)control.selected).addHuman(control.spriteController.makeEnemy(2, (int)p.X, (int)p.Y, -90, true));
+				control.spriteController.makeEnemy(2, (int)p.X, (int)p.Y, -90, true);
 			}
 		} else if(type.equals("arrow"))
 		{
 			if(!control.wallController.checkHitBack(p.X, p.Y, true))
 			{
-				((Control_Group)control.selected).addHuman(control.spriteController.makeEnemy(1, (int)p.X, (int)p.Y, -90, true));
+				control.spriteController.makeEnemy(1, (int)p.X, (int)p.Y, -90, true);
 			}
-		} else if(type.equals("n"))
+		} else
+		{
+			return false;
+		}
+		return true;
+    }
+	public void endShapeGroup(String type, Point screenPoint)
+    {
+		Point p = screenToMapPoint(screenPoint);
+		timeSinceDraw = 0;
+		if(checkMadeEnemy(type, p)) return;
+		if(type.equals("n"))
 		{
 			((Control_Group)control.selected).setLayoutType(1);
 		} else if(type.equals("s"))
@@ -136,55 +146,18 @@ public class GestureDetector implements OnTouchListener
 		{
 			((Control_Group)control.selected).setLayoutType(0);
 		}
-		timeSinceDraw = 0;
     }
 	public void endShapeSingle(String type, Point screenPoint)
     {
 		Point p = screenToMapPoint(screenPoint);
-		if(type.equals("lineH"))
-		{
-			if(!control.wallController.checkHitBack(p.X, p.Y, true))
-			{
-				control.spriteController.makeEnemy(0, (int)p.X, (int)p.Y, -90, true);
-			}
-		} else if(type.equals("lineV"))
-		{
-			if(!control.wallController.checkHitBack(p.X, p.Y, true))
-			{
-				control.spriteController.makeEnemy(2, (int)p.X, (int)p.Y, -90, true);
-			}
-		} else if(type.equals("arrow"))
-		{
-			if(!control.wallController.checkHitBack(p.X, p.Y, true))
-			{
-				control.spriteController.makeEnemy(1, (int)p.X, (int)p.Y, -90, true);
-			}
-		}
 		timeSinceDraw = 0;
+		if(checkMadeEnemy(type, p)) return;
     }
 	public void endShapeNone(String type, Point screenPoint)
     {
 		Point p = screenToMapPoint(screenPoint);
-		if(type.equals("lineH"))
-		{
-			if(!control.wallController.checkHitBack(p.X, p.Y, true))
-			{
-				control.spriteController.makeEnemy(0, (int)p.X, (int)p.Y, -90, true);
-			}
-		} else if(type.equals("lineV"))
-		{
-			if(!control.wallController.checkHitBack(p.X, p.Y, true))
-			{
-				control.spriteController.makeEnemy(2, (int)p.X, (int)p.Y, -90, true);
-			}
-		} else if(type.equals("arrow"))
-		{
-			if(!control.wallController.checkHitBack(p.X, p.Y, true))
-			{
-				control.spriteController.makeEnemy(1, (int)p.X, (int)p.Y, -90, true);
-			}
-		}
 		timeSinceDraw = 0;
+		if(checkMadeEnemy(type, p)) return;
     }
 	public void click(Point pPhone)
     {
