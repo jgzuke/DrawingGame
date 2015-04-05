@@ -15,5 +15,9 @@ public class Point
 	public Point clone()
 	{
 		return new Point(X, Y);
+	}
+	public double distanceTo(Point p)
+	{
+		return Math.sqrt(Math.pow(p.X-X, 2)+Math.pow(p.Y-Y, 2));
 	}	
 }

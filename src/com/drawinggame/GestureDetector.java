@@ -148,6 +148,7 @@ public class GestureDetector implements OnTouchListener
 		} else if(type.equals("c"))
 		{
 			control.selected.cancelMove();
+			Log.e("myid", "c");
 		}
     }
 	public void endShapeSingle(String type, Point screenPoint)

@@ -15,8 +15,6 @@ public final class Control_Group extends Control_Main
 	protected ArrayList<Enemy_Sheild> sheilds = new ArrayList<Enemy_Sheild>();
 	protected int destinationRotation;
 	protected int groupRotation;
-	protected Point groupLocation;
-	protected double groupRadius;
 	private static double r2d = 180/Math.PI;
 	protected boolean hasDestination = false;
 	private boolean hasChangedMembers = false;
@@ -25,6 +23,8 @@ public final class Control_Group extends Control_Main
 	private boolean organizing = false;
 	private static double spacing = 40;
 	private static double spacingSlanted = Math.sqrt(2)*spacing/2;
+	private boolean attacking = false;
+	
 	public Control_Group(Controller controlSet, ArrayList<Enemy> humansSet, boolean onPlayersTeam)
 	{
 		super(controlSet, onPlayersTeam);
@@ -68,6 +68,7 @@ public final class Control_Group extends Control_Main
 	}
 	protected void frameCall()
 	{
+		attacking = false;
 		if(organizing)
 		{
 			boolean doneOrganizing = true;
@@ -89,25 +90,29 @@ public final class Control_Group extends Control_Main
 				}
 				organizing = false;
 			}
-		}
-		for(int i = 0; i < archers.size(); i ++) archerFrame(archers.get(i));
-		for(int i = 0; i < mages.size(); i ++) mageFrame(mages.get(i));
-		for(int i = 0; i < sheilds.size(); i ++) sheildFrame(sheilds.get(i));
-		groupLocation = averagePoint();
-		groupRotation = averageRotation();
-		if(hasDestination)
+		} else if(hasDestination)
 		{
 			if(Math.sqrt(Math.pow(groupLocation.X-destLocation.X, 2)+Math.pow(groupLocation.Y-destLocation.Y, 2)) < 30) // reached destination
 			{
 				hasDestination = false;
 			}
-		}
-		if(hasChangedMembers)
+		} else if(enemiesAround())
 		{
-			groupRadius = Math.sqrt(humans.size()) * spacing;
-			hasChangedMembers = false;
-			formUp();
+			attacking = true;
+		} else
+		{
+			if(hasChangedMembers)
+			{
+				groupRadius = Math.sqrt(humans.size()) * spacing;
+				hasChangedMembers = false;
+				formUp();
+			}
 		}
+		groupLocation = averagePoint();
+		groupRotation = averageRotation();
+		for(int i = 0; i < archers.size(); i ++) archerFrame(archers.get(i));
+		for(int i = 0; i < mages.size(); i ++) mageFrame(mages.get(i));
+		for(int i = 0; i < sheilds.size(); i ++) sheildFrame(sheilds.get(i));
 	}
 	protected void formUp()
 	{
@@ -466,15 +471,22 @@ public final class Control_Group extends Control_Main
 	{
 		if(archer.action.equals("Shoot"))
 		{
-		} else				// INTERUPTABLE PART
+		} else if(archer.action.equals("Move"))
 		{
-			if(archer.action.equals("Move"))
+		} else 			// INTERUPTABLE PART
+		{
+			if(archer.hasDestination)
 			{
-			} else
+				archer.runTowardsDestination();
+			} else if(attacking)
 			{
 				if(archer.hasDestination)
 				{
 					archer.runTowardsDestination();
+				} else if(attacking)
+				{
+					Enemy target = findClosestEnemy(archer);
+					
 				}
 			}
 		}
@@ -483,15 +495,22 @@ public final class Control_Group extends Control_Main
 	{
 		if(mage.action.equals("Roll"))
 		{
+		} else if(mage.action.equals("Move"))
+		{
 		} else				// INTERUPTABLE PART 
 		{
-			if(mage.action.equals("Move"))
+			if(mage.hasDestination)
 			{
-			} else
+				mage.runTowardsDestination();
+			} else if(attacking)
 			{
 				if(mage.hasDestination)
 				{
 					mage.runTowardsDestination();
+				} else if(attacking)
+				{
+					Enemy target = findClosestEnemy(mage);
+					
 				}
 			}
 		}
@@ -502,16 +521,17 @@ public final class Control_Group extends Control_Main
 		{
 		} else if(sheild.action.equals("Sheild"))
 		{
-		} else				// INTERUPTABLE PART
+		} else if(sheild.action.equals("Move"))
 		{
-			if(sheild.action.equals("Move"))
+		} else
+		{				// INTERUPTABLE PART
+			if(sheild.hasDestination)
 			{
-			} else
+				sheild.runTowardsDestination();
+			} else if(attacking)
 			{
-				if(sheild.hasDestination)
-				{
-					sheild.runTowardsDestination();
-				}
+				Enemy target = findClosestEnemy(sheild);
+				
 			}
 		}
 	}

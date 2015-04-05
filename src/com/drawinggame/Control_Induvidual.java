@@ -11,8 +11,14 @@ abstract public class Control_Induvidual extends Control_Main
 		human = humanSet;
 		human.setController(this);
 		isGroup = false;
+		groupLocation = new Point(human.x, human.y);
+		groupRadius = 20;
 	}
-	abstract protected void frameCall();
+	protected void frameCall()
+	{
+		groupLocation.X = human.x;
+		groupLocation.Y = human.y;
+	}
 	@Override
 	protected void setDestination(Point p)
 	{
