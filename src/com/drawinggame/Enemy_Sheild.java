@@ -53,9 +53,20 @@ public final class Enemy_Sheild extends Enemy
 		turnToward();
 		if(frame<55 && frame> 47)
 		{
-			checkDanger();
-			if(inDanger>0) frame = 50;
+			if(checkDanger()>0) frame = 50;
 		}
+	}
+	protected void block()
+	{
+		turnToward();
+		action = "Sheild";
+		frame=frames[4][0];
+	}
+	protected void attack(EnemyShell target)
+	{
+		turnToward(target);
+		action = "Melee";
+		frame=frames[3][0];
 	}
 	/**
 	 * select this enemy, take it out of a group if need be

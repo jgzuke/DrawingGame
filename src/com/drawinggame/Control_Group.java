@@ -23,7 +23,7 @@ public final class Control_Group extends Control_Main
 	private boolean organizing = false;
 	private static double spacing = 40;
 	private static double spacingSlanted = Math.sqrt(2)*spacing/2;
-	private boolean attacking = false;
+	private boolean groupEngaged = false;
 	
 	public Control_Group(Controller controlSet, ArrayList<Enemy> humansSet, boolean onPlayersTeam)
 	{
@@ -68,7 +68,7 @@ public final class Control_Group extends Control_Main
 	}
 	protected void frameCall()
 	{
-		attacking = false;
+		groupEngaged = false;
 		if(organizing)
 		{
 			boolean doneOrganizing = true;
@@ -98,7 +98,7 @@ public final class Control_Group extends Control_Main
 			}
 		} else if(enemiesAround())
 		{
-			attacking = true;
+			groupEngaged = true;
 		} else
 		{
 			if(hasChangedMembers)
@@ -478,16 +478,9 @@ public final class Control_Group extends Control_Main
 			if(archer.hasDestination)
 			{
 				archer.runTowardsDestination();
-			} else if(attacking)
+			} else if(groupEngaged)
 			{
-				if(archer.hasDestination)
-				{
-					archer.runTowardsDestination();
-				} else if(attacking)
-				{
-					Enemy target = findClosestEnemy(archer);
-					
-				}
+				Enemy target = findClosestEnemy(archer);
 			}
 		}
 	}
@@ -502,15 +495,37 @@ public final class Control_Group extends Control_Main
 			if(mage.hasDestination)
 			{
 				mage.runTowardsDestination();
-			} else if(attacking)
+			} else if(groupEngaged)
 			{
-				if(mage.hasDestination)
+				Enemy target = findClosestEnemy(mage);
+				double distanceToTarget = mage.distanceTo(target);
+				int inDanger = mage.checkDanger();
+				if(distanceToTarget<60)		// MAGES ALWAYS MOVING, DONT STOP TO SHOOT
 				{
-					mage.runTowardsDestination();
-				} else if(attacking)
+					mage.rollAway(target);
+				} else if(inDanger>0)
 				{
-					Enemy target = findClosestEnemy(mage);
-					
+					if(mage.rollTimer<0)
+					{
+						mage.rollSidewaysDanger();
+					} else
+					{
+						mage.runSideways(target);
+					}
+				} else if(distanceToTarget<100)
+				{
+					mage.runAway(target);
+				} else if(distanceToTarget < 160)
+				{
+					mage.runAround(120, (int)distanceToTarget, target);
+				} else
+				{
+					mage.runTowards(target);
+				}
+				
+				if(mage.shoot>3&&mage.energy>14&& distanceToTarget < 160)
+				{
+					mage.shoot(target);
 				}
 			}
 		}
@@ -528,10 +543,21 @@ public final class Control_Group extends Control_Main
 			if(sheild.hasDestination)
 			{
 				sheild.runTowardsDestination();
-			} else if(attacking)
+			} else if(groupEngaged)
 			{
 				Enemy target = findClosestEnemy(sheild);
-				
+				double distanceToTarget = sheild.distanceTo(target);
+				if(distanceToTarget < 30)
+				{
+					sheild.attack(target);
+				} else if(sheild.checkDanger()>1)
+				{
+					sheild.block();
+				} else
+				{
+					sheild.runTowards(target);
+				}
+
 			}
 		}
 	}

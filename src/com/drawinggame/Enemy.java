@@ -181,7 +181,7 @@ abstract public class Enemy extends EnemyShell
 	}
 	protected void turnToward()
 	{
-		turnToward(closestDanger.x, closestDanger.y);
+		turnToward(closestDanger.X, closestDanger.Y);
 	}
 	protected void turnToward(EnemyShell target)
 	{
@@ -233,6 +233,10 @@ abstract public class Enemy extends EnemyShell
 		{
 			runAway(target);
 		}
+	}
+	protected void rollSidewaysDanger()
+	{
+		rollSideways(closestDanger.X, closestDanger.Y);
 	}
 	protected void rollSideways(EnemyShell target)
 	{

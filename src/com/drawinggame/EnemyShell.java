@@ -6,10 +6,11 @@ package com.drawinggame;
 
 import java.util.ArrayList;
 
+import lx.interaction.dollar.Point;
+
 import com.spritelib.Sprite;
 
 import android.graphics.Bitmap;
-import android.graphics.Point;
 import android.widget.Toast;
 
 abstract public class EnemyShell extends Human {
@@ -22,8 +23,7 @@ abstract public class EnemyShell extends Human {
 	protected double lastX;
 	protected double lastY;
 	protected Bitmap[] myImage;
-	protected int inDanger = 0;
-	protected Point closestDanger = new Point();
+	protected Point closestDanger;
 	protected double distanceFound;
 	protected int radius = 20;
 	protected double xMove;
@@ -189,28 +189,29 @@ abstract public class EnemyShell extends Human {
 	/**
 	 * Checks whether any Proj_Trackers are headed for object
 	 */
-	protected void checkDanger() {
-		inDanger = 0;
-		closestDanger.x = 0;
-		closestDanger.y = 0;
+	protected int checkDanger() {
+		int inDanger = 0;
+		closestDanger.X = 0;
+		closestDanger.Y = 0;
 		for (int i = 0; i < proj_Tracker_AOEs.size(); i++) {
 			Proj_Tracker_AOE AOE = proj_Tracker_AOEs.get(i);
 			if (AOE.timeToDeath > 7 && Math.pow(x - AOE.x, 2) + Math.pow(y - AOE.y, 2) < Math.pow(AOE.widthDone + 25, 2)) {
-				closestDanger.x += AOE.x;
-				closestDanger.y += AOE.y;
+				closestDanger.X += AOE.x;
+				closestDanger.Y += AOE.y;
 				inDanger++;
 			}
 		}
 		for (int i = 0; i < proj_Trackers.size(); i++) {
 			Proj_Tracker shot = proj_Trackers.get(i);
 			if (shot.goodTarget(this, 110)) {
-				closestDanger.x += shot.x * 2;
-				closestDanger.y += shot.y * 2;
+				closestDanger.X += shot.x * 2;
+				closestDanger.Y += shot.y * 2;
 				inDanger += 2;
 			}
 		}
-		closestDanger.x /= inDanger;
-		closestDanger.y /= inDanger;
+		closestDanger.X /= inDanger;
+		closestDanger.Y /= inDanger;
+		return inDanger;
 	}
 	/**
 	 * Checks distance to player
