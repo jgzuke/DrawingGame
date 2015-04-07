@@ -11,11 +11,11 @@ import com.spritelib.Sprite;
 public final class Enemy_Archer extends Enemy
 {
 	private EnemyShell target;
-	public Enemy_Archer(Controller creator, double X, double Y, double R, int HP, int ImageIndex, boolean isOnPayersTeam)
+	public Enemy_Archer(Controller creator, double X, double Y, boolean isOnPayersTeam)
 	{
-		super(creator, X, Y, R, HP, ImageIndex, isOnPayersTeam);
+		super(creator, X, Y, 1700, 1, isOnPayersTeam);
 		frame=0;
-		baseHp(HP);
+		baseHp(1700);
 		if(control.getRandomInt(3) == 0)
 		{
 			runRandom();

@@ -9,11 +9,11 @@ public final class Enemy_Mage extends Enemy
 {
 	int shoot = 4;
 	int energy = 90;
-	public Enemy_Mage(Controller creator, double X, double Y, double R, int HP, int ImageIndex, boolean isOnPayersTeam)
+	public Enemy_Mage(Controller creator, double X, double Y, boolean isOnPayersTeam)
 	{
-		super(creator, X, Y, R, HP, ImageIndex, isOnPayersTeam);
+		super(creator, X, Y, 700, 2, isOnPayersTeam);
 		frame=0;
-		baseHp(HP);
+		baseHp(700);
 		if(control.getRandomInt(3) == 0)
 		{
 			runRandom();
