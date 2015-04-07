@@ -474,6 +474,10 @@ public final class Control_Group extends Control_Main
 			humans.get(i).hasDestination = false;
 		}
 	}
+	
+	
+	
+	
 	protected void archerFrame(Enemy_Archer archer)
 	{
 		if(archer.action.equals("Shoot"))
@@ -488,6 +492,18 @@ public final class Control_Group extends Control_Main
 			} else if(groupEngaged)
 			{
 				Enemy target = findClosestEnemy(archer);
+				if(target == null) return;
+				double distanceToTarget = archer.distanceTo(target);
+				if(distanceToTarget < 50 || archer.hp<600 && distanceToTarget<100)
+				{
+					archer.runAway(target);
+				} else if(distanceToTarget<140)
+				{
+					archer.shoot(target);
+				} else
+				{
+					archer.runTowards(target);
+				}
 			}
 		}
 	}
@@ -505,6 +521,7 @@ public final class Control_Group extends Control_Main
 			} else if(groupEngaged)
 			{
 				Enemy target = findClosestEnemy(mage);
+				if(target == null) return;
 				double distanceToTarget = mage.distanceTo(target);
 				int inDanger = mage.checkDanger();
 				if(distanceToTarget<60)		// MAGES ALWAYS MOVING, DONT STOP TO SHOOT
@@ -553,6 +570,7 @@ public final class Control_Group extends Control_Main
 			} else if(groupEngaged)
 			{
 				Enemy target = findClosestEnemy(sheild);
+				if(target == null) return;
 				double distanceToTarget = sheild.distanceTo(target);
 				if(distanceToTarget < 30)
 				{
@@ -564,7 +582,20 @@ public final class Control_Group extends Control_Main
 				{
 					sheild.runTowards(target);
 				}
-
+			}
+		}
+	}
+	@Override
+	protected void archerDoneFiring(Enemy_Archer archer)
+	{
+		if(enemiesAround() && !hasDestination && !organizing)
+		{
+			Enemy target = findClosestEnemy(archer);
+			if(target == null) return;
+			double distanceToTarget = archer.distanceTo(target);
+			if(archer.hp>600&&distanceToTarget<160&&distanceToTarget>50)
+			{
+				archer.shoot(target);
 			}
 		}
 	}

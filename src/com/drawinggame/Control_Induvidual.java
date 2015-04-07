@@ -42,4 +42,6 @@ abstract public class Control_Induvidual extends Control_Main
 	{
 		human.hasDestination = false;
 	}
+	@Override
+	protected void archerDoneFiring(Enemy_Archer archer) {}
 }

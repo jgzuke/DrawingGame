@@ -153,6 +153,7 @@ abstract public class EnemyShell extends Human {
 		hp -= damage*2;
 		if(hp < 1)
 		{
+			myController.removeHuman(this);
 			if(onPlayersTeam)
 			{
 				control.spriteController.allies.remove(this);

@@ -31,10 +31,8 @@ abstract public class Control_Main
 	}
 	protected boolean enemiesAround()
 	{
-		Log.e("myid", "enemychecking");
 		for(int i = 0; i < enemyControllers.size(); i++)
 		{
-			Log.e("myid", "enemycontroller");
 			double distance = groupLocation.distanceTo(enemyControllers.get(i).groupLocation);
 			Log.e("myid", Double.toString(distance));
 			Log.e("myid", Double.toString(300 + groupRadius + enemyControllers.get(i).groupRadius));
@@ -47,6 +45,7 @@ abstract public class Control_Main
 	}
 	protected Enemy findClosestEnemy(Enemy me)
 	{
+		if(enemies.size() == 0) return null;
 		double closest = Double.MAX_VALUE;
 		int index = 0;
 		for(int i = 0; i < enemies.size(); i++)
@@ -65,6 +64,7 @@ abstract public class Control_Main
 		return Math.sqrt(Math.pow(me.x-him.x, 2)+Math.pow(me.y-him.y, 2));
 	}
 	abstract protected void frameCall();
+	abstract protected void archerDoneFiring(Enemy_Archer archer);
 	abstract protected void removeHuman(EnemyShell target);
 	abstract protected void setDestination(Point p);
 	abstract protected void cancelMove();

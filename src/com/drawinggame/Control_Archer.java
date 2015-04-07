@@ -15,13 +15,41 @@ public final class Control_Archer extends Control_Induvidual
 		{
 		} else if(archer.action.equals("Move"))
 		{
-		} else
+		} else 			// INTERUPTABLE PART
 		{
 			if(archer.hasDestination)
 			{
 				archer.runTowardsDestination();
+			} else if(enemiesAround())
+			{
+				Enemy target = findClosestEnemy(archer);
+				if(target == null) return;
+				double distanceToTarget = archer.distanceTo(target);
+				if(distanceToTarget < 50 || archer.hp<600 && distanceToTarget<100)
+				{
+					archer.runAway(target);
+				} else if(distanceToTarget<140)
+				{
+					archer.shoot(target);
+				} else
+				{
+					archer.runTowards(target);
+				}
 			}
-			//if()
+		}
+	}
+	@Override
+	protected void archerDoneFiring(Enemy_Archer archer)
+	{
+		if(enemiesAround() && !archer.hasDestination)
+		{
+			Enemy target = findClosestEnemy(archer);
+			if(target == null) return;
+			double distanceToTarget = archer.distanceTo(target);
+			if(archer.hp>600&&distanceToTarget<160&&distanceToTarget>50)
+			{
+				archer.shoot(target);
+			}
 		}
 	}
 }

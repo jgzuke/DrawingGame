@@ -41,38 +41,7 @@ public final class Enemy_Archer extends Enemy
 			aimAheadOfTarget(v*2, target); //TODO add extra frames for when you aim
 		} else if(frame==36) // shoots
 		{
-			boolean hasTarget = true;
-			if(!checkLOS(target))
-			{
-				hasTarget = false;
-				ArrayList<Sprite> allEnemies = new ArrayList<Sprite>();
-				for(int i = 0; i < enemies.size(); i++)
-				{
-					double distance = checkDistance(x, y, enemies.get(i).x,  enemies.get(i).y);
-					if(distance <= 50) return;
-					if(distance < 160) allEnemies.add(enemies.get(i));
-				}
-				for(int i = 0; i < enemyStructures.size(); i++)
-				{
-					double distance = checkDistance(x, y, enemyStructures.get(i).x,  enemyStructures.get(i).y);
-					if(distance <= 50) return;
-					if(distance < 160) allEnemies.add(enemyStructures.get(i));
-				}
-				for(int i = 0; i < allEnemies.size(); i++)
-				{
-					if(checkLOS(allEnemies.get(i)))
-					{
-						hasTarget = true;
-						target = (EnemyShell) allEnemies.get(i);
-						break;
-					}
-				}
-				if(!hasTarget) return;
-			}
-			control.spriteController.createProj_Tracker(rotation, v, 130, x, y, onPlayersTeam);
-			control.soundController.playEffect("arrowrelease");
-			double distance = checkDistance(x, y, target.x,  target.y);
-			if(hp>600&&distance<160&&distance>50) frame=25; // shoots again
+			myController.archerDoneFiring(this);
 		}
 	}
 	private int[][] makeFrames()

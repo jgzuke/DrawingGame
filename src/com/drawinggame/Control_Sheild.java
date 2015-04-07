@@ -18,10 +18,25 @@ public final class Control_Sheild extends Control_Induvidual
 		} else if(sheild.action.equals("Move"))
 		{
 		} else
-		{
+		{				// INTERUPTABLE PART
 			if(sheild.hasDestination)
 			{
 				sheild.runTowardsDestination();
+			} else if(enemiesAround())
+			{
+				Enemy target = findClosestEnemy(sheild);
+				if(target == null) return;
+				double distanceToTarget = sheild.distanceTo(target);
+				if(distanceToTarget < 30)
+				{
+					sheild.attack(target);
+				} else if(sheild.checkDanger()>1)
+				{
+					sheild.block();
+				} else
+				{
+					sheild.runTowards(target);
+				}
 			}
 		}
 	}
