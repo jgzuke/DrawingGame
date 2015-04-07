@@ -23,7 +23,7 @@ abstract public class EnemyShell extends Human {
 	protected double lastX;
 	protected double lastY;
 	protected Bitmap[] myImage;
-	protected Point closestDanger;
+	protected Point closestDanger = new Point(0,0);
 	protected double distanceFound;
 	protected int radius = 20;
 	protected double xMove;

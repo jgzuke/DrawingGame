@@ -10,6 +10,7 @@ public final class Control_Mage extends Control_Induvidual
 	@Override
 	protected void frameCall()
 	{
+		super.frameCall();
 		if(mage.action.equals("Roll"))
 		{
 		} else if(mage.action.equals("Move"))

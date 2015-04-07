@@ -10,6 +10,7 @@ public final class Control_Sheild extends Control_Induvidual
 	@Override
 	protected void frameCall()
 	{
+		super.frameCall();
 		if(sheild.action.equals("Melee"))
 		{
 		} else if(sheild.action.equals("Sheild"))

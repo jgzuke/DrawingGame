@@ -2,6 +2,8 @@ package com.drawinggame;
 
 import java.util.ArrayList;
 
+import android.util.Log;
+
 import lx.interaction.dollar.Point;
 
 abstract public class Control_Main
@@ -10,7 +12,7 @@ abstract public class Control_Main
 	protected boolean isGroup;
 	protected boolean onPlayersTeam;
 	protected Point groupLocation;
-	protected double groupRadius;
+	protected double groupRadius = 0;
 	protected ArrayList<Control_Main> enemyControllers;
 	protected ArrayList<Enemy> enemies;
 	public Control_Main(Controller controlSet, boolean isOnPlayersTeam)
@@ -29,9 +31,13 @@ abstract public class Control_Main
 	}
 	protected boolean enemiesAround()
 	{
+		Log.e("myid", "enemychecking");
 		for(int i = 0; i < enemyControllers.size(); i++)
 		{
+			Log.e("myid", "enemycontroller");
 			double distance = groupLocation.distanceTo(enemyControllers.get(i).groupLocation);
+			Log.e("myid", Double.toString(distance));
+			Log.e("myid", Double.toString(300 + groupRadius + enemyControllers.get(i).groupRadius));
 			if(distance < 300 + groupRadius + enemyControllers.get(i).groupRadius)
 			{
 				return true;

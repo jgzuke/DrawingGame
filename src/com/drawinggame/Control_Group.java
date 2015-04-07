@@ -424,6 +424,13 @@ public final class Control_Group extends Control_Main
 		}
 		return sum/humans.size();
 	}
+	protected void setSelected()
+	{
+		for(int i = 0; i < humans.size(); i++)
+		{
+			humans.get(i).selected = true;
+		}
+	}
 	@Override
 	protected void setDestination(Point p)
 	{

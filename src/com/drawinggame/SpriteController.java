@@ -426,23 +426,39 @@ public final class SpriteController extends SpriteDrawer
 	 */
 	protected boolean selectEnemy(double x, double y)
 	{
-		ArrayList<Enemy> group = new ArrayList<Enemy>();
-		int countGroup = 0;
+		Enemy selectedEnemy = null;
 		for(int i = 0; i < allies.size(); i++)
 		{
 			if(allies.get(i) != null)
 			{
-				if(Math.pow(x-allies.get(i).x, 2) + Math.pow(y-allies.get(i).y, 2) < 800)
+				if(Math.pow(x-allies.get(i).x, 2) + Math.pow(y-allies.get(i).y, 2) < 600)
 				{
-					countGroup ++;
-					if(countGroup > 28) break;
-					group.add(allies.get(i));
+					selectedEnemy = allies.get(i);
+					break;
 				}
 			}
 		}
-		if(group.size()!=0) deselectEnemies();
-		selectGroup(group);
-		return group.size()!=0;
+		if(selectedEnemy!=null)
+		{
+			if(selectedEnemy.myController.isGroup)
+			{
+				if(control.selected == null || !selectedEnemy.myController.equals(control.selected))
+				{
+					deselectEnemies();
+					((Control_Group)selectedEnemy.myController).setSelected();
+					control.gestureDetector.selectType = "group";
+					control.selected = selectedEnemy.myController;
+					return true;
+				}
+			}
+			deselectEnemies();
+			selectedEnemy.selected = true;
+			selectedEnemy.selectSingle();
+			control.gestureDetector.selectType = "single";
+			control.selected = selectedEnemy.myController;
+			return true;
+		}
+		return false;
 	}
 	protected void selectGroup(ArrayList<Enemy> group)
 	{

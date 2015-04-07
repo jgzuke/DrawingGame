@@ -10,6 +10,7 @@ public final class Control_Archer extends Control_Induvidual
 	@Override
 	protected void frameCall()
 	{
+		super.frameCall();
 		if(archer.action.equals("Shoot"))
 		{
 		} else if(archer.action.equals("Move"))
