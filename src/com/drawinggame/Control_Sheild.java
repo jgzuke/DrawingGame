@@ -19,7 +19,7 @@ public final class Control_Sheild extends Control_Induvidual
 		{
 		} else
 		{				// INTERUPTABLE PART
-			if(sheild.hasDestination)
+			if(retreating)
 			{
 				sheild.runTowardsDestination();
 			} else if(enemiesAround())
@@ -37,6 +37,9 @@ public final class Control_Sheild extends Control_Induvidual
 				{
 					sheild.runTowards(target);
 				}
+			} else if(sheild.hasDestination)
+			{
+				sheild.runTowardsDestination();
 			}
 		}
 	}

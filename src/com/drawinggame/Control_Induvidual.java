@@ -22,6 +22,7 @@ abstract public class Control_Induvidual extends Control_Main
 	@Override
 	protected void setDestination(Point p)
 	{
+		if(enemiesAround()) retreating = true;
 		human.hasDestination = true;
 		human.destinationX = (int)p.X;
 		human.destinationY = (int)p.Y;

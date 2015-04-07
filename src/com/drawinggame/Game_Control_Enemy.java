@@ -4,14 +4,14 @@ public final class Game_Control_Enemy extends Game_Control
 {
 	public Game_Control_Enemy(Controller controlSet)
 	{
-		super(controlSet, false);
+		super(controlSet);
 	}
 	protected void frameCall()
 	{
 		super.frameCall();
-		if(mana > 50)
+		if(mana > spriteControl.manaPrices[3])
 		{
-			
+			spriteControl.makeEnemy(3, 1100, 1100, false);
 		}
 	}
 }

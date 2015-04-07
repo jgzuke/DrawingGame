@@ -124,7 +124,6 @@ abstract public class EnemyShell extends Human {
 		double moveRads;
 		double xdif;
 		double ydif;
-		ArrayList < Enemy > enemies = control.spriteController.enemies;
 		for (int i = 0; i < enemies.size(); i++) {
 			if (enemies.get(i) != null && enemies.get(i).x != x) {
 				xdif = x - enemies.get(i).x;

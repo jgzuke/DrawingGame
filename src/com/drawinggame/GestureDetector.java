@@ -111,19 +111,19 @@ public class GestureDetector implements OnTouchListener
 		{
 			if(!control.wallController.checkHitBack(p.X, p.Y, true))
 			{
-				control.spriteController.makeEnemy(0, (int)p.X, (int)p.Y, -90, true);
+				control.spriteController.makeEnemy(0, (int)p.X, (int)p.Y, true);
 			}
 		} else if(type.equals("lineV"))
 		{
 			if(!control.wallController.checkHitBack(p.X, p.Y, true))
 			{
-				control.spriteController.makeEnemy(2, (int)p.X, (int)p.Y, -90, true);
+				control.spriteController.makeEnemy(2, (int)p.X, (int)p.Y, true);
 			}
 		} else if(type.equals("arrow"))
 		{
 			if(!control.wallController.checkHitBack(p.X, p.Y, true))
 			{
-				control.spriteController.makeEnemy(1, (int)p.X, (int)p.Y, -90, true);
+				control.spriteController.makeEnemy(1, (int)p.X, (int)p.Y, true);
 			}
 		} else
 		{

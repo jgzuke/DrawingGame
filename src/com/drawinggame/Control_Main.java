@@ -10,6 +10,7 @@ abstract public class Control_Main
 {
 	protected Controller control;
 	protected boolean isGroup;
+	protected boolean retreating = false;
 	protected boolean onPlayersTeam;
 	protected Point groupLocation;
 	protected double groupRadius = 0;

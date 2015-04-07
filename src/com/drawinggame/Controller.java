@@ -81,6 +81,8 @@ public final class Controller
 		
 		wallController = new WallController(startSet, this);
 		spriteController = new SpriteController(startSet, this);
+		spriteController.playerGameControl.setEnemies(true);
+		spriteController.enemyGameControl.setEnemies(false);
 		imageLibrary = new ImageLibrary(startSet, this); // creates image library
 		levelController = new LevelController(this);
 		
@@ -94,20 +96,9 @@ public final class Controller
 	}
 	public void makeGroup()
 	{
-		spriteController.makeEnemy(0, 500, 500, 0, true);
-		spriteController.makeEnemy(0, 500, 500, 0, true);
-		spriteController.makeEnemy(0, 500, 500, 0, true);
-		spriteController.makeEnemy(0, 500, 500, 0, true);
-		spriteController.makeEnemy(1, 500, 500, 0, true);
-		spriteController.makeEnemy(1, 500, 500, 0, true);
-		spriteController.makeEnemy(1, 500, 500, 0, true);
-		spriteController.makeEnemy(1, 500, 500, 0, true);
-		spriteController.makeEnemy(1, 500, 500, 0, true);
-		spriteController.makeEnemy(2, 500, 500, 0, true);
-		spriteController.makeEnemy(2, 500, 500, 0, true);
-		spriteController.makeEnemy(2, 500, 500, 0, true);
-		spriteController.makeEnemy(2, 500, 500, 0, true);
-		spriteController.makeEnemy(2, 500, 500, 0, true);
+		spriteController.makeEnemy(3, 800, 1100, true);
+		spriteController.makeEnemy(4, 1100, 1100, true);
+		spriteController.makeEnemy(5, 1100, 1400, true);
 	}
 	protected void die()
 	{

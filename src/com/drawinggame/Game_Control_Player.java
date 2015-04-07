@@ -6,7 +6,7 @@ public final class Game_Control_Player extends Game_Control
 {
 	public Game_Control_Player(Controller controlSet)
 	{
-		super(controlSet, true);
+		super(controlSet);
 	}
 	protected void frameCall()
 	{

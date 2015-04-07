@@ -19,7 +19,7 @@ public final class ImageLibrary extends ImageLoader
 	//protected Bitmap currentLevel;
 	//protected Bitmap currentLevelTop;
 	protected Bitmap backDrop;
-	protected Bitmap[] createMarkers = new Bitmap[3];
+	protected Bitmap[] createMarkers = new Bitmap[6];
 	private Controller control;
 	/**
 	 * loads in images and optimizes settings for loading
@@ -46,6 +46,9 @@ public final class ImageLibrary extends ImageLoader
 		createMarkers[0] = loadImage("createswordsman", 44, 66);
 		createMarkers[1] = loadImage("createarcher", 35, 64);
 		createMarkers[2] = loadImage("createmage", 36, 62);
+		createMarkers[3] = loadImage("createswordsman", 44, 66);
+		createMarkers[4] = loadImage("createarcher", 35, 64);
+		createMarkers[5] = loadImage("createmage", 36, 62);
 		backDrop = loadImage("leveltile1", 400, 400);
 		enemyImages[0]= loadArray1D(55, "goblin_swordsman", 110, 70);
 		enemyImages[1]= loadArray1D(49, "goblin_archer", 80, 50);

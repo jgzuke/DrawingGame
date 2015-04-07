@@ -29,7 +29,7 @@ public class Structure_Spawn extends Structure
 		if(timer == 100)
 		{
 			timer = 0;
-			control.spriteController.makeEnemy(childType, (int)x, (int)y, control.getRandomInt(360), onPlayersTeam);
+			control.spriteController.makeEnemy(childType, (int)x, (int)y, onPlayersTeam);
 			control.spriteController.createProj_TrackerAOE(x, y, 140, false, onPlayersTeam);
 			control.soundController.playEffect("burst");
 		}

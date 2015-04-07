@@ -63,7 +63,7 @@ public final class SpriteController extends SpriteDrawer
 	protected ArrayList<Proj_Tracker_AOE> proj_TrackerE_AOEs = new ArrayList<Proj_Tracker_AOE>();
 	protected ArrayList<CreationMarker> creationMarkers = new ArrayList<CreationMarker>();
 	protected Bitmap playerBlessing;
-	private int [] manaPrices = {50, 30, 70};
+	protected int [] manaPrices = {50, 30, 70, (int)Math.pow(520, 0.985), (int)Math.pow(420, 0.985), (int)Math.pow(750, 0.985)};
 	protected Bitmap isSelected;
 	protected Game_Control_Player playerGameControl;
 	protected Game_Control_Enemy enemyGameControl;
@@ -98,14 +98,16 @@ public final class SpriteController extends SpriteDrawer
 	 * @param r rotation
 	 * @param isOnPlayersTeam which team they are on
 	 */
-	protected void makeEnemy(int type, int x, int y, int r, boolean isOnPlayersTeam)
+	protected void makeEnemy(int type, int x, int y, boolean isOnPlayersTeam)
 	{
 		if(isOnPlayersTeam)
 		{
 			if(playerGameControl.mana < manaPrices[type]) return;
+			playerGameControl.mana -= manaPrices[type];
 		} else
 		{
 			if(enemyGameControl.mana < manaPrices[type]) return;
+			enemyGameControl.mana -= manaPrices[type];
 		}
 		ArrayList<Enemy> toAdd;
 		ArrayList<Control_Main> toAddController;
@@ -119,73 +121,67 @@ public final class SpriteController extends SpriteDrawer
 			toAddController = enemyControllers;
 			toAdd = enemies;
 		}
+		switch(type)
+		{
+		case 0:
+		case 1:
+		case 2:
+			makeEnemyBasic(type, x, y, isOnPlayersTeam, toAdd, toAddController);
+			break;
+		case 3:
+			makeGroup(7, 2, 6, 0, x, y, isOnPlayersTeam, toAdd, toAddController);
+			break;
+		case 4:
+			makeGroup(3, 2, 3, 1, x, y, isOnPlayersTeam, toAdd, toAddController);
+			break;
+		case 5:
+			makeGroup(7, 4, 4, 2, x, y, isOnPlayersTeam, toAdd, toAddController);
+			break;
+		}
+	}
+	protected Enemy makeEnemyBasic(int type, int x, int y, boolean isOnPlayersTeam, ArrayList<Enemy> toAdd, ArrayList<Control_Main> toAddController)
+	{
 		Enemy newEnemy = null;
-		ArrayList<Enemy> newGroup = new ArrayList<Enemy>();
-		Control_Group enemyGroup = null;
 		switch(type)
 		{
 		case 0:
 			newEnemy = new Enemy_Sheild(control, x, y, isOnPlayersTeam);
 			toAddController.add(new Control_Sheild(control, (Enemy_Sheild) newEnemy, isOnPlayersTeam));
+			toAdd.add(newEnemy);
 			break;
 		case 1:
 			newEnemy = new Enemy_Archer(control, x, y, isOnPlayersTeam);
 			toAddController.add(new Control_Archer(control, (Enemy_Archer) newEnemy, isOnPlayersTeam));
+			toAdd.add(newEnemy);
 			break;
 		case 2:
 			newEnemy = new Enemy_Mage(control, x, y, isOnPlayersTeam);
 			toAddController.add(new Control_Mage(control, (Enemy_Mage) newEnemy, isOnPlayersTeam));
-			break;
-		case 3:
-			newGroup.add(new Enemy_Mage(control, x, y, isOnPlayersTeam));
-			newGroup.add(new Enemy_Mage(control, x, y, isOnPlayersTeam));
-			newGroup.add(new Enemy_Mage(control, x, y, isOnPlayersTeam));
-			newGroup.add(new Enemy_Archer(control, x, y, isOnPlayersTeam));
-			newGroup.add(new Enemy_Archer(control, x, y, isOnPlayersTeam));
-			newGroup.add(new Enemy_Sheild(control, x, y, isOnPlayersTeam));
-			newGroup.add(new Enemy_Sheild(control, x, y, isOnPlayersTeam));
-			newGroup.add(new Enemy_Sheild(control, x, y, isOnPlayersTeam));
-			newGroup.add(new Enemy_Sheild(control, x, y, isOnPlayersTeam));
-			newGroup.add(new Enemy_Sheild(control, x, y, isOnPlayersTeam));
-			enemyGroup = groupEnemies(newGroup);
-			enemyGroup.setDestination(new Point(x, y));
-			enemyGroup.setLayoutType(0);
-			break;
-		case 4:
-			newGroup.add(new Enemy_Mage(control, x, y, isOnPlayersTeam));
-			newGroup.add(new Enemy_Mage(control, x, y, isOnPlayersTeam));
-			newGroup.add(new Enemy_Mage(control, x, y, isOnPlayersTeam));
-			newGroup.add(new Enemy_Archer(control, x, y, isOnPlayersTeam));
-			newGroup.add(new Enemy_Archer(control, x, y, isOnPlayersTeam));
-			newGroup.add(new Enemy_Sheild(control, x, y, isOnPlayersTeam));
-			newGroup.add(new Enemy_Sheild(control, x, y, isOnPlayersTeam));
-			newGroup.add(new Enemy_Sheild(control, x, y, isOnPlayersTeam));
-			enemyGroup = groupEnemies(newGroup);
-			enemyGroup.setDestination(new Point(x, y));
-			enemyGroup.setLayoutType(1);
-			break;
-		case 5:
-			newGroup.add(new Enemy_Mage(control, x, y, isOnPlayersTeam));
-			newGroup.add(new Enemy_Mage(control, x, y, isOnPlayersTeam));
-			newGroup.add(new Enemy_Mage(control, x, y, isOnPlayersTeam));
-			newGroup.add(new Enemy_Mage(control, x, y, isOnPlayersTeam));
-			newGroup.add(new Enemy_Archer(control, x, y, isOnPlayersTeam));
-			newGroup.add(new Enemy_Archer(control, x, y, isOnPlayersTeam));
-			newGroup.add(new Enemy_Archer(control, x, y, isOnPlayersTeam));
-			newGroup.add(new Enemy_Archer(control, x, y, isOnPlayersTeam));
-			newGroup.add(new Enemy_Sheild(control, x, y, isOnPlayersTeam));
-			newGroup.add(new Enemy_Sheild(control, x, y, isOnPlayersTeam));
-			newGroup.add(new Enemy_Sheild(control, x, y, isOnPlayersTeam));
-			newGroup.add(new Enemy_Sheild(control, x, y, isOnPlayersTeam));
-			newGroup.add(new Enemy_Sheild(control, x, y, isOnPlayersTeam));
-			newGroup.add(new Enemy_Sheild(control, x, y, isOnPlayersTeam));
-			newGroup.add(new Enemy_Sheild(control, x, y, isOnPlayersTeam));
-			enemyGroup = groupEnemies(newGroup);
-			enemyGroup.setDestination(new Point(x, y));
-			enemyGroup.setLayoutType(0);
+			toAdd.add(newEnemy);
 			break;
 		}
-		toAdd.add(newEnemy);
+		return newEnemy;
+	}
+	protected void makeGroup(int sheilds, int archers, int mages, int formation, int x, int y, boolean isOnPlayersTeam, ArrayList<Enemy> toAdd, ArrayList<Control_Main> toAddController)
+	{
+		ArrayList<Enemy> newGroup = new ArrayList<Enemy>();
+		Control_Group enemyGroup = null;
+		for(int i = 0; i < mages; i++)
+		{
+			newGroup.add(makeEnemyBasic(2, x, y, isOnPlayersTeam, toAdd, toAddController));
+		}
+		for(int i = 0; i < archers; i++)
+		{
+			newGroup.add(makeEnemyBasic(1, x, y, isOnPlayersTeam, toAdd, toAddController));
+		}
+		for(int i = 0; i < sheilds; i++)
+		{
+			newGroup.add(makeEnemyBasic(0, x, y, isOnPlayersTeam, toAdd, toAddController));
+		}
+		enemyGroup = groupEnemies(newGroup);
+		toAddController.add(enemyGroup);
+		enemyGroup.setDestination(new Point(x, y));
+		enemyGroup.setLayoutType(formation);
 	}
 	/**
 	 * calls all sprites frame methods
@@ -521,6 +517,7 @@ public final class SpriteController extends SpriteDrawer
 			}
 			selectedEnemy.selected = true;
 			selectedEnemy.selectSingle();
+			selectedEnemy.speedCur=3.5;
 			control.gestureDetector.selectType = "single";
 			control.selected = selectedEnemy.myController;
 			return true;

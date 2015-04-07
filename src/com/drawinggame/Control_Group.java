@@ -33,7 +33,7 @@ public final class Control_Group extends Control_Main
 		double inGroups = 0;
 		for(int i = 0; i < humans.size(); i++)
 		{
-			if(humans.get(i).myController.isGroup)
+			if(humans.get(i).myController != null && humans.get(i).myController.isGroup)
 			{
 				layoutMode += ((Control_Group)humans.get(i).myController).layoutType;
 				inGroups ++;
@@ -68,6 +68,7 @@ public final class Control_Group extends Control_Main
 	}
 	protected void frameCall()
 	{
+		if(humans.size()==0) return;
 		groupEngaged = false;
 		if(organizing)
 		{
@@ -95,10 +96,17 @@ public final class Control_Group extends Control_Main
 			if(Math.sqrt(Math.pow(groupLocation.X-destLocation.X, 2)+Math.pow(groupLocation.Y-destLocation.Y, 2)) < 30) // reached destination
 			{
 				hasDestination = false;
+				retreating = false;
 			}
 		} else if(enemiesAround())
 		{
 			groupEngaged = true;
+		} else if(hasDestination)
+		{
+			if(Math.sqrt(Math.pow(groupLocation.X-destLocation.X, 2)+Math.pow(groupLocation.Y-destLocation.Y, 2)) < 30) // reached destination
+			{
+				hasDestination = false;
+			}
 		} else
 		{
 			if(hasChangedMembers)
@@ -434,6 +442,7 @@ public final class Control_Group extends Control_Main
 	@Override
 	protected void setDestination(Point p)
 	{
+		if(enemiesAround()) retreating = true;
 		hasDestination = true;
 		destLocation = p;
 		formUp(r2d*Math.atan2(destLocation.Y-groupLocation.Y, destLocation.X-groupLocation.X), destLocation.X, destLocation.Y);
@@ -486,7 +495,7 @@ public final class Control_Group extends Control_Main
 		{
 		} else 			// INTERUPTABLE PART
 		{
-			if(archer.hasDestination)
+			if(retreating)
 			{
 				archer.runTowardsDestination();
 			} else if(groupEngaged)
@@ -504,6 +513,9 @@ public final class Control_Group extends Control_Main
 				{
 					archer.runTowards(target);
 				}
+			} else if(archer.hasDestination)
+			{
+				archer.runTowardsDestination();
 			}
 		}
 	}
@@ -515,7 +527,7 @@ public final class Control_Group extends Control_Main
 		{
 		} else				// INTERUPTABLE PART 
 		{
-			if(mage.hasDestination)
+			if(retreating)
 			{
 				mage.runTowardsDestination();
 			} else if(groupEngaged)
@@ -551,6 +563,9 @@ public final class Control_Group extends Control_Main
 				{
 					mage.shoot(target);
 				}
+			} else if(mage.hasDestination)
+			{
+				mage.runTowardsDestination();
 			}
 		}
 	}
@@ -564,7 +579,7 @@ public final class Control_Group extends Control_Main
 		{
 		} else
 		{				// INTERUPTABLE PART
-			if(sheild.hasDestination)
+			if(retreating)
 			{
 				sheild.runTowardsDestination();
 			} else if(groupEngaged)
@@ -582,6 +597,9 @@ public final class Control_Group extends Control_Main
 				{
 					sheild.runTowards(target);
 				}
+			} else if(sheild.hasDestination)
+			{
+				sheild.runTowardsDestination();
 			}
 		}
 	}

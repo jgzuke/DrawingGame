@@ -17,7 +17,7 @@ public final class Control_Archer extends Control_Induvidual
 		{
 		} else 			// INTERUPTABLE PART
 		{
-			if(archer.hasDestination)
+			if(retreating)
 			{
 				archer.runTowardsDestination();
 			} else if(enemiesAround())
@@ -35,6 +35,9 @@ public final class Control_Archer extends Control_Induvidual
 				{
 					archer.runTowards(target);
 				}
+			} else if(archer.hasDestination)
+			{
+				archer.runTowardsDestination();
 			}
 		}
 	}

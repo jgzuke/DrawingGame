@@ -17,7 +17,7 @@ public final class Control_Mage extends Control_Induvidual
 		{
 		} else				// INTERUPTABLE PART 
 		{
-			if(mage.hasDestination)
+			if(retreating)
 			{
 				mage.runTowardsDestination();
 			} else if(enemiesAround())
@@ -53,6 +53,9 @@ public final class Control_Mage extends Control_Induvidual
 				{
 					mage.shoot(target);
 				}
+			} else if(mage.hasDestination)
+			{
+				mage.runTowardsDestination();
 			}
 		}
 	}
