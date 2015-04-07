@@ -92,13 +92,6 @@ public final class Controller
 		graphicsController = new GraphicsController(this, imageLibrary, spriteController, wallController, levelController, startSet, dimensions);
 		graphicsController.setOnTouchListener(gestureDetector);
 		frameCaller.run();
-		makeGroup();
-	}
-	public void makeGroup()
-	{
-		spriteController.makeEnemy(3, 800, 1100, true);
-		spriteController.makeEnemy(4, 1100, 1100, true);
-		spriteController.makeEnemy(5, 1100, 1400, true);
 	}
 	protected void die()
 	{

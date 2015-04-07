@@ -21,7 +21,13 @@ public final class Control_Sheild extends Control_Induvidual
 		{				// INTERUPTABLE PART
 			if(retreating)
 			{
-				sheild.runTowardsDestination();
+				if(sheild.checkDanger()>1)
+				{
+					sheild.block();
+				} else
+				{
+					sheild.runTowardsDestination();
+				}
 			} else if(enemiesAround())
 			{
 				Enemy target = findClosestEnemy(sheild);

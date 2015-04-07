@@ -178,7 +178,7 @@ public final class SpriteController extends SpriteDrawer
 		{
 			newGroup.add(makeEnemyBasic(0, x, y, isOnPlayersTeam, toAdd, toAddController));
 		}
-		enemyGroup = groupEnemies(newGroup);
+		enemyGroup = groupEnemies(newGroup, isOnPlayersTeam);
 		toAddController.add(enemyGroup);
 		enemyGroup.setDestination(new Point(x, y));
 		enemyGroup.setLayoutType(formation);
@@ -581,10 +581,9 @@ public final class SpriteController extends SpriteDrawer
 			}
 		}
 	}
-	protected Control_Group groupEnemies(ArrayList<Enemy> group)
+	protected Control_Group groupEnemies(ArrayList<Enemy> group, boolean onPlayersTeam)
 	{
-		Control_Group newGroup = new Control_Group(control, group, true);
-		allyControllers.add(newGroup);
+		Control_Group newGroup = new Control_Group(control, group, onPlayersTeam);
 		return newGroup;
 	}
 	/**

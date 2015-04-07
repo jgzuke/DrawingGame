@@ -269,6 +269,10 @@ abstract public class Enemy extends EnemyShell
 	{
 		runSideways(target.x, target.y);
 	}
+	protected void runSidewaysDanger()
+	{
+		runSideways(closestDanger.X, closestDanger.Y);
+	}
 	/**
 	 * rolls sideways for 11 frames
 	 */
@@ -384,6 +388,7 @@ abstract public class Enemy extends EnemyShell
 	}
 	protected void runTowardsDestination()
 	{
+		if(!hasDestination) return;
 		if(destinationX < 0) destinationX = 0;
 		if(destinationX > control.levelController.levelWidth) destinationX = control.levelController.levelWidth;
 		if(destinationY < 0) destinationY = 0;

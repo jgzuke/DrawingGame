@@ -28,9 +28,9 @@ public final class Enemy_Mage extends Enemy
 	{
 		super.frameCall();
 		shoot++;
-		if(shoot>4) shoot = 4;
+		if(shoot>7) shoot = 7;
 		energy++;
-		if (energy>45) energy=45;
+		if (energy>90) energy=90;
 	}
 	private int[][] makeFrames()
 	{
@@ -41,8 +41,8 @@ public final class Enemy_Mage extends Enemy
 	}
 	protected void shoot(EnemyShell target)
 	{
-		shoot-=4;
-		energy -= 15;
+		shoot-=7;
+		energy -= 35;
 		int v = 10;		//projectile velocity
 		double saveRads = rotation/r2d;
 		aimAheadOfTarget(v*2, target);	// aim closer to player

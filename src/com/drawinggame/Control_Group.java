@@ -59,10 +59,14 @@ public final class Control_Group extends Control_Main
 		isGroup = true;
 		if(inGroups == 0)			// if noone in a group
 		{
-			setLayoutType(1);
+			layoutType = 1;
 		} else
 		{
-			setLayoutType((int) Math.round(layoutMode/inGroups));
+			layoutType = (int) Math.round(layoutMode/inGroups);
+		}
+		if(!enemiesAround())
+		{
+			formUp();
 		}
 		groupRadius = Math.sqrt(humans.size()) * spacing;
 	}
@@ -91,7 +95,7 @@ public final class Control_Group extends Control_Main
 				}
 				organizing = false;
 			}
-		} else if(hasDestination)
+		} else if(retreating)
 		{
 			if(Math.sqrt(Math.pow(groupLocation.X-destLocation.X, 2)+Math.pow(groupLocation.Y-destLocation.Y, 2)) < 30) // reached destination
 			{
@@ -113,8 +117,9 @@ public final class Control_Group extends Control_Main
 			{
 				groupRadius = Math.sqrt(humans.size()) * spacing;
 				hasChangedMembers = false;
-				formUp();
+				//formUp();
 			}
+			formUp();
 		}
 		groupLocation = averagePoint();
 		groupRotation = averageRotation();
@@ -410,7 +415,6 @@ public final class Control_Group extends Control_Main
 	{
 		layoutType = type;
 		formUp();
-		Log.e("myid", "type:".concat(Integer.toString(type)));
 	}
 	protected Point averagePoint()
 	{
@@ -559,7 +563,7 @@ public final class Control_Group extends Control_Main
 					mage.runTowards(target);
 				}
 				
-				if(mage.shoot>3&&mage.energy>14&& distanceToTarget < 160)
+				if(mage.shoot>3&&mage.energy>35&& distanceToTarget < 160)
 				{
 					mage.shoot(target);
 				}

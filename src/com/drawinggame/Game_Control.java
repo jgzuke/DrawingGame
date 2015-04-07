@@ -6,7 +6,7 @@ abstract public class Game_Control
 {
 	protected Controller control;
 	protected SpriteController spriteControl;
-	protected int mana = 3000;
+	protected int mana = 1000;
 	protected ArrayList<Control_Main> enemyControllers;
 	protected ArrayList<Control_Main> allyControllers;
 	protected ArrayList<Enemy> enemies;
@@ -34,7 +34,7 @@ abstract public class Game_Control
 	}
 	protected void frameCall()
 	{
-		mana +=4;
-		if(mana > 3000) mana = 3000;
+		mana ++;
+		if(mana > 1000) mana = 1000;
 	}
 }
