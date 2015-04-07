@@ -266,10 +266,11 @@ public class GestureDetector implements OnTouchListener
     {
     	Path path = new Path();
 		path.moveTo(points[0]+x, points[1]+y);
-		for(int j = 2; j < points.length; j+=2)
+		for(int j = 2; j < points.length; j+=4)
 		{
-			path.lineTo(points[j]+x, points[j+1]+y);
+			path.quadTo(points[j]+x, points[j+1]+y, points[j+3]+x, points[j+4]+y);
 		}
+		path.lineTo(points[points.length-2]+x, points[points.length-1]+y);
 		return path;
     }
     protected Path getPathFromVector(Vector<Point> points, int x, int y)
@@ -277,24 +278,19 @@ public class GestureDetector implements OnTouchListener
     	Path path = new Path();
 		Point p = (Point) points.get(0);
 		path.moveTo((int)p.X+x, (int)p.Y+y);
-		for(int j = 1; j < points.size(); j++)
+		for(int j = 1; j < points.size() - 1; j+=2)
 		{
 			p = (Point) points.get(j);
-			path.lineTo((int)p.X+x, (int)p.Y+y);
+	        Point n = points.get(j + 1);
+	        path.quadTo((int)p.X+x, (int)p.Y+y, (int)n.X+x, (int)n.Y+y);
 		}
+		p = (Point) points.get(points.size() - 1);
+		path.lineTo((int)p.X+x, (int)p.Y+y);
 		return path;
     }
     protected Path getPathFromVector(Vector<Point> points)
     {
-    	Path path = new Path();
-		Point p = (Point) points.get(0);
-		path.moveTo((int)p.X, (int)p.Y);
-		for(int j = 1; j < points.size(); j++)
-		{
-			p = (Point) points.get(j);
-			path.lineTo((int)p.X, (int)p.Y);
-		}
-		return path;
+    	return getPathFromVector(points, 0, 0);
     }
     protected void screenToMapPointInPlace(Point p)
     {

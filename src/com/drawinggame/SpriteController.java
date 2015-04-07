@@ -63,7 +63,10 @@ public final class SpriteController extends SpriteDrawer
 	protected ArrayList<Proj_Tracker_AOE> proj_TrackerE_AOEs = new ArrayList<Proj_Tracker_AOE>();
 	protected ArrayList<CreationMarker> creationMarkers = new ArrayList<CreationMarker>();
 	protected Bitmap playerBlessing;
+	private int [] manaPrices = {50, 30, 70};
 	protected Bitmap isSelected;
+	protected Game_Control_Player playerGameControl;
+	protected Game_Control_Enemy enemyGameControl;
 	/**
 	 * Initializes all undecided variables, loads level, creates player and enemy objects, and starts frameCaller
 	 */
@@ -71,6 +74,8 @@ public final class SpriteController extends SpriteDrawer
 	{
 		super();
 		control = controlSet;
+		playerGameControl = new Game_Control_Player(control);
+		enemyGameControl = new Game_Control_Enemy(control);
 	}
 	/**
 	 * clears all arrays to restart game
@@ -93,8 +98,15 @@ public final class SpriteController extends SpriteDrawer
 	 * @param r rotation
 	 * @param isOnPlayersTeam which team they are on
 	 */
-	protected EnemyShell makeEnemy(int type, int x, int y, int r, boolean isOnPlayersTeam)
+	protected void makeEnemy(int type, int x, int y, int r, boolean isOnPlayersTeam)
 	{
+		if(isOnPlayersTeam)
+		{
+			if(playerGameControl.mana < manaPrices[type]) return;
+		} else
+		{
+			if(enemyGameControl.mana < manaPrices[type]) return;
+		}
 		ArrayList<Enemy> toAdd;
 		ArrayList<Control_Main> toAddController;
 		if(isOnPlayersTeam)
@@ -122,15 +134,23 @@ public final class SpriteController extends SpriteDrawer
 			newEnemy = new Enemy_Mage(control, x, y, r, 700, type, isOnPlayersTeam);
 			toAddController.add(new Control_Mage(control, (Enemy_Mage) newEnemy, isOnPlayersTeam));
 			break;
+		case 3:
+			
+			newEnemy = new Enemy_Mage(control, x, y, r, 700, type, isOnPlayersTeam);
+			toAddController.add(new Control_Mage(control, (Enemy_Mage) newEnemy, isOnPlayersTeam));
+			break;
+			
+			groupEnemies
 		}
 		toAdd.add(newEnemy);
-		return newEnemy;
 	}
 	/**
 	 * calls all sprites frame methods
 	 */
 	protected void frameCall()
 	{
+		playerGameControl.frameCall();
+		enemyGameControl.frameCall();
 		for(int i = 0; i < creationMarkers.size(); i++)
 		{
 			creationMarkers.get(i).frameCall();
@@ -452,6 +472,10 @@ public final class SpriteController extends SpriteDrawer
 				}
 			}
 			deselectEnemies();
+			if(selectedEnemy.myController.isGroup)
+			{
+				selectedEnemy.hasDestination = false;
+			}
 			selectedEnemy.selected = true;
 			selectedEnemy.selectSingle();
 			control.gestureDetector.selectType = "single";
@@ -506,12 +530,8 @@ public final class SpriteController extends SpriteDrawer
 		{
 			group.get(i).selected = true;
 		}
-		
-		Log.e("myid", "testhjhgfsd");
-		Log.e("myid", Integer.toString(group.size()));
 		for(int i = 0; i < groupCounts.size(); i++)		// if this group is more than half of the new, use its settings
 		{
-			Log.e("myid", Integer.toString(groupCounts.get(i)));
 			if((double)groupCounts.get(i)/(double)group.size() > 0.6)
 			{
 				if(priorGroups.get(i).hasDestination)
@@ -520,6 +540,12 @@ public final class SpriteController extends SpriteDrawer
 				}
 			}
 		}
+	}
+	protected Control_Group groupEnemies(ArrayList<Enemy> group)
+	{
+		Control_Group newGroup = new Control_Group(control, group, true);
+		allyControllers.add(newGroup);
+		return newGroup;
 	}
 	/**
 	 * deslects all enemies

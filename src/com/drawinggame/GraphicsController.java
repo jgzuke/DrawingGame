@@ -39,6 +39,7 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.CornerPathEffect;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
@@ -88,9 +89,12 @@ public final class GraphicsController extends View
 		setKeepScreenOn(true); // so screen doesnt shut off when game is left inactive
 		phoneWidth = (int)dimensions[0];
 		phoneHeight = (int)dimensions[1];
-		paint.setAntiAlias(false);
-		paint.setDither(false);
-		paint.setFilterBitmap(false);
+		paint.setAntiAlias(true);
+		paint.setDither(true);
+		paint.setFilterBitmap(true);
+		paint.setStrokeJoin(Paint.Join.ROUND);    // set the join to round you want
+	    paint.setStrokeCap(Paint.Cap.ROUND);      // set the paint cap to round too
+	    paint.setPathEffect(new CornerPathEffect(10) );   // set the path effect when they join.
 		phoneWidth = (int) dimensions[0];
 		phoneHeight = (int) dimensions[1];
 		playScreenSize = (double)levelController.levelWidth/phoneWidth;
@@ -158,16 +162,9 @@ public final class GraphicsController extends View
 	 */
 	protected Bitmap drawLevel()
 	{
-		paint.setColor(Color.GREEN);
+		paint.setColor(Color.rgb(51, 102, 0));
 		paint.setStyle(Style.FILL);
 		gLevel.drawRect(0, 0, levelController.levelWidth, levelController.levelHeight, paint);
-		for(int w = 0; w<levelController.levelWidth; w+=100)
-		{
-			for(int h = 0; h<levelController.levelHeight; h+=100)
-			{
-				//drawBitmapLevel(imageLibrary.backDrop, w, h, gLevel);
-			}
-		}
 		//g.drawBitmap(imageLibrary.currentLevel, 0, 0, paint);
 		spriteController.drawStructures(gLevel, paint, imageLibrary);
 		spriteController.drawSprites(gLevel, paint, imageLibrary);

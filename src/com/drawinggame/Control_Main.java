@@ -34,8 +34,6 @@ abstract public class Control_Main
 		for(int i = 0; i < enemyControllers.size(); i++)
 		{
 			double distance = groupLocation.distanceTo(enemyControllers.get(i).groupLocation);
-			Log.e("myid", Double.toString(distance));
-			Log.e("myid", Double.toString(300 + groupRadius + enemyControllers.get(i).groupRadius));
 			if(distance < 300 + groupRadius + enemyControllers.get(i).groupRadius)
 			{
 				return true;

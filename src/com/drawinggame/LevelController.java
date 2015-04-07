@@ -60,8 +60,8 @@ public final class LevelController
 		{
 		case 1:
 			//LEVEL
-			levelWidth = 2400; // height of level
-			levelHeight = 2400; // width of level
+			levelWidth = 2200; // height of level
+			levelHeight = 2200; // width of level
 			
 			if(control.graphicsController != null)
 			{
@@ -130,20 +130,7 @@ public final class LevelController
 			break;
 		}
 		w.makePaths();
-		makeEnemies(levelNum);
 		control.imageLibrary.loadLevel(toLoad, levelWidth, levelHeight);
-	}
-	protected void makeEnemies(int toLoad)
-	{
-		SpriteController s = control.spriteController;
-		switch(toLoad)
-		{
-		case 1:
-			s.makeEnemy(0, 504, 677, -120, false);
-			s.makeEnemy(0, 607, 623, -135, false);
-			s.makeEnemy(2, 623, 671, -165, false);
-			break;
-		}
 	}
 	/**
 	 * ends a fight section with no saved enemies

@@ -46,7 +46,7 @@ public final class ImageLibrary extends ImageLoader
 		createMarkers[0] = loadImage("createswordsman", 44, 66);
 		createMarkers[1] = loadImage("createarcher", 35, 64);
 		createMarkers[2] = loadImage("createmage", 36, 62);
-		backDrop = loadImage("leveltile1", 100, 100);
+		backDrop = loadImage("leveltile1", 400, 400);
 		enemyImages[0]= loadArray1D(55, "goblin_swordsman", 110, 70);
 		enemyImages[1]= loadArray1D(49, "goblin_archer", 80, 50);
 		enemyImages[2]= loadArray1D(31, "goblin_mage", 30, 34);
@@ -59,16 +59,6 @@ public final class ImageLibrary extends ImageLoader
 	 */
 	protected void loadLevel(int levelNum, int width, int height)
 	{
-		/*if(currentLevel != null)
-		{
-			currentLevel.recycle();
-			currentLevel = null;
-		}
-		if(currentLevelTop != null)
-		{
-			currentLevelTop.recycle();
-			currentLevelTop = null;
-		}*/
 		if(backDrop!= null)
 		{
 			backDrop.recycle();
@@ -78,7 +68,7 @@ public final class ImageLibrary extends ImageLoader
 		case 1:
 		case 2:
 		case 3:
-			backDrop = loadImage("leveltile1", 100, 100);
+			backDrop = loadImage("leveltile1", 400, 400);
 			break;
 		case 5:
 		case 6:
@@ -87,7 +77,7 @@ public final class ImageLibrary extends ImageLoader
 			backDrop = loadImage("leveltile2", 100, 100);
 			break;
 		default:
-			backDrop = loadImage("leveltile1", 100, 100);
+			backDrop = loadImage("leveltile1", 400, 400);
 			break;
 		}
 		//currentLevel = loadImage("level"+Integer.toString(levelNum), width, height);
