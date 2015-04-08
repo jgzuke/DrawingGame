@@ -166,6 +166,16 @@ public class GestureDetector implements OnTouchListener
 		Point p = screenToMapPoint(screenPoint);
 		timeSinceDraw = 0;
 		if(checkMadeEnemy(type, p)) return;
+		if(type.equals("n"))
+		{
+			control.spriteController.makeEnemy(4, (int)p.X, (int)p.Y, true);
+		} else if(type.equals("s"))
+		{
+			control.spriteController.makeEnemy(5, (int)p.X, (int)p.Y, true);
+		} else if(type.equals("v"))
+		{
+			control.spriteController.makeEnemy(3, (int)p.X, (int)p.Y, true);
+		}
     }
 	public void click(Point pPhone)
     {

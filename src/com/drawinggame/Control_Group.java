@@ -73,6 +73,7 @@ public final class Control_Group extends Control_Main
 	protected void frameCall()
 	{
 		if(humans.size()==0) return;
+		boolean lastGoupEngaged = groupEngaged;
 		groupEngaged = false;
 		if(organizing)
 		{
@@ -105,6 +106,10 @@ public final class Control_Group extends Control_Main
 		} else if(enemiesAround())
 		{
 			groupEngaged = true;
+			for(int i = 0; i < humans.size(); i++)
+			{
+				humans.get(i).hasDestination = false;
+			}
 		} else if(hasDestination)
 		{
 			if(Math.sqrt(Math.pow(groupLocation.X-destLocation.X, 2)+Math.pow(groupLocation.Y-destLocation.Y, 2)) < 30) // reached destination
@@ -117,15 +122,15 @@ public final class Control_Group extends Control_Main
 			{
 				groupRadius = Math.sqrt(humans.size()) * spacing;
 				hasChangedMembers = false;
-				//formUp();
+				formUp();
 			}
-			formUp();
+			if(lastGoupEngaged) formUp();
 		}
 		groupLocation = averagePoint();
 		groupRotation = averageRotation();
-		for(int i = 0; i < archers.size(); i ++) archerFrame(archers.get(i));
-		for(int i = 0; i < mages.size(); i ++) mageFrame(mages.get(i));
-		for(int i = 0; i < sheilds.size(); i ++) sheildFrame(sheilds.get(i));
+		for(int i = 0; i < archers.size(); i ++) Control_AI.archerFrame(archers.get(i), retreating, groupEngaged);
+		for(int i = 0; i < mages.size(); i ++) Control_AI.mageFrame(mages.get(i), retreating, groupEngaged);
+		for(int i = 0; i < sheilds.size(); i ++) Control_AI.sheildFrame(sheilds.get(i), retreating, groupEngaged);
 	}
 	protected void formUp()
 	{
@@ -482,143 +487,16 @@ public final class Control_Group extends Control_Main
 	protected void cancelMove()
 	{
 		hasDestination = false;
+		retreating = false;
 		for(int i = 0; i < humans.size(); i++)
 		{
 			humans.get(i).hasDestination = false;
 		}
 	}
 	
-	
-	
-	
-	protected void archerFrame(Enemy_Archer archer)
-	{
-		if(archer.action.equals("Shoot"))
-		{
-		} else if(archer.action.equals("Move"))
-		{
-		} else 			// INTERUPTABLE PART
-		{
-			if(retreating)
-			{
-				archer.runTowardsDestination();
-			} else if(groupEngaged)
-			{
-				Enemy target = findClosestEnemy(archer);
-				if(target == null) return;
-				double distanceToTarget = archer.distanceTo(target);
-				if(distanceToTarget < 50 || archer.hp<600 && distanceToTarget<100)
-				{
-					archer.runAway(target);
-				} else if(distanceToTarget<140)
-				{
-					archer.shoot(target);
-				} else
-				{
-					archer.runTowards(target);
-				}
-			} else if(archer.hasDestination)
-			{
-				archer.runTowardsDestination();
-			}
-		}
-	}
-	protected void mageFrame(Enemy_Mage mage)
-	{
-		if(mage.action.equals("Roll"))
-		{
-		} else if(mage.action.equals("Move"))
-		{
-		} else				// INTERUPTABLE PART 
-		{
-			if(retreating)
-			{
-				mage.runTowardsDestination();
-			} else if(groupEngaged)
-			{
-				Enemy target = findClosestEnemy(mage);
-				if(target == null) return;
-				double distanceToTarget = mage.distanceTo(target);
-				int inDanger = mage.checkDanger();
-				if(distanceToTarget<60)		// MAGES ALWAYS MOVING, DONT STOP TO SHOOT
-				{
-					mage.rollAway(target);
-				} else if(inDanger>0)
-				{
-					if(mage.rollTimer<0)
-					{
-						mage.rollSidewaysDanger();
-					} else
-					{
-						mage.runSideways(target);
-					}
-				} else if(distanceToTarget<100)
-				{
-					mage.runAway(target);
-				} else if(distanceToTarget < 160)
-				{
-					mage.runAround(120, (int)distanceToTarget, target);
-				} else
-				{
-					mage.runTowards(target);
-				}
-				
-				if(mage.shoot>3&&mage.energy>35&& distanceToTarget < 160)
-				{
-					mage.shoot(target);
-				}
-			} else if(mage.hasDestination)
-			{
-				mage.runTowardsDestination();
-			}
-		}
-	}
-	protected void sheildFrame(Enemy_Sheild sheild)
-	{
-		if(sheild.action.equals("Melee"))
-		{
-		} else if(sheild.action.equals("Sheild"))
-		{
-		} else if(sheild.action.equals("Move"))
-		{
-		} else
-		{				// INTERUPTABLE PART
-			if(retreating)
-			{
-				sheild.runTowardsDestination();
-			} else if(groupEngaged)
-			{
-				Enemy target = findClosestEnemy(sheild);
-				if(target == null) return;
-				double distanceToTarget = sheild.distanceTo(target);
-				if(distanceToTarget < 30)
-				{
-					sheild.attack(target);
-				} else if(sheild.checkDanger()>1)
-				{
-					sheild.block();
-				} else
-				{
-					sheild.runTowards(target);
-				}
-			} else if(sheild.hasDestination)
-			{
-				sheild.runTowardsDestination();
-			}
-		}
-	}
 	@Override
 	protected void archerDoneFiring(Enemy_Archer archer)
 	{
-		if(enemiesAround() && !hasDestination && !organizing)
-		{
-			Enemy target = findClosestEnemy(archer);
-			if(target == null) return;
-			double distanceToTarget = archer.distanceTo(target);
-			if(archer.hp>600&&distanceToTarget<160&&distanceToTarget>50)
-			{
-				archer.shoot(target);
-			}
-		}
+		Control_AI.archerDoneFiring(archer, enemiesAround() && !archer.hasDestination && !organizing);
 	}
 }
