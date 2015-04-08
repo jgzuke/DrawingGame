@@ -147,7 +147,7 @@ abstract public class EnemyShell extends Human {
 	 */
 	protected void getHit(double damage)
 	{
-		if (action.equals("Sheild")) damage /= 9;
+		if (action.equals("Sheild")) damage /= 3;
 		if (action.equals("Hide")) action = "Nothing";
 		hp -= damage*2;
 		if(hp < 1)

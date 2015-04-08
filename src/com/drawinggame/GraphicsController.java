@@ -85,7 +85,6 @@ public final class GraphicsController extends View
 	}
 	private void setUpPaintStuff(double [] dimensions) // 
 	{
-		setBackgroundColor(Color.BLACK);
 		setKeepScreenOn(true); // so screen doesnt shut off when game is left inactive
 		phoneWidth = (int)dimensions[0];
 		phoneHeight = (int)dimensions[1];
@@ -164,7 +163,7 @@ public final class GraphicsController extends View
 	{
 		paint.setColor(Color.rgb(51, 102, 0));
 		paint.setStyle(Style.FILL);
-		gLevel.drawRect(0, 0, levelController.levelWidth, levelController.levelHeight, paint);
+		gLevel.drawRect(0, 0, phoneWidth, phoneHeight, paint);
 		//g.drawBitmap(imageLibrary.currentLevel, 0, 0, paint);
 		spriteController.drawStructures(gLevel, paint, imageLibrary);
 		spriteController.drawSprites(gLevel, paint, imageLibrary);

@@ -3,6 +3,7 @@ public class Control_AI
 {
 	protected static void archerFrame(Enemy_Archer archer, boolean retreating, boolean groupEngaged)
 	{
+		
 		if(archer.action.equals("Shoot"))
 		{
 		} else if(archer.action.equals("Move"))
@@ -17,10 +18,10 @@ public class Control_AI
 				Enemy target = archer.myController.findClosestEnemy(archer);
 				if(target == null) return;
 				double distanceToTarget = archer.distanceTo(target);
-				if(distanceToTarget < 50 || archer.hp<600 && distanceToTarget<100)
+				if(distanceToTarget < 70 || archer.hp<600 && distanceToTarget<100)
 				{
 					archer.runAway(target);
-				} else if(distanceToTarget<140)
+				} else if(distanceToTarget<200)
 				{
 					archer.shoot(target);
 				} else
@@ -37,6 +38,15 @@ public class Control_AI
 	{
 		if(mage.action.equals("Roll"))
 		{
+		} else if(mage.checkDanger()>0)
+		{
+			if(mage.rollTimer<0)
+			{
+				mage.rollSidewaysDanger();
+			} else
+			{
+				mage.runSidewaysDanger();
+			}
 		} else if(mage.action.equals("Move"))
 		{
 		} else				// INTERUPTABLE PART 
@@ -49,31 +59,21 @@ public class Control_AI
 				Enemy target = mage.myController.findClosestEnemy(mage);
 				if(target == null) return;
 				double distanceToTarget = mage.distanceTo(target);
-				int inDanger = mage.checkDanger();
-				if(distanceToTarget<60)		// MAGES ALWAYS MOVING, DONT STOP TO SHOOT
+				if(distanceToTarget<80)		// MAGES ALWAYS MOVING, DONT STOP TO SHOOT
 				{
 					mage.rollAway(target);
-				} else if(inDanger>0)
-				{
-					if(mage.rollTimer<0)
-					{
-						mage.rollSidewaysDanger();
-					} else
-					{
-						mage.runSideways(target);
-					}
-				} else if(distanceToTarget<100)
+				} else if(distanceToTarget<120)
 				{
 					mage.runAway(target);
-				} else if(distanceToTarget < 160)
+				} else if(distanceToTarget < 200)
 				{
-					mage.runAround(120, (int)distanceToTarget, target);
+					mage.runAround(160, (int)distanceToTarget, target);
 				} else
 				{
 					mage.runTowards(target);
 				}
 				
-				if(mage.shoot>3&&mage.energy>35&& distanceToTarget < 160)
+				if(mage.shoot>6&&mage.energy>35&& distanceToTarget < 210)
 				{
 					mage.shoot(target);
 				}
@@ -89,6 +89,9 @@ public class Control_AI
 		{
 		} else if(sheild.action.equals("Sheild"))
 		{
+		} else if(sheild.checkDanger()>1)
+		{
+			sheild.block();
 		} else if(sheild.action.equals("Move"))
 		{
 		} else
@@ -104,9 +107,6 @@ public class Control_AI
 				if(distanceToTarget < 30)
 				{
 					sheild.attack(target);
-				} else if(sheild.checkDanger()>1)
-				{
-					sheild.block();
 				} else
 				{
 					sheild.runTowards(target);
@@ -124,7 +124,7 @@ public class Control_AI
 			Enemy target = archer.myController.findClosestEnemy(archer);
 			if(target == null) return;
 			double distanceToTarget = archer.distanceTo(target);
-			if(archer.hp>600&&distanceToTarget<160&&distanceToTarget>50)
+			if(archer.hp>600&&distanceToTarget<220&&distanceToTarget>70)
 			{
 				archer.shoot(target);
 			}
