@@ -112,7 +112,7 @@ public final class Proj_Tracker_AOE extends Sprite
 					yDif = y - enemies.get(i).y;
 					if(Math.sqrt(Math.pow(xDif, 2) + Math.pow(yDif, 2)) < widthDone+15)
 					{
-						double damage = 30;
+						double damage = 180;
 						enemies.get(i).getHit((int)damage);
 					}
 				}
@@ -125,7 +125,7 @@ public final class Proj_Tracker_AOE extends Sprite
 					yDif = y - structures.get(i).y;
 					if(Math.sqrt(Math.pow(xDif, 2) + Math.pow(yDif, 2)) < widthDone+15)
 					{
-						double damage = 30;
+						double damage = 180;
 						structures.get(i).getHit((int)damage);
 					}
 				}

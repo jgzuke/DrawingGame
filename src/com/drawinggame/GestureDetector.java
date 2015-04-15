@@ -6,6 +6,7 @@ import java.util.Vector;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.CornerPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Paint.Style;
@@ -27,6 +28,7 @@ public class GestureDetector implements OnTouchListener
 	private Point secondPoint;
 	private Point firstPointStart;
 	private Point secondPointStart;
+	private Paint paint = new Paint();
 	private double playScreenSizeStart;
 	private int mapXSlideStart;
 	private int mapYSlideStart;
@@ -49,6 +51,12 @@ public class GestureDetector implements OnTouchListener
 	
     public GestureDetector(Context contextSet, Controller controllerSet, int widthSet, int heightSet)
     {
+    	paint.setAntiAlias(true);
+		paint.setDither(true);
+		paint.setFilterBitmap(true);
+		paint.setStrokeJoin(Paint.Join.ROUND);    // set the join to round you want
+	    paint.setStrokeCap(Paint.Cap.ROUND);      // set the paint cap to round too
+	    paint.setPathEffect(new CornerPathEffect(10) );   // set the path effect when they join.
     	phoneWidth = widthSet;
     	phoneHeight = heightSet;
     	context = contextSet;
@@ -59,7 +67,7 @@ public class GestureDetector implements OnTouchListener
 			average.add(new Point(0,0));
 		}
     }
-    protected void drawGestures(Canvas g, Paint paint)
+    protected void drawGestures(Canvas g)
 	{
     	g.saveLayerAlpha(0, 0, g.getWidth(), g.getHeight(), 0x66, Canvas.HAS_ALPHA_LAYER_SAVE_FLAG);
     	timeSinceDraw++;

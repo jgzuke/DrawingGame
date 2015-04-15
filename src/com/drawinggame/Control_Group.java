@@ -20,7 +20,7 @@ public final class Control_Group extends Control_Main
 	private boolean hasChangedMembers = false;
 	protected int layoutType = 1; //1 is norm, 2 is standGround, 0 is V or attack
 	protected Point destLocation;
-	private boolean organizing = false;
+	protected boolean organizing = false;
 	private static double spacing = 40;
 	private static double spacingSlanted = Math.sqrt(2)*spacing/2;
 	private boolean groupEngaged = false;

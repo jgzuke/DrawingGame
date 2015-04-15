@@ -6,9 +6,9 @@ package com.drawinggame;
 
 public final class Enemy_Sheild extends Enemy
 {
-	public Enemy_Sheild(Controller creator, double X, double Y, boolean isOnPayersTeam)
+	public Enemy_Sheild(Controller creator, double X, double Y, boolean isOnPayersTeam, int ImageIndex)
 	{
-		super(creator, X, Y, 5000, 0, isOnPayersTeam);
+		super(creator, X, Y, 5000, ImageIndex, isOnPayersTeam);
 		frame=0;
 		baseHp(5000);
 		if(control.getRandomInt(3) == 0)

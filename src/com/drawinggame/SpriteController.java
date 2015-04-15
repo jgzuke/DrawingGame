@@ -141,21 +141,23 @@ public final class SpriteController extends SpriteDrawer
 	}
 	protected Enemy makeEnemyBasic(int type, int x, int y, boolean isOnPlayersTeam, ArrayList<Enemy> toAdd, ArrayList<Control_Main> toAddController)
 	{
+		int imageType = 0;
+		if(isOnPlayersTeam) imageType += 3;
 		Enemy newEnemy = null;
 		switch(type)
 		{
 		case 0:
-			newEnemy = new Enemy_Sheild(control, x, y, isOnPlayersTeam);
+			newEnemy = new Enemy_Sheild(control, x, y, isOnPlayersTeam, 0+imageType);
 			toAddController.add(new Control_Sheild(control, (Enemy_Sheild) newEnemy, isOnPlayersTeam));
 			toAdd.add(newEnemy);
 			break;
 		case 1:
-			newEnemy = new Enemy_Archer(control, x, y, isOnPlayersTeam);
+			newEnemy = new Enemy_Archer(control, x, y, isOnPlayersTeam, 1+imageType);
 			toAddController.add(new Control_Archer(control, (Enemy_Archer) newEnemy, isOnPlayersTeam));
 			toAdd.add(newEnemy);
 			break;
 		case 2:
-			newEnemy = new Enemy_Mage(control, x, y, isOnPlayersTeam);
+			newEnemy = new Enemy_Mage(control, x, y, isOnPlayersTeam, 2+imageType);
 			toAddController.add(new Control_Mage(control, (Enemy_Mage) newEnemy, isOnPlayersTeam));
 			toAdd.add(newEnemy);
 			break;

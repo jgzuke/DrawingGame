@@ -139,6 +139,22 @@ abstract public class EnemyShell extends Human {
 				}
 			}
 		}
+		if(myController.isGroup && ((Control_Group)myController).organizing) return;
+		for (int i = 0; i < allies.size(); i++) {
+			if (allies.get(i) != null && allies.get(i).x != x) {
+				xdif = x - allies.get(i).x;
+				ydif = y - allies.get(i).y;
+				if (Math.pow(xdif, 2) + Math.pow(ydif, 2) < Math.pow(radius, 2)) {
+					moveRads = Math.atan2(ydif, xdif);
+					movementX = (x - (Math.cos(moveRads) * radius) - allies.get(i).x) / 2;
+					movementY = (y - (Math.sin(moveRads) * radius) - allies.get(i).y) / 2;
+					allies.get(i).x += movementX;
+					allies.get(i).y += movementY;
+					x -= movementX;
+					y -= movementY;
+				}
+			}
+		}
 	}
 	/**
 	 * Takes a sent amount of damage, modifies based on shields etc.

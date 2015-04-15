@@ -89,10 +89,6 @@ public final class GraphicsController extends View
 		phoneHeight = (int)dimensions[1];
 		paint.setAntiAlias(true);
 		paint.setDither(true);
-		paint.setFilterBitmap(true);
-		paint.setStrokeJoin(Paint.Join.ROUND);    // set the join to round you want
-	    paint.setStrokeCap(Paint.Cap.ROUND);      // set the paint cap to round too
-	    paint.setPathEffect(new CornerPathEffect(10) );   // set the path effect when they join.
 		phoneWidth = (int) dimensions[0];
 		phoneHeight = (int) dimensions[1];
 		playScreenSize = (double)levelController.levelWidth/phoneWidth;
@@ -183,7 +179,19 @@ public final class GraphicsController extends View
 		{
 			g.drawRect(0, 0, 150, 150, paint);
 		}
-		control.gestureDetector.drawGestures(g, paint);
+		control.gestureDetector.drawGestures(g);
+		double unitW = ((double)phoneWidth / 100);
+		double unitH = ((double)phoneHeight / 100);
+		//Log.e("myid", Double.toString(unitDist*96));
+		paint.setColor(manaColor);
+		paint.setStyle(Style.FILL);
+		g.drawRect((int)unitW, phoneHeight-(int)(unitH*(1+(double)control.spriteController.playerGameControl.mana/12)), (int)(unitW*4), phoneHeight-(int)unitW, paint);
+		g.drawRect((int)(unitW*96), phoneHeight-(int)(unitH*(1+(double)control.spriteController.enemyGameControl.mana/12)), (int)(unitW*99), phoneHeight-(int)unitW, paint);
+		paint.setStrokeWidth(3);
+		paint.setColor(Color.BLACK);
+		paint.setStyle(Style.STROKE);
+		g.drawRect((int)unitW, phoneHeight-(int)(unitH*84), (int)(unitW*4), phoneHeight-(int)unitW, paint);
+		g.drawRect((int)(unitW*96), phoneHeight-(int)(unitH*84), (int)(unitW*99), phoneHeight-(int)unitW, paint);
 	}
 	/**
 	 * Starts warning label

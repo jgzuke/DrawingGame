@@ -8,7 +8,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 public final class ImageLibrary extends ImageLoader
 {
-	protected Bitmap[][] enemyImages = new Bitmap[10][100]; //array holding videos for each enemy, null when uneeded
+	protected Bitmap[][] enemyImages = new Bitmap[6][100]; //array holding videos for each enemy, null when uneeded
 	protected Bitmap structure_Spawn;
 	protected Bitmap isSelected;
 	protected int isPlayerWidth;
@@ -53,6 +53,9 @@ public final class ImageLibrary extends ImageLoader
 		enemyImages[0]= loadArray1D(55, "goblin_swordsman", 110, 70);
 		enemyImages[1]= loadArray1D(49, "goblin_archer", 80, 50);
 		enemyImages[2]= loadArray1D(31, "goblin_mage", 30, 34);
+		enemyImages[0]= loadArray1D(55, "human_swordsman", 110, 70);
+		enemyImages[1]= loadArray1D(49, "human_archer", 80, 50);
+		enemyImages[2]= loadArray1D(31, "human_mage", 30, 34);
 	}
 	/**
 	 * loads level image layers and background image
