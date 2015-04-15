@@ -63,13 +63,12 @@ public final class GraphicsController extends View
 	private Rect aoeRect = new Rect();
 	private int healthColor = Color.rgb(170, 0, 0);
 	private int cooldownColor = Color.rgb(0, 0, 170);
+	private int manaColor = Color.rgb(30, 0, 170);
 	private ImageLibrary imageLibrary;
 	private Controller control;
 	private SpriteController spriteController;
 	private LevelController levelController;
 	private Context context;
-	private Bitmap drawToLevel;
-	private Canvas gLevel;
 	/** 
 	 * Initializes all undecided variables, loads level, creates player and enemy objects, and starts frameCaller
 	 */
@@ -98,8 +97,6 @@ public final class GraphicsController extends View
 		phoneHeight = (int) dimensions[1];
 		playScreenSize = (double)levelController.levelWidth/phoneWidth;
 		playScreenSizeMax = playScreenSize;
-		drawToLevel = Bitmap.createBitmap(levelController.levelWidth, levelController.levelHeight, Config.ARGB_8888);
-		gLevel = new Canvas(drawToLevel);
 	}
 	protected void frameCall()
 	{
@@ -159,24 +156,26 @@ public final class GraphicsController extends View
 	 * draws the level and objects in it
 	 * @return bitmap of level and objects
 	 */
-	protected Bitmap drawLevel()
+	protected void drawLevel(Canvas g)
 	{
-		paint.setColor(Color.rgb(51, 102, 0));
-		paint.setStyle(Style.FILL);
-		gLevel.drawRect(0, 0, phoneWidth, phoneHeight, paint);
 		//g.drawBitmap(imageLibrary.currentLevel, 0, 0, paint);
-		spriteController.drawStructures(gLevel, paint, imageLibrary);
-		spriteController.drawSprites(gLevel, paint, imageLibrary);
+		spriteController.drawStructures(g, paint, imageLibrary);
+		spriteController.drawSprites(g, paint, imageLibrary);
 		//g.drawBitmap(imageLibrary.currentLevelTop, 0, 0, paint);
-		spriteController.drawHealthBars(gLevel, paint);
-		return drawToLevel;
+		spriteController.drawHealthBars(g, paint);
 	}
 	@Override
 	protected void onDraw(Canvas g)
 	{
-		Rect src = new Rect(mapXSlide, mapYSlide, mapXSlide+(int)(playScreenSize*phoneWidth), mapYSlide+(int)(playScreenSize*phoneHeight));
-		Rect dst = new Rect(0, 0, phoneWidth, phoneHeight);
-		g.drawBitmap(drawLevel(), src, dst, paint);
+		paint.setColor(Color.rgb(51, 102, 0));
+		paint.setStyle(Style.FILL);
+		g.drawRect(0, 0, phoneWidth, phoneHeight, paint);
+		//Rect src = new Rect(mapXSlide, mapYSlide, mapXSlide+(int)(playScreenSize*phoneWidth), mapYSlide+(int)(playScreenSize*phoneHeight));
+		g.save();
+		g.scale((float)(1/playScreenSize), (float)(1/playScreenSize));
+		g.translate(-mapXSlide, -mapYSlide);
+		drawLevel(g);
+		g.restore();
 		paint.setAlpha(255);
 		paint.setStyle(Style.FILL);
 		paint.setColor(Color.GRAY);

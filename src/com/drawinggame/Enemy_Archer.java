@@ -41,6 +41,7 @@ public final class Enemy_Archer extends Enemy
 			aimAheadOfTarget(v*2, target); //TODO add extra frames for when you aim
 		} else if(frame==36) // shoots
 		{
+			control.spriteController.createProj_Tracker(rads * r2d, v, 130, x, y, onPlayersTeam);
 			myController.archerDoneFiring(this);
 		}
 	}

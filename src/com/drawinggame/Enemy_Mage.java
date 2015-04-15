@@ -48,7 +48,7 @@ public final class Enemy_Mage extends Enemy
 		aimAheadOfTarget(v*2, target);	// aim closer to player
 		rads+=0.1;
 		rads-=control.getRandomDouble()*0.2;	// add random factor to shot
-		control.spriteController.createProj_Tracker(rads * r2d, v, 130, x, y, onPlayersTeam);
+		control.spriteController.createProj_Tracker(rads * r2d, v, 100, x, y, onPlayersTeam);
 		control.soundController.playEffect("arrowrelease");
 		rads = saveRads;
 		rotation = rads*r2d;
