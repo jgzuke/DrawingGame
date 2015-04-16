@@ -62,11 +62,8 @@ public final class Controller
 		 */
 		public void run()
 		{
-			if(!paused)
-			{
-				frameCall();
-				mHandler.postDelayed(this, 40);
-			}
+			frameCall();
+			mHandler.postDelayed(this, 40);
 		}
 	};	
 	/** 
@@ -98,19 +95,17 @@ public final class Controller
 		levelController.loadLevel(2);
 		//TODO
 	}
-	protected void pause()
-	{
-		paused = true;
-		activity.pause();
-	}
 	/**
 	 * Sets deleted objects to null to be gc'd and tests player and enemy hitting arena bounds
 	 */
 	protected void frameCall()
 	{
 		graphicsController.frameCall();
-		spriteController.frameCall();
-		wallController.frameCall();
+		if(!paused)
+		{
+			spriteController.frameCall();
+			wallController.frameCall();
+		}
 	}
 	/**
 	 * returns random integer between 0 and i-1

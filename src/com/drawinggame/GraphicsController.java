@@ -68,6 +68,7 @@ public final class GraphicsController extends View
 	private Controller control;
 	private SpriteController spriteController;
 	private LevelController levelController;
+	private boolean pauseDrawn = false;
 	private Context context;
 	/** 
 	 * Initializes all undecided variables, loads level, creates player and enemy objects, and starts frameCaller
@@ -96,7 +97,10 @@ public final class GraphicsController extends View
 	}
 	protected void frameCall()
 	{
-		invalidate();
+		if(!control.paused || !pauseDrawn)
+		{
+			invalidate();
+		}
 	}
 	/**
 	 * fixes hp bar so it is on screen
@@ -163,6 +167,20 @@ public final class GraphicsController extends View
 	@Override
 	protected void onDraw(Canvas g)
 	{
+		if(control.paused)
+		{
+			if(!pauseDrawn)
+			{
+				drawPaused(g);
+			}
+		} else
+		{
+			drawUnpaused(g);
+		}
+	}
+	protected void drawUnpaused(Canvas g)
+	{
+		pauseDrawn = false;
 		paint.setColor(Color.rgb(51, 102, 0));
 		paint.setStyle(Style.FILL);
 		g.drawRect(0, 0, phoneWidth, phoneHeight, paint);
@@ -172,26 +190,36 @@ public final class GraphicsController extends View
 		g.translate(-mapXSlide, -mapYSlide);
 		drawLevel(g);
 		g.restore();
-		paint.setAlpha(255);
-		paint.setStyle(Style.FILL);
 		paint.setColor(Color.GRAY);
+		paint.setStyle(Style.FILL);
+		g.drawRect(0, 0, 150, 150, paint);
 		if(!control.gestureDetector.selectType.equals("none")) // something selected
 		{
-			g.drawRect(0, 0, 150, 150, paint);
+			g.drawRect(150, 0, 300, 150, paint);
 		}
-		control.gestureDetector.drawGestures(g);
-		double unitW = ((double)phoneWidth / 100);
-		double unitH = ((double)phoneHeight / 100);
-		//Log.e("myid", Double.toString(unitDist*96));
+		int spacing = 10;
+		int top = phoneHeight-spacing;
+		int manaHeight = phoneHeight-150-2*spacing;
 		paint.setColor(manaColor);
 		paint.setStyle(Style.FILL);
-		g.drawRect((int)unitW, phoneHeight-(int)(unitH*(1+(double)control.spriteController.playerGameControl.mana/12)), (int)(unitW*4), phoneHeight-(int)unitW, paint);
-		g.drawRect((int)(unitW*96), phoneHeight-(int)(unitH*(1+(double)control.spriteController.enemyGameControl.mana/12)), (int)(unitW*99), phoneHeight-(int)unitW, paint);
+		g.drawRect(spacing, top-(int)(manaHeight*(double)control.spriteController.playerGameControl.mana/1000), spacing*4, top, paint);
+		g.drawRect(phoneWidth-spacing*4, top-(int)(manaHeight*(double)control.spriteController.enemyGameControl.mana/1000), phoneWidth-spacing, top, paint);
 		paint.setStrokeWidth(3);
 		paint.setColor(Color.BLACK);
 		paint.setStyle(Style.STROKE);
-		g.drawRect((int)unitW, phoneHeight-(int)(unitH*84), (int)(unitW*4), phoneHeight-(int)unitW, paint);
-		g.drawRect((int)(unitW*96), phoneHeight-(int)(unitH*84), (int)(unitW*99), phoneHeight-(int)unitW, paint);
+		g.drawRect(spacing, top-manaHeight, spacing*4, phoneHeight-spacing, paint);
+		g.drawRect(phoneWidth-spacing*4, top-manaHeight, phoneWidth-spacing, phoneHeight-spacing, paint);
+		control.gestureDetector.drawGestures(g);
+	}
+	protected void drawPaused(Canvas g)
+	{
+		pauseDrawn = true;  
+		paint.setColor(Color.LTGRAY);
+		paint.setStyle(Style.FILL);
+		g.drawRect(0, 0, phoneWidth, phoneHeight, paint);
+		paint.setColor(Color.GRAY);
+		paint.setStyle(Style.FILL);
+		g.drawRect(0, 0, 150, 150, paint);
 	}
 	/**
 	 * Starts warning label

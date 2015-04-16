@@ -203,28 +203,4 @@ public class StartActivity extends Activity
 		}
 		catch(IOException e){}
 	}
-	
-	
-	//					PAUSE SCREEN STUFF
-	
-	
-	
-	
-
-	/**
-	 * starts pause activity thing
-	 */
-	protected void pause()
-	{
-		setContentView(R.layout.paused);
-	}
-	/**
-	 * Unpauses game
-	 */
-	public void unPause(View v)
-	{
-		setContentView(control.graphicsController);
-		control.paused = false;
-		control.frameCaller.run();
-	}
 }

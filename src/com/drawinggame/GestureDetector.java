@@ -188,26 +188,45 @@ public class GestureDetector implements OnTouchListener
 	public void click(Point pPhone)
     {
     	Point p = screenToMapPoint(pPhone);
-    	if(selectType.equals("none"))
+    	if(clickedTopLeft(pPhone)) return;
+    	if(control.paused)
+    	{
+    		
+    	} else if(selectType.equals("none"))
     	{
     		control.spriteController.selectEnemy(p.X, p.Y);
     	} else if(selectType.equals("single"))
     	{
-    		if(clickedTopLeft(pPhone)) return;
     		if(control.spriteController.selectEnemy(p.X, p.Y)) return;
     		control.selected.setDestination(p);
     	} else if(selectType.equals("group"))
     	{
-    		if(clickedTopLeft(pPhone)) return;
     		if(control.spriteController.selectEnemy(p.X, p.Y)) return;
     		control.selected.setDestination(p);
     	}
     }
     public boolean clickedTopLeft(Point p)
     {
-    	if(p.X > 150 || p.Y > 150) return false;
-    	control.spriteController.deselectEnemies();
-    	return true;
+    	if(control.paused)
+    	{
+    		if(p.X < 150 && p.Y < 150)
+        	{
+        		control.paused = false;
+        		return true;
+        	}
+    		return false;
+    	}
+    	if(p.X < 150 && p.Y < 150)
+    	{
+    		control.paused = true;
+    		return true;
+    	}
+    	if(p.X < 300 && p.Y < 150 && !control.gestureDetector.selectType.equals("none"))
+    	{
+    		control.spriteController.deselectEnemies();
+    		return true;
+    	}
+    	return false;
     }
 	public void endCircle(Vector<Point> points)
 	{

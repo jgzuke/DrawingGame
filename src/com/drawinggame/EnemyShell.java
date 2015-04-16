@@ -49,6 +49,7 @@ abstract public class EnemyShell extends Human {
 	public EnemyShell(Controller creator, double X, double Y, int HP, int ImageIndex, boolean isOnPlayersTeam) {
 		super(X, Y, 0, 0, true, false, creator.imageLibrary.enemyImages[ImageIndex][0], isOnPlayersTeam);
 		humanType = ImageIndex;
+		if(humanType>2) humanType -= 3;
 		control = creator;
 		destinationX = (int) X;
 		destinationY = (int) Y;
