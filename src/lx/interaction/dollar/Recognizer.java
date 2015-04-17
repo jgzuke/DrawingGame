@@ -53,8 +53,7 @@ public class Recognizer
 	}
 	void replaceTemplate(int i, Vector<Point> array) // i = 0-3
 	{
-		templates.remove(i);
-		templates.add(i, new Template(Integer.toString(i), array));
+		templates.get(i).Points = array;
 	}
 	Template loadTemplate(String name, int[] array)
 	{
@@ -71,7 +70,7 @@ public class Recognizer
 		}
 		return v;
 	}
-	public void Recognize(Vector<Point> points, String selectType)
+	public void Recognize(Vector<Point> points, String selectType, boolean lookingForCircle)
 	{
 		if(points.size() == 0) return;
 		Rectangle myBounds = new Rectangle(0,0,0,0);
@@ -79,40 +78,33 @@ public class Recognizer
 		if(isClick(myBounds)) return;
 		points = Utils.Resample(points, NumPoints);
 		gestureDetector.setLastShape((Vector<Point>) points.clone());
-		if(isCircle(points)) return;
 		Point moveCoords = Utils.getCentre(points);					// use this to get the x, y of the gestures centre
 		points = Utils.ScaleToSquare(points, SquareSize);
 		points = Utils.TranslateToOrigin(points);
-		gestureDetector.setLastShapeDone((Vector<Point>) points.clone());
 	
 		bounds[0] = (int)boundingBox.X;
 		bounds[1] = (int)boundingBox.Y;
 		bounds[2] = (int)boundingBox.X + (int)boundingBox.Width;
 		bounds[3] = (int)boundingBox.Y + (int)boundingBox.Height;
 		int t = 0;
-		double b = Double.MAX_VALUE;
+		double error = Double.MAX_VALUE;
 		for (int i = 0; i < templates.size(); i++)
 		{
 			double d = Utils.PathDistance(points, templates.elementAt(i).Points);
 			if((templates.elementAt(i)).Name.startsWith("line")) d *= 3;
-			if (d < b)
+			if (d < error)
 			{
-				b = d;
+				error = d;
 				t = i;
 			}
 		}
-		if(b < 40)
+		if(error < 40)
 		{
-			if(selectType.equals("none"))
-		    {
-				gestureDetector.endShapeNone((templates.elementAt(t)).Name, moveCoords);
-		    } else if(selectType.equals("single"))
-		    {
-		    	gestureDetector.endShapeSingle((templates.elementAt(t)).Name, moveCoords);
-		    } else if(selectType.equals("group"))
-		    {
-		    	gestureDetector.endShapeGroup((templates.elementAt(t)).Name, moveCoords);
-		    }
+			gestureDetector.endShape((templates.elementAt(t)).Name, moveCoords);
+		} else
+		{
+			if(lookingForCircle) isCircle(points);
+			else gestureDetector.endShape(points, myBounds);
 		}
 	}
 	public boolean isClick(Rectangle myBounds)

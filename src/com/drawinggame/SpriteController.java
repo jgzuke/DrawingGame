@@ -66,7 +66,7 @@ public final class SpriteController extends SpriteDrawer
 	
 	//makeGroup(s, a, m, form, x, y, isOnPlayersTeam, toAdd, toAddController);
 	protected Bitmap playerBlessing;
-	protected int [] manaPrices = {50, 30, 70, (int)Math.pow(520, 0.985), (int)Math.pow(420, 0.985), (int)Math.pow(750, 0.985)};
+	protected int [] manaPrices = {50, 30, 70, (int)Math.pow(520, 0.985), (int)Math.pow(420, 0.985), (int)Math.pow(750, 0.985), (int)Math.pow(750, 0.985)};
 	protected Bitmap isSelected;
 	protected Game_Control_Player playerGameControl;
 	protected Game_Control_Enemy enemyGameControl;

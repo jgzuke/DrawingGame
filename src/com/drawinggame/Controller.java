@@ -49,6 +49,7 @@ public final class Controller
 	private Random randomGenerator = new Random();
 	private Handler mHandler = new Handler();
 	protected SpriteController spriteController;
+	protected SelectionSpriteController selectionSpriteController;
 	protected WallController wallController;
 	protected LevelController levelController;
 	protected GraphicsController graphicsController;
@@ -78,6 +79,7 @@ public final class Controller
 		
 		wallController = new WallController(startSet, this);
 		spriteController = new SpriteController(startSet, this);
+		selectionSpriteController = new SelectionSpriteController(startSet, this);
 		spriteController.playerGameControl.setEnemies(true);
 		spriteController.enemyGameControl.setEnemies(false);
 		imageLibrary = new ImageLibrary(startSet, this); // creates image library

@@ -58,6 +58,8 @@ public final class GraphicsController extends View
 	protected int curYShift;
 	protected int phoneWidth;
 	protected int phoneHeight;
+	protected double unitWidth;
+	protected double unitHeight;
 	protected Paint paint = new Paint();
 	protected Matrix rotateImages = new Matrix();
 	private Rect aoeRect = new Rect();
@@ -68,7 +70,6 @@ public final class GraphicsController extends View
 	private Controller control;
 	private SpriteController spriteController;
 	private LevelController levelController;
-	private boolean pauseDrawn = false;
 	private Context context;
 	/** 
 	 * Initializes all undecided variables, loads level, creates player and enemy objects, and starts frameCaller
@@ -92,15 +93,14 @@ public final class GraphicsController extends View
 		paint.setDither(true);
 		phoneWidth = (int) dimensions[0];
 		phoneHeight = (int) dimensions[1];
+		unitWidth = (double)phoneWidth/100;
+		unitHeight = (double)phoneHeight/100;
 		playScreenSize = (double)levelController.levelWidth/phoneWidth;
 		playScreenSizeMax = playScreenSize;
 	}
 	protected void frameCall()
 	{
-		if(!control.paused || !pauseDrawn)
-		{
-			invalidate();
-		}
+		invalidate();
 	}
 	/**
 	 * fixes hp bar so it is on screen
@@ -169,10 +169,7 @@ public final class GraphicsController extends View
 	{
 		if(control.paused)
 		{
-			if(!pauseDrawn)
-			{
-				drawPaused(g);
-			}
+			drawPaused(g);
 		} else
 		{
 			drawUnpaused(g);
@@ -180,7 +177,6 @@ public final class GraphicsController extends View
 	}
 	protected void drawUnpaused(Canvas g)
 	{
-		pauseDrawn = false;
 		paint.setColor(Color.rgb(51, 102, 0));
 		paint.setStyle(Style.FILL);
 		g.drawRect(0, 0, phoneWidth, phoneHeight, paint);
@@ -212,24 +208,27 @@ public final class GraphicsController extends View
 	}
 	protected void drawPaused(Canvas g)
 	{
-		pauseDrawn = true; 
-		
+		int selected = control.gestureDetector.settingSelected;
 		paint.setColor(Color.LTGRAY);
 		paint.setStyle(Style.FILL);
 		g.drawRect(0, 0, phoneWidth, phoneHeight, paint);
+		
+		paint.setColor(Color.RED);
+		paint.setStyle(Style.STROKE);
+		double uHeight = unitHeight*10;
+		g.drawRect(0, 0, (int)(unitWidth*100), (int)(unitHeight*20), paint);
+		g.drawRect((int)(unitWidth*50-uHeight), (int)(unitHeight*20), (int)(unitWidth*50+uHeight), (int)(unitHeight*40), paint);
+		g.drawRect((int)(unitWidth*50-uHeight), (int)(unitHeight*40), (int)(unitWidth*50+uHeight), (int)(unitHeight*60), paint);
+		g.drawRect((int)(unitWidth*50-uHeight), (int)(unitHeight*60), (int)(unitWidth*50+uHeight), (int)(unitHeight*80), paint);
+		g.drawRect((int)(unitWidth*50-uHeight), (int)(unitHeight*80), (int)(unitWidth*50+uHeight), (int)(unitHeight*100), paint);
+		paint.setColor(Color.BLUE);
+		g.drawRect((int)(unitWidth*50-uHeight), (int)(unitHeight*20*(selected+1)), (int)(unitWidth*50+uHeight), (int)(unitHeight*20*(selected+2)), paint);
+		control.gestureDetector.drawGestureSelected(g);
+		control.selectionSpriteController.drawSprites(g, paint, imageLibrary);
+		
 		paint.setColor(Color.GRAY);
 		paint.setStyle(Style.FILL);
 		g.drawRect(0, 0, 150, 150, paint);
-		int unitWidth = phoneWidth/100;
-		int unitHeight = phoneHeight/100;
-		int spacing = unitWidth*4;
-		paint.setColor(Color.RED);
-		paint.setStyle(Style.FILL);
-		g.drawRect(unitWidth*50+spacing, spacing, unitWidth*75-spacing, unitHeight*50-spacing, paint);
-		g.drawRect(unitWidth*50+spacing, unitHeight*50+spacing, unitWidth*75-spacing, unitHeight*100-spacing, paint);
-		g.drawRect(unitWidth*75+spacing, spacing, unitWidth*100-spacing, unitHeight*50-spacing, paint);
-		g.drawRect(unitWidth*75+spacing, unitHeight*50+spacing, unitWidth*100-spacing, unitHeight*100-spacing, paint);
-		
 	}
 	/**
 	 * Starts warning label

@@ -38,7 +38,16 @@ public class Control_AI
 	{
 		if(mage.action.equals("Roll"))
 		{
-		} else if(mage.checkDanger()>0)
+			return;
+		}
+		Enemy target = mage.myController.findClosestEnemy(mage);
+		if(target == null) return;
+		double distanceToTarget = mage.distanceTo(target);
+		if(mage.shoot>6&&mage.energy>35&& distanceToTarget < 210)
+		{
+			mage.shoot(target);
+		}
+		if(mage.checkDanger()>0)
 		{
 			if(mage.rollTimer<0)
 			{
@@ -46,6 +55,10 @@ public class Control_AI
 			} else
 			{
 				mage.runSidewaysDanger();
+			}
+			if(mage.shoot>6&&mage.energy>35&& distanceToTarget < 210)
+			{
+				mage.shoot(target);
 			}
 		} else if(mage.action.equals("Move"))
 		{
@@ -56,9 +69,6 @@ public class Control_AI
 				mage.runTowardsDestination();
 			} else if(groupEngaged)
 			{
-				Enemy target = mage.myController.findClosestEnemy(mage);
-				if(target == null) return;
-				double distanceToTarget = mage.distanceTo(target);
 				if(distanceToTarget<80)		// MAGES ALWAYS MOVING, DONT STOP TO SHOOT
 				{
 					mage.rollAway(target);
@@ -71,11 +81,6 @@ public class Control_AI
 				} else
 				{
 					mage.runTowards(target);
-				}
-				
-				if(mage.shoot>6&&mage.energy>35&& distanceToTarget < 210)
-				{
-					mage.shoot(target);
 				}
 			} else if(mage.hasDestination)
 			{

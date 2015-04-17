@@ -34,18 +34,18 @@ public class GestureDetector implements OnTouchListener
 	private int mapYSlideStart;
 	private int phoneWidth;
 	private int phoneHeight;
+	protected double unitWidth;
+	protected double unitHeight;
 	private Vector<Point> pointsList = new Vector<Point>(1000);
 	private int timeSinceDraw = 50;
 	private int actionMask;
+	protected int settingSelected = 0;
 	protected Recognizer recognizer;
 	protected String selectType = "none";
 	int ID = 0;
 	
 	private Path lastShape;
-	private Path lastShapeDone;
-	private Path aveShapeDone;
 	private Vector<Point> average = new Vector<Point>();
-	private int averagePoints = 0;
 	private Context context;
 	private int pointersDown = 0;
 	
@@ -59,6 +59,8 @@ public class GestureDetector implements OnTouchListener
 	    paint.setPathEffect(new CornerPathEffect(10) );   // set the path effect when they join.
     	phoneWidth = widthSet;
     	phoneHeight = heightSet;
+    	unitWidth = (double)phoneWidth/100;
+		unitHeight = (double)phoneHeight/100;
     	context = contextSet;
     	control = controllerSet;
     	recognizer = new Recognizer(this);
@@ -67,6 +69,15 @@ public class GestureDetector implements OnTouchListener
 			average.add(new Point(0,0));
 		}
     }
+    protected void drawGestureSelected(Canvas g)
+	{
+    	g.drawPath(getPathFromVector(recognizer.templates.get(settingSelected).Points, (int)(unitWidth*25-unitHeight*5), (int)(unitHeight*60), 0.6*(unitWidth*50 - unitHeight*10)), paint);
+    	g.drawPath(getPathFromVector(recognizer.templates.get(0).Points, (int)(unitWidth*50), (int)(unitHeight*30), 0.6*(unitHeight*20)), paint);
+    	g.drawPath(getPathFromVector(recognizer.templates.get(1).Points, (int)(unitWidth*50), (int)(unitHeight*50), 0.6*(unitHeight*20)), paint);
+    	g.drawPath(getPathFromVector(recognizer.templates.get(2).Points, (int)(unitWidth*50), (int)(unitHeight*70), 0.6*(unitHeight*20)), paint);
+    	g.drawPath(getPathFromVector(recognizer.templates.get(3).Points, (int)(unitWidth*50), (int)(unitHeight*90), 0.6*(unitHeight*20)), paint);
+    	drawGestures(g);
+	}
     protected void drawGestures(Canvas g)
 	{
     	timeSinceDraw++;
@@ -80,29 +91,11 @@ public class GestureDetector implements OnTouchListener
     	if(lastShape != null && timeSinceDraw < 50)
     	{
     		g.saveLayerAlpha(0, 0, g.getWidth(), g.getHeight(), 255 - 5*timeSinceDraw, Canvas.HAS_ALPHA_LAYER_SAVE_FLAG);
-    		//TODO fade drawn gesture
-    		//paint.setAlpha(255 - 5*timeSinceDraw);
     		paint.setColor(Color.GRAY);
     		g.drawPath(lastShape, paint);
-    		paint.setAlpha(255);
+    		g.saveLayerAlpha(0, 0, g.getWidth(), g.getHeight(), 255, Canvas.HAS_ALPHA_LAYER_SAVE_FLAG);
+    		
     	}
-	}
-    
-
-	public void setLastShapeDone(Vector<Point> points)
-	{
-		//{137,139,135,141,133,144,132,146,130,149,128,151,126,155,123,160,120,166,116,171,112,177,107,183,102,188,100,191,95,195,90,199,86,203,82,206,80,209,75,213,73,213,70,216,67,219,64,221,61,223,60,225,62,226,65,225,67,226,74,226,77,227,85,229,91,230,99,231,108,232,116,233,125,233,134,234,145,233,153,232,160,233,170,234,177,235,179,236,186,237,193,238,198,239,200,237,202,239,204,238,206,234,205,230,202,222,197,216,192,207,186,198,179,189,174,183,170,178,164,171,161,168,154,160,148,155,143,150,138,148,136,148};
-		for(int i = 0; i < 64; i ++)
-		{
-			if(i == points.size()) break;
-			Point p1 = average.get(i);
-			Point p2 = points.get(i);
-			p1.X = ((p1.X*averagePoints)+(p2.X))/(averagePoints+1);
-			p1.Y = ((p1.Y*averagePoints)+(p2.Y))/(averagePoints+1);
-		}
-		averagePoints ++;
-		aveShapeDone = getPathFromVector(average, 300, 300);
-		lastShapeDone = getPathFromVector(points, 300, 300);
 	}
 	public void setLastShape(Vector<Point> points)
 	{
@@ -134,54 +127,63 @@ public class GestureDetector implements OnTouchListener
 		}
 		return true;
     }
-	public void endShapeGroup(String type, Point screenPoint)
+	public void endShape(Vector<Point> points, Rectangle b)
+	{
+		if(b.X+b.Width < unitWidth*50-unitHeight*10 && b.Y > unitHeight*20)
+		{
+			recognizer.templates.get(settingSelected).Points = points;
+		} else
+		{
+			Toast.makeText(context, "Out of bounds", Toast.LENGTH_SHORT).show();
+		}
+	}
+	public void endShape(String type, Point screenPoint)
     {
 		Point p = screenToMapPoint(screenPoint);
 		timeSinceDraw = 0;
-		if(checkMadeEnemy(type, p)) return;
-		if(type.equals("n"))
+		if(control.paused)
 		{
-			((Control_Group)control.selected).setLayoutType(1);
-		} else if(type.equals("s"))
-		{
-			((Control_Group)control.selected).setLayoutType(2);
-		} else if(type.equals("v"))
-		{
-			((Control_Group)control.selected).setLayoutType(0);
-		} else if(type.equals("c"))
-		{
-			control.selected.cancelMove();
-			Log.e("myid", "c");
+			Toast.makeText(context, "Too close to another gesture", Toast.LENGTH_SHORT).show();
+			return;
 		}
-    }
-	public void endShapeSingle(String type, Point screenPoint)
-    {
-		Point p = screenToMapPoint(screenPoint);
-		timeSinceDraw = 0;
 		if(checkMadeEnemy(type, p)) return;
-		if(type.equals("c"))
-		{
-			control.selected.cancelMove();
-		}
-    }
-	public void endShapeNone(String type, Point screenPoint)
-    {
-		Point p = screenToMapPoint(screenPoint);
-		timeSinceDraw = 0;
-		if(checkMadeEnemy(type, p)) return;
-		if(type.equals("0"))
-		{
-			control.spriteController.makeEnemy(3, (int)p.X, (int)p.Y, true);
-		} else if(type.equals("1"))
-		{
-			control.spriteController.makeEnemy(4, (int)p.X, (int)p.Y, true);
-		} else if(type.equals("2"))
-		{
-			control.spriteController.makeEnemy(5, (int)p.X, (int)p.Y, true);
-		} else if(type.equals("3"))
-		{
-			control.spriteController.makeEnemy(6, (int)p.X, (int)p.Y, true);
-		}
+		if(selectType.equals("none"))
+	    {
+			if(type.equals("0"))
+			{
+				control.spriteController.makeEnemy(3, (int)p.X, (int)p.Y, true);
+			} else if(type.equals("1"))
+			{
+				control.spriteController.makeEnemy(4, (int)p.X, (int)p.Y, true);
+			} else if(type.equals("2"))
+			{
+				control.spriteController.makeEnemy(5, (int)p.X, (int)p.Y, true);
+			} else if(type.equals("3"))
+			{
+				control.spriteController.makeEnemy(6, (int)p.X, (int)p.Y, true);
+			}
+	    } else if(selectType.equals("single"))
+	    {
+	    	if(type.equals("c"))
+			{
+				control.selected.cancelMove();
+			}
+	    } else if(selectType.equals("group"))
+	    {
+	    	if(type.equals("n"))
+			{
+				((Control_Group)control.selected).setLayoutType(1);
+			} else if(type.equals("s"))
+			{
+				((Control_Group)control.selected).setLayoutType(2);
+			} else if(type.equals("v"))
+			{
+				((Control_Group)control.selected).setLayoutType(0);
+			} else if(type.equals("c"))
+			{
+				control.selected.cancelMove();
+			}
+	    }
     }
 	public void click(Point pPhone)
     {
@@ -189,7 +191,13 @@ public class GestureDetector implements OnTouchListener
     	if(clickedTopLeft(pPhone)) return;
     	if(control.paused)
     	{
-    		
+    		if(pPhone.Y > unitHeight*20)
+    		{
+    			if(Math.abs(pPhone.X-unitWidth*50) < unitHeight*10)
+        		{
+    				settingSelected = (int) (pPhone.Y/(unitHeight*20)) - 1;
+        		}
+    		}
     	} else if(selectType.equals("none"))
     	{
     		control.spriteController.selectEnemy(p.X, p.Y);
@@ -205,18 +213,9 @@ public class GestureDetector implements OnTouchListener
     }
     public boolean clickedTopLeft(Point p)
     {
-    	if(control.paused)
-    	{
-    		if(p.X < 150 && p.Y < 150)
-        	{
-        		control.paused = false;
-        		return true;
-        	}
-    		return false;
-    	}
     	if(p.X < 150 && p.Y < 150)
     	{
-    		control.paused = true;
+    		control.paused = !control.paused;
     		return true;
     	}
     	if(p.X < 300 && p.Y < 150 && !control.gestureDetector.selectType.equals("none"))
@@ -251,7 +250,10 @@ public class GestureDetector implements OnTouchListener
         	firstPoint = new Point((int)(e.getX(ID)), (int)(e.getY(ID)));
         break;
         case MotionEvent.ACTION_UP:
-        	if(secondID == 0) recognizer.Recognize(pointsList, selectType);
+        	if(secondID == 0)
+        	{
+        		recognizer.Recognize(pointsList, selectType, !control.paused);
+        	}
         	pointsList.clear();
         	pointersDown = 0;
         	secondID = 0;
@@ -308,20 +310,25 @@ public class GestureDetector implements OnTouchListener
 		path.lineTo(points[points.length-2]+x, points[points.length-1]+y);
 		return path;
     }
-    protected Path getPathFromVector(Vector<Point> points, int x, int y)
+    protected Path getPathFromVector(Vector<Point> points, int x, int y, double width)
     {
     	Path path = new Path();
+    	double ratio = width/250;
 		Point p = (Point) points.get(0);
-		path.moveTo((int)p.X+x, (int)p.Y+y);
+		path.moveTo((int)(p.X*ratio)+x, (int)(p.Y*ratio)+y);
 		for(int j = 1; j < points.size() - 1; j+=2)
 		{
 			p = (Point) points.get(j);
 	        Point n = points.get(j + 1);
-	        path.quadTo((int)p.X+x, (int)p.Y+y, (int)n.X+x, (int)n.Y+y);
+	        path.quadTo((int)(p.X*ratio)+x, (int)(p.Y*ratio)+y, (int)(n.X*ratio)+x, (int)(n.Y*ratio)+y);
 		}
 		p = (Point) points.get(points.size() - 1);
-		path.lineTo((int)p.X+x, (int)p.Y+y);
+		path.lineTo((int)(p.X*ratio)+x, (int)(p.Y*ratio)+y);
 		return path;
+    }
+    protected Path getPathFromVector(Vector<Point> points, int x, int y)
+    {
+    	return getPathFromVector(points, x, y, 250);
     }
     protected Path getPathFromVector(Vector<Point> points)
     {
