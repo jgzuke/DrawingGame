@@ -400,78 +400,9 @@ abstract public class Enemy extends EnemyShell
 	 */
 	protected void runTowards(double fx, double fy)
 	{
-		if(checkObstructionsPoint((int)fx, (int)fy, (int)x, (int)y, true, fromWall))
-		{
-			int foundPlayer = -1;			//try to find enemy
-			int sX = (int)(fx/20);		//start at player
-			int sY = (int)(fy/20);
-			int eX = (int)x;
-			int eY = (int)y;
-			int[] p1 = {sX, sY, sX, sY};
-			boolean[][] checked=new boolean[(control.levelController.levelWidth/20)][(control.levelController.levelHeight/20)];
-			ArrayList<int[]> points = new ArrayList<int[]>();
-			points.add(p1);
-			checked[sX][sY]=true;
-			int count = 0;
-			while(foundPlayer==-1&&count<40)
-			{
-				foundPlayer=iterateSearch(points, checked, eX, eY);
-				count++;
-			}
-			if(foundPlayer==-1)
-			{
-				runRandom();
-			} else
-			{
-				int[] closest = points.get(foundPlayer);
-				rads = Math.atan2(closest[3]*20 - y, closest[2]*20 - x);
-			}
-		} else
-		{
-			rads = Math.atan2(fy - y, fx - x);
-		}
+		rads = Math.atan2(fy - y, fx - x);
 		rotation = rads * r2d;
 		run(5);
-	}
-	private int iterateSearch(ArrayList<int[]> points, boolean[][] checked, int eX, int eY)
-	{
-		int numPoints = points.size();
-		boolean [][][] paths = control.wallController.pathing;
-		for(int i = 0; i < numPoints; i++) // for every endpoint we have, expand
-		{
-			int x = points.get(i)[0];
-			int y = points.get(i)[1];
-			if(!checkObstructionsPoint(x*20, y*20, eX, eY, true, fromWall)) return i; // if you see
-			if(x<checked.length-2 && paths[x][y][1] && !checked[x+1][y])
-			{	
-				int[] newPoint = {x+1, y, x, y}; // its a new endpoint
-				points.add(newPoint);
-				checked[x+1][y]=true;			//weve checked this square
-			}
-			if(x>1&&paths[x][y][2] && !checked[x-1][y])
-			{
-				int[] newPoint = {x-1, y, x, y};
-				points.add(newPoint);
-				checked[x-1][y]=true;
-			}
-			if(y<checked[0].length-2&&paths[x][y][3] && !checked[x][y+1])
-			{
-				int[] newPoint = {x, y+1, x, y};
-				points.add(newPoint);
-				checked[x][y+1]=true;
-			}
-			if(y>1&&paths[x][y][4] && !checked[x][y-1])
-			{
-				int[] newPoint = {x, y-1, x, y};
-				points.add(newPoint);
-				checked[x][y-1]=true;
-			}
-		}
-		for(int i = 0; i < numPoints; i++) // remove all the old points
-		{
-			points.remove(0);
-		}
-		return -1;
 	}
 	/**
 	 * Runs random direction for 25 or if not enough space 10 frames

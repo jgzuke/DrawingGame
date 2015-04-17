@@ -184,7 +184,6 @@ public final class GraphicsController extends View
 		paint.setColor(Color.rgb(51, 102, 0));
 		paint.setStyle(Style.FILL);
 		g.drawRect(0, 0, phoneWidth, phoneHeight, paint);
-		//Rect src = new Rect(mapXSlide, mapYSlide, mapXSlide+(int)(playScreenSize*phoneWidth), mapYSlide+(int)(playScreenSize*phoneHeight));
 		g.save();
 		g.scale((float)(1/playScreenSize), (float)(1/playScreenSize));
 		g.translate(-mapXSlide, -mapYSlide);
@@ -213,13 +212,24 @@ public final class GraphicsController extends View
 	}
 	protected void drawPaused(Canvas g)
 	{
-		pauseDrawn = true;  
+		pauseDrawn = true; 
+		
 		paint.setColor(Color.LTGRAY);
 		paint.setStyle(Style.FILL);
 		g.drawRect(0, 0, phoneWidth, phoneHeight, paint);
 		paint.setColor(Color.GRAY);
 		paint.setStyle(Style.FILL);
 		g.drawRect(0, 0, 150, 150, paint);
+		int unitWidth = phoneWidth/100;
+		int unitHeight = phoneHeight/100;
+		int spacing = unitWidth*4;
+		paint.setColor(Color.RED);
+		paint.setStyle(Style.FILL);
+		g.drawRect(unitWidth*50+spacing, spacing, unitWidth*75-spacing, unitHeight*50-spacing, paint);
+		g.drawRect(unitWidth*50+spacing, unitHeight*50+spacing, unitWidth*75-spacing, unitHeight*100-spacing, paint);
+		g.drawRect(unitWidth*75+spacing, spacing, unitWidth*100-spacing, unitHeight*50-spacing, paint);
+		g.drawRect(unitWidth*75+spacing, unitHeight*50+spacing, unitWidth*100-spacing, unitHeight*100-spacing, paint);
+		
 	}
 	/**
 	 * Starts warning label

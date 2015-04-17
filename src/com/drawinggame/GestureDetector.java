@@ -69,7 +69,6 @@ public class GestureDetector implements OnTouchListener
     }
     protected void drawGestures(Canvas g)
 	{
-    	g.saveLayerAlpha(0, 0, g.getWidth(), g.getHeight(), 0x66, Canvas.HAS_ALPHA_LAYER_SAVE_FLAG);
     	timeSinceDraw++;
     	paint.setColor(Color.BLACK);
     	paint.setStyle(Style.STROKE);
@@ -80,6 +79,7 @@ public class GestureDetector implements OnTouchListener
     	}
     	if(lastShape != null && timeSinceDraw < 50)
     	{
+    		g.saveLayerAlpha(0, 0, g.getWidth(), g.getHeight(), 255 - 5*timeSinceDraw, Canvas.HAS_ALPHA_LAYER_SAVE_FLAG);
     		//TODO fade drawn gesture
     		//paint.setAlpha(255 - 5*timeSinceDraw);
     		paint.setColor(Color.GRAY);
@@ -108,11 +108,6 @@ public class GestureDetector implements OnTouchListener
 	{
 		lastShape = getPathFromVector(points);
 	}
-	public void endShape(Point screenPoint)
-    {
-		Point p = screenToMapPoint(screenPoint);
-		timeSinceDraw = 0;
-    }
 	public boolean checkMadeEnemy(String type, Point p)
     {
 		if(type.equals("lineH"))
@@ -174,15 +169,18 @@ public class GestureDetector implements OnTouchListener
 		Point p = screenToMapPoint(screenPoint);
 		timeSinceDraw = 0;
 		if(checkMadeEnemy(type, p)) return;
-		if(type.equals("n"))
-		{
-			control.spriteController.makeEnemy(4, (int)p.X, (int)p.Y, true);
-		} else if(type.equals("s"))
-		{
-			control.spriteController.makeEnemy(5, (int)p.X, (int)p.Y, true);
-		} else if(type.equals("v"))
+		if(type.equals("0"))
 		{
 			control.spriteController.makeEnemy(3, (int)p.X, (int)p.Y, true);
+		} else if(type.equals("1"))
+		{
+			control.spriteController.makeEnemy(4, (int)p.X, (int)p.Y, true);
+		} else if(type.equals("2"))
+		{
+			control.spriteController.makeEnemy(5, (int)p.X, (int)p.Y, true);
+		} else if(type.equals("3"))
+		{
+			control.spriteController.makeEnemy(6, (int)p.X, (int)p.Y, true);
 		}
     }
 	public void click(Point pPhone)

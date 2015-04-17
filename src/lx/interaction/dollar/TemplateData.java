@@ -15,7 +15,7 @@ public class TemplateData
 	public static int arrow[] = {0,250, 125,0, 250,250};
 	public static int arrowLongLeft[] = {0,165, 100,0, 250,250};
 	public static int arrowLongRight[] = {0,250, 150,0, 250,165};
-	}
+}
 
 
 /*

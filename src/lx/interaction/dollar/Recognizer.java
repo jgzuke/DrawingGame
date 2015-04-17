@@ -33,6 +33,10 @@ public class Recognizer
 	
 	void loadtemplates()
 	{
+		templates.addElement(loadTemplate("0", TemplateData.n));
+		templates.addElement(loadTemplate("1", TemplateData.s));
+		templates.addElement(loadTemplate("2", TemplateData.c));
+		templates.addElement(loadTemplate("3", TemplateData.v));
 		templates.addElement(loadTemplate("lineH", TemplateData.lineHorizontal));
 		templates.addElement(loadTemplate("lineH", TemplateData.lineHorizontalR));
 		templates.addElement(loadTemplate("lineH", TemplateData.lineHorizontalL));
@@ -46,6 +50,11 @@ public class Recognizer
 		templates.addElement(loadTemplate("s", TemplateData.s));
 		templates.addElement(loadTemplate("v", TemplateData.v));
 		templates.addElement(loadTemplate("c", TemplateData.c));
+	}
+	void replaceTemplate(int i, Vector<Point> array) // i = 0-3
+	{
+		templates.remove(i);
+		templates.add(i, new Template(Integer.toString(i), array));
 	}
 	Template loadTemplate(String name, int[] array)
 	{
@@ -92,10 +101,7 @@ public class Recognizer
 				t = i;
 			}
 		}
-		if(b > 40)
-		{
-			gestureDetector.endShape(moveCoords);
-		} else
+		if(b < 40)
 		{
 			if(selectType.equals("none"))
 		    {

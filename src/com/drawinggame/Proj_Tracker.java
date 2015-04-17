@@ -131,6 +131,11 @@ public final class Proj_Tracker extends Sprite
 	}
 	protected void hitTarget(int x, int y)
 	{
+		if(enemies == null || structures == null)
+		{
+			control.spriteController.proj_TrackerAs.remove(this);
+			return;
+		}
 		for(int i = 0; i < enemies.size(); i++)
 		{
 			if(enemies.get(i) != null)
