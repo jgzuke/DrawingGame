@@ -50,6 +50,10 @@ import com.spritelib.Sprite;
 import com.spritelib.SpriteDrawer;
 public final class SpriteController extends SpriteDrawer
 {
+	protected static int magePrice = 90;
+	protected static int archerPrice = 60;
+	protected static int sheildPrice = 80;
+	protected static double depreciation = 0.967;
 	protected Controller control;
 	protected ArrayList<Control_Main> allyControllers = new ArrayList<Control_Main>();
 	protected ArrayList<Control_Main> enemyControllers = new ArrayList<Control_Main>();
@@ -62,11 +66,11 @@ public final class SpriteController extends SpriteDrawer
 	protected ArrayList<Proj_Tracker_AOE> proj_TrackerA_AOEs = new ArrayList<Proj_Tracker_AOE>();
 	protected ArrayList<Proj_Tracker_AOE> proj_TrackerE_AOEs = new ArrayList<Proj_Tracker_AOE>();
 	protected ArrayList<CreationMarker> creationMarkers = new ArrayList<CreationMarker>();
-	protected int[][] groupDetails = {{7, 2, 6, 0}, {3, 2, 3, 1}, {7, 4, 4, 2}, {2, 1, 1, 2}};
+	protected int[][] groupDetails = {{3, 2, 1, 0}, {3, 2, 3, 1}, {3, 2, 1, 2}, {3, 0, 4, 1}};
 	
 	//makeGroup(s, a, m, form, x, y, isOnPlayersTeam, toAdd, toAddController);
 	protected Bitmap playerBlessing;
-	protected int [] manaPrices = {50, 30, 70, (int)Math.pow(520, 0.985), (int)Math.pow(420, 0.985), (int)Math.pow(750, 0.985), (int)Math.pow(750, 0.985)};
+	protected int [] manaPrices = {sheildPrice, archerPrice, magePrice, 0, 0, 0, 0};
 	protected Bitmap isSelected;
 	protected Game_Control_Player playerGameControl;
 	protected Game_Control_Enemy enemyGameControl;
@@ -79,6 +83,14 @@ public final class SpriteController extends SpriteDrawer
 		control = controlSet;
 		playerGameControl = new Game_Control_Player(control);
 		enemyGameControl = new Game_Control_Enemy(control);
+		setPrices();
+	}
+	void setPrices()
+	{
+		for(int i = 0; i < 4; i++)
+		{
+			manaPrices[i+3] = (int)Math.pow(groupDetails[i][0]*sheildPrice + groupDetails[i][1]*archerPrice + groupDetails[i][2]*magePrice, depreciation);
+		}//100, 60, 140
 	}
 	/**
 	 * clears all arrays to restart game
@@ -107,7 +119,7 @@ public final class SpriteController extends SpriteDrawer
 		if(isOnPlayersTeam)
 		{
 			if(playerGameControl.mana < manaPrices[type]) return;
-			playerGameControl.mana -= manaPrices[type];
+			//playerGameControl.mana -= manaPrices[type]; //TODO uncomment this
 		} else
 		{
 			if(enemyGameControl.mana < manaPrices[type]) return;
@@ -350,20 +362,6 @@ public final class SpriteController extends SpriteDrawer
 			draw(creationMarkers.get(i), g, paint);
 		}
 		paint.setAlpha(255);
-		Bitmap mark = imageLibrary.createMarkers[6];
-		for(int i = 0; i < allyControllers.size(); i++)
-		{
-			int x = (int) (allyControllers.get(i).groupLocation.X - mark.getWidth()/2);
-			int y = (int) (allyControllers.get(i).groupLocation.Y - mark.getHeight()/2);
-			g.drawBitmap(mark, x, y, paint);
-		}
-		mark = imageLibrary.createMarkers[7];
-		for(int i = 0; i < enemyControllers.size(); i++)
-		{
-			int x = (int) (enemyControllers.get(i).groupLocation.X - mark.getWidth()/2);
-			int y = (int) (enemyControllers.get(i).groupLocation.Y - mark.getHeight()/2);
-			g.drawBitmap(mark, x, y, paint);
-		}
 		for(int i = 0; i < allies.size(); i++)
 		{
 			if(allies.get(i).selected) g.drawBitmap(control.imageLibrary.isSelected, (int)allies.get(i).x-30, (int)allies.get(i).y-30, paint);
@@ -390,7 +388,6 @@ public final class SpriteController extends SpriteDrawer
 				aoeRect.bottom = (int)(proj_TrackerE_AOEs.get(i).y + (proj_TrackerE_AOEs.get(i).getHeight() / 2.5));
 				aoeRect.left = (int)(proj_TrackerE_AOEs.get(i).x - (proj_TrackerE_AOEs.get(i).getWidth() / 2.5));
 				aoeRect.right = (int)(proj_TrackerE_AOEs.get(i).x + (proj_TrackerE_AOEs.get(i).getWidth() / 2.5));
-				paint.setAlpha(proj_TrackerE_AOEs.get(i).getAlpha());
 				drawRect(proj_TrackerE_AOEs.get(i).image, aoeRect, g, paint);
 		}
 		for(int i = 0; i < proj_TrackerA_AOEs.size(); i++)
@@ -399,10 +396,8 @@ public final class SpriteController extends SpriteDrawer
 				aoeRect.bottom = (int)(proj_TrackerA_AOEs.get(i).y + (proj_TrackerA_AOEs.get(i).getHeight() / 2.5));
 				aoeRect.left = (int)(proj_TrackerA_AOEs.get(i).x - (proj_TrackerA_AOEs.get(i).getWidth() / 2.5));
 				aoeRect.right = (int)(proj_TrackerA_AOEs.get(i).x + (proj_TrackerA_AOEs.get(i).getWidth() / 2.5));
-				paint.setAlpha(proj_TrackerA_AOEs.get(i).getAlpha());
 				drawRect(proj_TrackerA_AOEs.get(i).image, aoeRect, g, paint);
 		}
-		paint.setAlpha(255);
 	}
 	/**
 	 * creates an enemy power ball
@@ -454,12 +449,15 @@ public final class SpriteController extends SpriteDrawer
 		deselectEnemies();
 		ArrayList<Enemy> group = new ArrayList<Enemy>();
 		int countGroup = 0;
+		Log.e("myid", "drewacirclecheck");
 		for(int i = 0; i < allies.size(); i++)
 		{
 			if(allies.get(i) != null)
 			{
+				Log.e("myid", "drewacirclecheckskinda");
 				if(enemyInsideCircle(points, allies.get(i).x, allies.get(i).y))
 				{
+					Log.e("myid", "drewacirclechecksyep");
 					countGroup ++;
 					if(countGroup > 28) break;
 					group.add(allies.get(i));

@@ -98,10 +98,10 @@ abstract public class EnemyShell extends Human {
 	 */@
 	Override
 	protected void frameCall() {
-		if (x < 10) x = 10;
+		/*if (x < 10) x = 10;
 		if (x > control.levelController.levelWidth - 10) x = (control.levelController.levelWidth - 10);
 		if (y < 10) y = 10;
-		if (y > control.levelController.levelHeight - 10) y = (control.levelController.levelHeight - 10);
+		if (y > control.levelController.levelHeight - 10) y = (control.levelController.levelHeight - 10);*/
 
 		otherActions();
 		image = myImage[frame];
@@ -114,6 +114,32 @@ abstract public class EnemyShell extends Human {
 		super.frameCall();
 		sizeImage();
 		pushOtherPeople();
+	}
+	protected void frameCallSelection() 
+	{
+		if(action.equals("Move"))
+		{
+			frame++;
+			if(frame == frames[0][1]) frame = 0; // restart walking motion
+			x += xMove;
+			y += yMove;
+			runTimer--;
+			if(runTimer<1) //stroll over
+			{
+				action = "Nothing";
+			}
+			if(hasDestination && distanceTo(destinationX, destinationY) < 8)
+			{
+				x = destinationX;
+				y = destinationY;
+				rotation = destinationRotation;
+				hasDestination = false;
+				action = "Nothing";
+				frame = 0;
+			}
+		}
+		image = myImage[frame];
+		sizeImage();
 	}
 	abstract protected void otherActions();
 	/**

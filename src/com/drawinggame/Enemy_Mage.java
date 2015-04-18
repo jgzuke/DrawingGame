@@ -7,8 +7,7 @@ package com.drawinggame;
 
 public final class Enemy_Mage extends Enemy
 {
-	int shoot = 4;
-	int energy = 90;
+	int energy = 40;
 	public Enemy_Mage(Controller creator, double X, double Y, boolean isOnPayersTeam, int ImageIndex)
 	{
 		super(creator, X, Y, 700, ImageIndex, isOnPayersTeam);
@@ -27,10 +26,8 @@ public final class Enemy_Mage extends Enemy
 	protected void frameCall()
 	{
 		super.frameCall();
-		shoot++;
-		if(shoot>7) shoot = 7;
 		energy++;
-		if (energy>90) energy=90;
+		if (energy>50) energy=50;
 	}
 	private int[][] makeFrames()
 	{
@@ -41,7 +38,6 @@ public final class Enemy_Mage extends Enemy
 	}
 	protected void shoot(EnemyShell target)
 	{
-		shoot-=7;
 		energy -= 35;
 		int v = 10;		//projectile velocity
 		double saveRads = rotation/r2d;

@@ -41,11 +41,13 @@ public class Control_AI
 			return;
 		}
 		Enemy target = mage.myController.findClosestEnemy(mage);
-		if(target == null) return;
-		double distanceToTarget = mage.distanceTo(target);
-		if(mage.shoot>6&&mage.energy>35&& distanceToTarget < 210)
+		if(target != null)
 		{
-			mage.shoot(target);
+			double distanceToTarget = mage.distanceTo(target);
+			if(mage.energy>35&& distanceToTarget < 210)
+			{
+				mage.shoot(target);
+			}
 		}
 		if(mage.checkDanger()>0)
 		{
@@ -56,10 +58,6 @@ public class Control_AI
 			{
 				mage.runSidewaysDanger();
 			}
-			if(mage.shoot>6&&mage.energy>35&& distanceToTarget < 210)
-			{
-				mage.shoot(target);
-			}
 		} else if(mage.action.equals("Move"))
 		{
 		} else				// INTERUPTABLE PART 
@@ -69,18 +67,22 @@ public class Control_AI
 				mage.runTowardsDestination();
 			} else if(groupEngaged)
 			{
-				if(distanceToTarget<80)		// MAGES ALWAYS MOVING, DONT STOP TO SHOOT
+				if(target != null)
 				{
-					mage.rollAway(target);
-				} else if(distanceToTarget<120)
-				{
-					mage.runAway(target);
-				} else if(distanceToTarget < 200)
-				{
-					mage.runAround(160, (int)distanceToTarget, target);
-				} else
-				{
-					mage.runTowards(target);
+					double distanceToTarget = mage.distanceTo(target);
+					if(distanceToTarget<80)		// MAGES ALWAYS MOVING, DONT STOP TO SHOOT
+					{
+						mage.rollAway(target);
+					} else if(distanceToTarget<120)
+					{
+						mage.runAway(target);
+					} else if(distanceToTarget < 200)
+					{
+						mage.runAround(160, (int)distanceToTarget, target);
+					} else
+					{
+						mage.runTowards(target);
+					}
 				}
 			} else if(mage.hasDestination)
 			{

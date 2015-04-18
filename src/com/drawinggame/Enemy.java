@@ -92,7 +92,6 @@ abstract public class Enemy extends EnemyShell
 			}
 			if(hasDestination && distanceTo(destinationX, destinationY) < 8)
 			{
-				if(!myController.isGroup) myController.retreating = false;
 				x = destinationX;
 				y = destinationY;
 				rotation = destinationRotation;
@@ -389,10 +388,6 @@ abstract public class Enemy extends EnemyShell
 	protected void runTowardsDestination()
 	{
 		if(!hasDestination) return;
-		if(destinationX < 0) destinationX = 0;
-		if(destinationX > control.levelController.levelWidth) destinationX = control.levelController.levelWidth;
-		if(destinationY < 0) destinationY = 0;
-		if(destinationY > control.levelController.levelHeight) destinationY = control.levelController.levelHeight;
 		runTowards(destinationX, destinationY);
 	}
 	/**

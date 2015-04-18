@@ -34,11 +34,8 @@
  */
 package com.drawinggame;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -48,33 +45,53 @@ import java.util.Vector;
 
 import lx.interaction.dollar.Point;
 
-import com.spritelib.Sprite;
 import com.spritelib.SpriteDrawer;
 public final class SelectionSpriteController extends SpriteDrawer
 {
 	protected Controller control;
-	protected ArrayList<Enemy_Archer> archers = new ArrayList<Enemy_Archer>();
-	protected ArrayList<Enemy_Mage> mages = new ArrayList<Enemy_Mage>();
-	protected ArrayList<Enemy_Sheild> sheilds = new ArrayList<Enemy_Sheild>();
-	protected ArrayList<Enemy> allies = new ArrayList<Enemy>();
-	private boolean hasChangedMembers = false;
-	protected int layoutType = 1;
-	protected boolean organizing = false;
+	private int selected = 0;
+	protected ArrayList<ArrayList<Enemy_Archer>> archers = new ArrayList<ArrayList<Enemy_Archer>>();
+	protected ArrayList<ArrayList<Enemy_Mage>> mages = new ArrayList<ArrayList<Enemy_Mage>>();
+	protected ArrayList<ArrayList<Enemy_Sheild>> sheilds = new ArrayList<ArrayList<Enemy_Sheild>>();
+	protected ArrayList<ArrayList<Enemy>> allies = new ArrayList<ArrayList<Enemy>>();
+	protected int [] layoutType = new int[4];
+	private boolean [] organizing = {false, false, false, false};
 	private static double spacing = 40;
 	private static double spacingSlanted = Math.sqrt(2)*spacing/2;
+	private double groupRadius = 0;
+	float ratio = 0;
 	private Context context;
 	public SelectionSpriteController(Context contextSet, Controller controlSet)
 	{
 		super();
 		control = controlSet;
 		context = contextSet;
+		for(int i = 0; i < 4; i++)
+		{
+			archers.add(new ArrayList<Enemy_Archer>());
+			mages.add(new ArrayList<Enemy_Mage>());
+			sheilds.add(new ArrayList<Enemy_Sheild>());
+			allies.add(new ArrayList<Enemy>());
+			selected = i;
+			layoutType[i] = control.spriteController.groupDetails[i][3];
+			for(int j = 0; j < control.spriteController.groupDetails[i][0]; j++) makeEnemy(0);
+			for(int j = 0; j < control.spriteController.groupDetails[i][1]; j++) makeEnemy(1);
+			for(int j = 0; j < control.spriteController.groupDetails[i][2]; j++) makeEnemy(2);
+		}
+		selected = 0;
+	}
+	protected void changeLayout(int newLayout)
+	{
+		layoutType[selected] = newLayout;
+		control.spriteController.groupDetails[selected][3] = newLayout;
+		formUp();
 	}
 	/**
 	 * clears all arrays to restart game
 	 */
 	void clearObjectArrays()
 	{
-		allies.clear();
+		allies.get(selected).clear();
 	}
 	/**
 	 * creates person
@@ -86,7 +103,7 @@ public final class SelectionSpriteController extends SpriteDrawer
 	 */
 	protected void makeEnemy(int type)
 	{
-		if(allies.size() > 28)
+		if(allies.get(selected).size() > 14)
 		{
 			Toast.makeText(context, "Too many in this group", Toast.LENGTH_SHORT).show();
 			return;
@@ -96,24 +113,22 @@ public final class SelectionSpriteController extends SpriteDrawer
 		{
 		case 0:
 			newEnemy = new Enemy_Sheild(control, 0, 0, true, 3);
-			sheilds.add((Enemy_Sheild) newEnemy);
+			sheilds.get(selected).add((Enemy_Sheild) newEnemy);
+			allies.get(selected).add(mages.get(selected).size()+archers.get(selected).size(), newEnemy);
 			break;
 		case 1:
 			newEnemy = new Enemy_Archer(control, 0, 0, true, 4);
-			archers.add((Enemy_Archer) newEnemy);
+			archers.get(selected).add((Enemy_Archer) newEnemy);
+			allies.get(selected).add(mages.get(selected).size(), newEnemy);
 			break;
 		case 2:
 			newEnemy = new Enemy_Mage(control, 0, 0, true, 5);
-			mages.add((Enemy_Mage) newEnemy);
+			mages.get(selected).add((Enemy_Mage) newEnemy);
+			allies.get(selected).add(0, newEnemy);
 			break;
 		}
-		newEnemy.x = 50;
-		newEnemy.y = 50;
-		allies.add(newEnemy);
-		allies = new ArrayList<Enemy>();
-		allies.addAll(mages);
-		allies.addAll(archers);
-		allies.addAll(sheilds);
+		newEnemy.x = 400;
+		newEnemy.y = 500;
 		formUp();
 	}
 	/**
@@ -121,13 +136,16 @@ public final class SelectionSpriteController extends SpriteDrawer
 	 */
 	protected void frameCall()
 	{
-		if(allies.size()==0) return;
-		if(organizing)
+		selected = control.gestureDetector.settingSelected;
+		groupRadius = 100 + Math.sqrt(allies.get(selected).size())*spacing/5;
+		ratio = (float)(250/groupRadius);
+		if(allies.get(selected).size()==0) return;
+		if(organizing[selected])
 		{
 			boolean doneOrganizing = true;
-			for(int i = 0; i < allies.size(); i ++)
+			for(int i = 0; i < allies.get(selected).size(); i ++)
 			{
-				if(allies.get(i).hasDestination)
+				if(allies.get(selected).get(i).hasDestination)
 				{
 					doneOrganizing = false;
 				}
@@ -135,7 +153,15 @@ public final class SelectionSpriteController extends SpriteDrawer
 			if(doneOrganizing)
 			{
 				turnAfterOrganize();
-				organizing = false;
+				organizing[selected] = false;
+			}
+		}
+		for(int i = 0; i < allies.get(selected).size(); i ++)
+		{
+			allies.get(selected).get(i).frameCallSelection();
+			if(allies.get(selected).get(i).hasDestination)
+			{
+				allies.get(selected).get(i).runTowardsDestination();
 			}
 		}
 	}
@@ -148,14 +174,15 @@ public final class SelectionSpriteController extends SpriteDrawer
 	 */
 	protected void formUp()
 	{
-		organizing = true;
-		if(layoutType == 0)
+		organizing[selected] = true;
+		Log.e("myid", "forming");
+		if(layoutType[selected] == 0)
 		{
 			setGroupLayoutAttack();
-		} else if(layoutType == 1)
+		} else if(layoutType[selected] == 1)
 		{
 			setGroupLayoutNormal();
-		} else if(layoutType == 2)
+		} else if(layoutType[selected] == 2)
 		{
 			setGroupLayoutDefend();
 		}
@@ -166,22 +193,22 @@ public final class SelectionSpriteController extends SpriteDrawer
 		int bestRows = 0;
 		int archerRows = 0, mageRows = 0, sheildRows = 0;
 		int archersPerRow = 0, magesPerRow = 0, sheildsPerRow = 0;
-		for(double i = 1; i <= allies.size(); i++)
+		for(double i = 1; i <= allies.get(selected).size(); i++)
 		{
-			double rows = Math.ceil(((double)archers.size())/i) + Math.ceil(((double)mages.size())/i) + Math.ceil(((double)sheilds.size())/i);
+			double rows = Math.ceil(((double)archers.get(selected).size())/i) + Math.ceil(((double)mages.get(selected).size())/i) + Math.ceil(((double)sheilds.get(selected).size())/i);
 			double score = 0.5*i + rows;
 			if(score < bestScore)
 			{
 				bestRows = (int)rows;
 				bestScore = score;
-				archerRows = (int) Math.ceil(((double)archers.size())/i);
-				mageRows = (int) Math.ceil(((double)mages.size())/i);
-				sheildRows = (int) Math.ceil(((double)sheilds.size())/i);
+				archerRows = (int) Math.ceil(((double)archers.get(selected).size())/i);
+				mageRows = (int) Math.ceil(((double)mages.get(selected).size())/i);
+				sheildRows = (int) Math.ceil(((double)sheilds.get(selected).size())/i);
 			}					//i is best number of people in a row
 		}
-		archersPerRow = (int) Math.ceil(((double)archers.size())/archerRows);
-		magesPerRow = (int) Math.ceil(((double)mages.size())/mageRows);
-		sheildsPerRow = (int) Math.ceil(((double)sheilds.size())/sheildRows);
+		archersPerRow = (int) Math.ceil(((double)archers.get(selected).size())/archerRows);
+		magesPerRow = (int) Math.ceil(((double)mages.get(selected).size())/mageRows);
+		sheildsPerRow = (int) Math.ceil(((double)sheilds.get(selected).size())/sheildRows);
 		ArrayList<Point> sheildPositions = new ArrayList<Point>();
 		ArrayList<Point> archerPositions = new ArrayList<Point>();
 		ArrayList<Point> magePositions = new ArrayList<Point>();
@@ -190,7 +217,7 @@ public final class SelectionSpriteController extends SpriteDrawer
 		for(int i = 0; i < sheildRows; i++)
 		{
 			pY = -(spacing/2) * (sheildsPerRow-1);
-			if(i == sheildRows-1) pY += (spacing/2) * (sheildsPerRow*sheildRows - sheilds.size());
+			if(i == sheildRows-1) pY += (spacing/2) * (sheildsPerRow*sheildRows - sheilds.get(selected).size());
 			for(int j = 0; j < sheildsPerRow; j++)
 			{
 				sheildPositions.add(new Point(pX, pY));
@@ -201,7 +228,7 @@ public final class SelectionSpriteController extends SpriteDrawer
 		for(int i = 0; i < archerRows; i++)
 		{
 			pY = -(spacing/2) * (archersPerRow-1);
-			if(i == archerRows-1) pY += (spacing/2) * (archersPerRow*archerRows - archers.size());
+			if(i == archerRows-1) pY += (spacing/2) * (archersPerRow*archerRows - archers.get(selected).size());
 			for(int j = 0; j < archersPerRow; j++)
 			{
 				archerPositions.add(new Point(pX, pY));
@@ -212,7 +239,7 @@ public final class SelectionSpriteController extends SpriteDrawer
 		for(int i = 0; i < mageRows; i++)
 		{
 			pY = -(spacing/2) * (magesPerRow-1);
-			if(i == mageRows-1) pY += (spacing/2) * (magesPerRow*mageRows - mages.size());
+			if(i == mageRows-1) pY += (spacing/2) * (magesPerRow*mageRows - mages.get(selected).size());
 			for(int j = 0; j < magesPerRow; j++)
 			{
 				magePositions.add(new Point(pX, pY));
@@ -225,45 +252,48 @@ public final class SelectionSpriteController extends SpriteDrawer
 	}
 	protected void startOrganizing(List<Point> positions, double addX, double addY)
 	{
-		for(int i = 0; i < allies.size(); i++)
+		addX += 500;
+		addY += 500;
+		for(int i = 0; i < allies.get(selected).size(); i++)
 		{
-			allies.get(i).hasDestination = true;
-			allies.get(i).destinationRotation = 0;
-			allies.get(i).speedCur = 5;			//faster to get in line
-			allies.get(i).destinationX = (int)(positions.get(i).X+addX);
-			allies.get(i).destinationY = (int)(positions.get(i).Y+addY);
+			allies.get(selected).get(i).hasDestination = true;
+			allies.get(selected).get(i).destinationRotation = 0;
+			allies.get(selected).get(i).speedCur = 5;			//faster to get in line
+			allies.get(selected).get(i).destinationX = (int)(positions.get(i).X+addX);
+			allies.get(selected).get(i).destinationY = (int)(positions.get(i).Y+addY);
 		}
 	}
 	protected void startOrganizing(List<Point> sheildPositions,List<Point> archerPositions, List<Point> magePositions, double addX, double addY)
 	{
-		Log.e("myid", "testqwet");
-		for(int i = 0; i < allies.size(); i++)
+		addX += 500;
+		addY += 500;
+		for(int i = 0; i < allies.get(selected).size(); i++)
 		{
-			allies.get(i).hasDestination = true;
-			allies.get(i).destinationRotation = 0;
-			allies.get(i).speedCur = 5;			//faster to get in line
+			allies.get(selected).get(i).hasDestination = true;
+			allies.get(selected).get(i).destinationRotation = 0;
+			allies.get(selected).get(i).speedCur = 5;			//faster to get in line
 		}
-		for(int i = 0; i < sheilds.size(); i++)
+		for(int i = 0; i < sheilds.get(selected).size(); i++)
 		{
-			sheilds.get(i).destinationX = (int)(sheildPositions.get(i).X+addX);
-			sheilds.get(i).destinationY = (int)(sheildPositions.get(i).Y+addY);
+			sheilds.get(selected).get(i).destinationX = (int)(sheildPositions.get(i).X+addX);
+			sheilds.get(selected).get(i).destinationY = (int)(sheildPositions.get(i).Y+addY);
 		}
-		for(int i = 0; i < archers.size(); i++)
+		for(int i = 0; i < archers.get(selected).size(); i++)
 		{
-			archers.get(i).destinationX = (int)(archerPositions.get(i).X+addX);
-			archers.get(i).destinationY = (int)(archerPositions.get(i).Y+addY);
+			archers.get(selected).get(i).destinationX = (int)(archerPositions.get(i).X+addX);
+			archers.get(selected).get(i).destinationY = (int)(archerPositions.get(i).Y+addY);
 		}
-		for(int i = 0; i < mages.size(); i++)
+		for(int i = 0; i < mages.get(selected).size(); i++)
 		{
-			mages.get(i).destinationX = (int)(magePositions.get(i).X+addX);
-			mages.get(i).destinationY = (int)(magePositions.get(i).Y+addY);
+			mages.get(selected).get(i).destinationX = (int)(magePositions.get(i).X+addX);
+			mages.get(selected).get(i).destinationY = (int)(magePositions.get(i).Y+addY);
 		}
 	}
 	protected void turnAfterOrganize()
 	{
-		for(int i = 0; i < allies.size(); i++)
+		for(int i = 0; i < allies.get(selected).size(); i++)
 		{
-			allies.get(i).speedCur = 3.5;
+			allies.get(selected).get(i).speedCur = 3.5;
 		}
 	}
 	protected Point getAveragePoint(ArrayList<Point> sheildPositions, ArrayList<Point> archerPositions, ArrayList<Point> magePositions)
@@ -307,17 +337,17 @@ public final class SelectionSpriteController extends SpriteDrawer
 		ArrayList<Point> locations = new ArrayList<Point>();
 		int layer = 0;
 		boolean moreUnits = true;
-		int alliesLeft = allies.size();
+		int alliesLeft = allies.get(selected).size();
 		while(moreUnits)
 		{
 			double pX = 0; // how far out to start
 			double pY = spacing * layer;
-			int skip = (layer*4 + 1) - alliesLeft; // layersize - allies left
+			int skip = (layer*4 + 1) - alliesLeft; // layersize - allies.get(selected) left
 			for(int i = 0; i < layer*2 + 1; i++)
 			{
 				for(int j = 0; j < 2; j++)
 				{
-					if(locations.size() == allies.size())
+					if(locations.size() == allies.get(selected).size())
 					{
 						Point average = getAveragePoint(locations);
 						startOrganizing(locations, -average.X, -average.Y);
@@ -334,7 +364,7 @@ public final class SelectionSpriteController extends SpriteDrawer
 								locations.add(new Point(pX, pY));
 							} else
 							{
-								locations.add(new Point(pX, pY));
+								locations.add(new Point(pX, -pY));
 							}
 						}
 					}
@@ -355,17 +385,17 @@ public final class SelectionSpriteController extends SpriteDrawer
 		ArrayList<Point> locations = new ArrayList<Point>();
 		int layer = 0;
 		boolean moreUnits = true;
-		int alliesLeft = allies.size();
+		int alliesLeft = allies.get(selected).size();
 		while(moreUnits)
 		{
 			double pX = 0; // how far out to start
 			double pY = spacingSlanted * layer * 2;
-			int skip = (layer*4 + 1) - alliesLeft; // layersize - allies left
+			int skip = (layer*4 + 1) - alliesLeft; // layersize - allies.get(selected) left
 			for(int i = 0; i < layer*2 + 1; i++)
 			{
 				for(int j = 0; j < 2; j++)
 				{
-					if(locations.size() == allies.size())
+					if(locations.size() == allies.get(selected).size())
 					{
 						Point average = getAveragePoint(locations);
 						startOrganizing(locations, -average.X, -average.Y);
@@ -382,7 +412,7 @@ public final class SelectionSpriteController extends SpriteDrawer
 								locations.add(new Point(pX, pY));
 							} else
 							{
-								locations.add(new Point(pX, pY));
+								locations.add(new Point(pX, -pY));
 							}
 						}
 					}
@@ -399,12 +429,20 @@ public final class SelectionSpriteController extends SpriteDrawer
 	 * @param paint paint to use
 	 * @param imageLibrary imageLibrary to use
 	 */
-	protected void drawSprites(Canvas g, Paint paint, ImageLibrary imageLibrary)
+	protected void drawSprites(Canvas g, Paint paint, ImageLibrary imageLibrary, double unitWidth, double unitHeight)
 	{
-		for(int i = 0; i < allies.size(); i++)
+		g.save();
+		g.scale(ratio, ratio);
+		g.translate((float)(unitWidth*75+unitHeight*5)/ratio - 500,(float)(unitHeight*60)/ratio - 500);//(float)(unitWidth*75+unitHeight*5), (float)(unitHeight*60));
+		for(int i = 0; i < allies.get(selected).size(); i++)
 		{
-			draw(allies.get(i), g, paint);
+			if(allies.get(selected).get(i).selected) g.drawBitmap(control.imageLibrary.isSelected, (int)allies.get(selected).get(i).x-30, (int)allies.get(selected).get(i).y-30, paint);
 		}
+		for(int i = 0; i < allies.get(selected).size(); i++)
+		{
+			draw(allies.get(selected).get(i), g, paint);
+		}
+		g.restore();
 	}
 	@Override
 	protected boolean onScreen(double x, double y, int width, int height) {return true;}
@@ -417,19 +455,21 @@ public final class SelectionSpriteController extends SpriteDrawer
 	protected void selectCircle(Vector<Point> points)
 	{
 		deselectEnemies();
-		for(int i = 0; i < allies.size(); i++)
+		for(int i = 0; i < allies.get(selected).size(); i++)
 		{
-			if(allies.get(i) != null)
+			if(allies.get(selected).get(i) != null)
 			{
-				if(enemyInsideCircle(points, allies.get(i).x, allies.get(i).y))
+				if(enemyInsideCircle(points, allies.get(selected).get(i).x, allies.get(selected).get(i).y))
 				{
-					allies.get(i).selected = true;
+					allies.get(selected).get(i).selected = true;
 				}
 			}
 		}
 	}
 	protected boolean enemyInsideCircle(Vector<Point> p, double x, double y)
 	{
+		x = mapToScreenPointX(x);
+		y = mapToScreenPointY(y);
 		boolean lastAbove = p.get(0).Y < y;
 		boolean lastToLeft = p.get(0).X < x;
 		boolean above, toLeft;
@@ -464,18 +504,44 @@ public final class SelectionSpriteController extends SpriteDrawer
 	 */
 	protected void selectEnemy(double x, double y)
 	{
+		x = screenToMapPointX(x);
+		y = screenToMapPointY(y);
 		deselectEnemies();
-		for(int i = 0; i < allies.size(); i++)
+		for(int i = 0; i < allies.get(selected).size(); i++)
 		{
-			if(allies.get(i) != null)
+			if(allies.get(selected).get(i) != null)
 			{
-				if(Math.pow(x-allies.get(i).x, 2) + Math.pow(y-allies.get(i).y, 2) < 600)
+				if(Math.pow(x-allies.get(selected).get(i).x, 2) + Math.pow(y-allies.get(selected).get(i).y, 2) < 600)
 				{
-					allies.get(i).selected = true;
+					allies.get(selected).get(i).selected = true;
 				}
 			}
 		}
 	}
+	protected double screenToMapPointX(double X)
+    {
+		double unitWidth = control.gestureDetector.unitWidth;
+		double unitHeight = control.gestureDetector.unitHeight;
+		double trX = X - (unitWidth*75+unitHeight*5);
+    	return trX/ratio + 500;
+    }
+	protected double screenToMapPointY(double Y)
+    {
+		double unitHeight = control.gestureDetector.unitHeight;
+		double trY = Y - (unitHeight*60);
+    	return trY/ratio + 500;
+    }
+	protected double mapToScreenPointX(double X)
+    {
+		double unitWidth = control.gestureDetector.unitWidth;
+		double unitHeight = control.gestureDetector.unitHeight;
+		return (X-500)*ratio + (unitWidth*75+unitHeight*5);
+    }
+	protected double mapToScreenPointY(double Y)
+    {
+		double unitHeight = control.gestureDetector.unitHeight;
+		return (Y-500)*ratio + (unitHeight*60);
+    }
 	protected Control_Group groupEnemies(ArrayList<Enemy> group, boolean onPlayersTeam)
 	{
 		Control_Group newGroup = new Control_Group(control, group, onPlayersTeam);
@@ -486,11 +552,11 @@ public final class SelectionSpriteController extends SpriteDrawer
 	 */
 	protected void deselectEnemies()
 	{
-		for(int i = 0; i < allies.size(); i++)
+		for(int i = 0; i < allies.get(selected).size(); i++)
 		{
-			if(allies.get(i) != null)
+			if(allies.get(selected).get(i) != null)
 			{
-				allies.get(i).selected = false;
+				allies.get(selected).get(i).selected = false;
 			}
 		}
 	}

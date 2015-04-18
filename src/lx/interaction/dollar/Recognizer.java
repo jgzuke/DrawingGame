@@ -70,14 +70,15 @@ public class Recognizer
 		}
 		return v;
 	}
-	public void Recognize(Vector<Point> points, String selectType, boolean lookingForCircle)
+	public void Recognize(Vector<Point> points, String selectType)
 	{
 		if(points.size() == 0) return;
 		Rectangle myBounds = new Rectangle(0,0,0,0);
 		Utils.BoundingBox(points, myBounds);
 		if(isClick(myBounds)) return;
 		points = Utils.Resample(points, NumPoints);
-		gestureDetector.setLastShape((Vector<Point>) points.clone());
+		Vector<Point> pointsOrig = (Vector<Point>) points.clone();
+		gestureDetector.setLastShape(pointsOrig);
 		Point moveCoords = Utils.getCentre(points);					// use this to get the x, y of the gestures centre
 		points = Utils.ScaleToSquare(points, SquareSize);
 		points = Utils.TranslateToOrigin(points);
@@ -100,11 +101,11 @@ public class Recognizer
 		}
 		if(error < 40)
 		{
-			gestureDetector.endShape((templates.elementAt(t)).Name, moveCoords);
+			gestureDetector.endShape((templates.elementAt(t)).Name, moveCoords, myBounds, points);
 		} else
 		{
-			if(lookingForCircle) isCircle(points);
-			else gestureDetector.endShape(points, myBounds);
+			isCircle(points, pointsOrig, myBounds);
+			gestureDetector.endShape(points, myBounds);
 		}
 	}
 	public boolean isClick(Rectangle myBounds)
@@ -117,7 +118,7 @@ public class Recognizer
 		}
 		return false; 
 	}
-	public boolean isCircle(Vector<Point> points)
+	public boolean isCircle(Vector<Point> points, Vector<Point> pointsOrig, Rectangle myBounds)
 	{
 		double pointSeperation = 5*distanceBetweenPoints(points, 0, 1);
 		for(int i = 0; i < points.size()-40; i++)
@@ -126,7 +127,7 @@ public class Recognizer
 			{
 				if(distanceBetweenPoints(points, i, j) < pointSeperation) // we made a circle, end points are close to start points
 				{
-					gestureDetector.endCircle(points);
+					gestureDetector.endCircle(points, pointsOrig, myBounds);
 					return true;
 				}
 			}

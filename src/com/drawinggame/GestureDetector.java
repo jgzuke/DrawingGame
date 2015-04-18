@@ -36,10 +36,11 @@ public class GestureDetector implements OnTouchListener
 	private int phoneHeight;
 	protected double unitWidth;
 	protected double unitHeight;
-	private Vector<Point> pointsList = new Vector<Point>(1000);
+	private Vector<Point> pointsList = new Vector<Point>(100);
 	private int timeSinceDraw = 50;
 	private int actionMask;
 	protected int settingSelected = 0;
+	protected Vector<Point> lastPoints = new Vector<Point>(100);
 	protected Recognizer recognizer;
 	protected String selectType = "none";
 	int ID = 0;
@@ -90,37 +91,29 @@ public class GestureDetector implements OnTouchListener
     	}
     	if(lastShape != null && timeSinceDraw < 50)
     	{
-    		g.saveLayerAlpha(0, 0, g.getWidth(), g.getHeight(), 255 - 5*timeSinceDraw, Canvas.HAS_ALPHA_LAYER_SAVE_FLAG);
+    		//g.saveLayerAlpha(0, 0, g.getWidth(), g.getHeight(), 255 - 5*timeSinceDraw, Canvas.HAS_ALPHA_LAYER_SAVE_FLAG);
     		paint.setColor(Color.GRAY);
     		g.drawPath(lastShape, paint);
-    		g.saveLayerAlpha(0, 0, g.getWidth(), g.getHeight(), 255, Canvas.HAS_ALPHA_LAYER_SAVE_FLAG);
-    		
+    		//g.saveLayerAlpha(0, 0, g.getWidth(), g.getHeight(), 255, Canvas.HAS_ALPHA_LAYER_SAVE_FLAG);
     	}
+    	paint.setColor(Color.BLACK);
 	}
 	public void setLastShape(Vector<Point> points)
 	{
+		lastPoints = points;
 		lastShape = getPathFromVector(points);
 	}
 	public boolean checkMadeEnemy(String type, Point p)
     {
 		if(type.equals("lineH"))
 		{
-			if(!control.wallController.checkHitBack(p.X, p.Y, true))
-			{
 				control.spriteController.makeEnemy(0, (int)p.X, (int)p.Y, true);
-			}
 		} else if(type.equals("lineV"))
 		{
-			if(!control.wallController.checkHitBack(p.X, p.Y, true))
-			{
 				control.spriteController.makeEnemy(2, (int)p.X, (int)p.Y, true);
-			}
 		} else if(type.equals("arrow"))
 		{
-			if(!control.wallController.checkHitBack(p.X, p.Y, true))
-			{
 				control.spriteController.makeEnemy(1, (int)p.X, (int)p.Y, true);
-			}
 		} else
 		{
 			return false;
@@ -129,21 +122,63 @@ public class GestureDetector implements OnTouchListener
     }
 	public void endShape(Vector<Point> points, Rectangle b)
 	{
+		if(control.paused)
+		{
+			if(b.X+b.Width < unitWidth*50-unitHeight*10 && b.Y > unitHeight*20)
+			{
+				recognizer.templates.get(settingSelected).Points = points;
+				return;
+			}
+			if(b.X < unitWidth*50-unitHeight*10)
+			{
+				Toast.makeText(context, "Out of bounds", Toast.LENGTH_SHORT).show();
+			}
+		}
+	}
+	public void endShapePaused(String type, Point screenPoint, Rectangle b, Vector<Point> points)
+	{
 		if(b.X+b.Width < unitWidth*50-unitHeight*10 && b.Y > unitHeight*20)
 		{
-			recognizer.templates.get(settingSelected).Points = points;
+			if(recognizer.templates.get(settingSelected).Name.equals(type))
+			{
+				recognizer.templates.get(settingSelected).Points = points;
+			} else
+			{
+				Toast.makeText(context, "Too close to another gesture", Toast.LENGTH_SHORT).show();
+			}
+		} else if(b.X > unitWidth*50+unitHeight*10 && b.Y > unitHeight*20)
+		{
+			if(type.equals("lineH"))
+			{
+				control.selectionSpriteController.makeEnemy(0);
+			} else if(type.equals("lineV"))
+			{
+				control.selectionSpriteController.makeEnemy(2);
+			} else if(type.equals("arrow"))
+			{
+				control.selectionSpriteController.makeEnemy(1);
+			} else if(type.equals("n"))
+			{
+				control.selectionSpriteController.changeLayout(1);
+			} else if(type.equals("s"))
+			{
+				control.selectionSpriteController.changeLayout(2);
+			} else if(type.equals("v"))
+			{
+				control.selectionSpriteController.changeLayout(0);
+			}
 		} else
 		{
 			Toast.makeText(context, "Out of bounds", Toast.LENGTH_SHORT).show();
 		}
 	}
-	public void endShape(String type, Point screenPoint)
+	public void endShape(String type, Point screenPoint, Rectangle b, Vector<Point> points)
     {
 		Point p = screenToMapPoint(screenPoint);
 		timeSinceDraw = 0;
 		if(control.paused)
 		{
-			Toast.makeText(context, "Too close to another gesture", Toast.LENGTH_SHORT).show();
+			endShapePaused(type, screenPoint, b, points);
 			return;
 		}
 		if(checkMadeEnemy(type, p)) return;
@@ -187,7 +222,6 @@ public class GestureDetector implements OnTouchListener
     }
 	public void click(Point pPhone)
     {
-    	Point p = screenToMapPoint(pPhone);
     	if(clickedTopLeft(pPhone)) return;
     	if(control.paused)
     	{
@@ -197,18 +231,16 @@ public class GestureDetector implements OnTouchListener
         		{
     				settingSelected = (int) (pPhone.Y/(unitHeight*20)) - 1;
         		}
+    			control.selectionSpriteController.selectEnemy(pPhone.X, pPhone.Y);
     		}
-    	} else if(selectType.equals("none"))
+    	} else
     	{
-    		control.spriteController.selectEnemy(p.X, p.Y);
-    	} else if(selectType.equals("single"))
-    	{
+    		Point p = screenToMapPoint(pPhone);
     		if(control.spriteController.selectEnemy(p.X, p.Y)) return;
-    		control.selected.setDestination(p);
-    	} else if(selectType.equals("group"))
-    	{
-    		if(control.spriteController.selectEnemy(p.X, p.Y)) return;
-    		control.selected.setDestination(p);
+	    	if(!selectType.equals("none"))
+	    	{
+	    		control.selected.setDestination(p);
+	    	}
     	}
     }
     public boolean clickedTopLeft(Point p)
@@ -225,13 +257,30 @@ public class GestureDetector implements OnTouchListener
     	}
     	return false;
     }
-	public void endCircle(Vector<Point> points)
+	public void endCircle(Vector<Point> points, Vector<Point> pointsOrig, Rectangle b)
 	{
-		for(int i = 0; i < points.size(); i++)
+		Log.e("myid", "drewacircle");
+		if(control.paused)
 		{
-			screenToMapPointInPlace(points.get(i));
+			if(b.X+b.Width < unitWidth*50-unitHeight*10 && b.Y > unitHeight*20)
+			{
+				recognizer.templates.get(settingSelected).Points = points;
+				return;
+			}
+			if(b.X < unitWidth*50-unitHeight*10)
+			{
+				Toast.makeText(context, "Out of bounds", Toast.LENGTH_SHORT).show();
+				return;
+			}
+			control.selectionSpriteController.selectCircle(pointsOrig);
+		} else
+		{
+			for(int i = 0; i < pointsOrig.size(); i++)
+			{
+				screenToMapPointInPlace(pointsOrig.get(i));
+			}
+			control.spriteController.selectCircle(pointsOrig);
 		}
-		control.spriteController.selectCircle(points);
 	}
 	/**
 	 * decides which gesture capture is appropriate to call, drags or changes to position are done here
@@ -252,7 +301,7 @@ public class GestureDetector implements OnTouchListener
         case MotionEvent.ACTION_UP:
         	if(secondID == 0)
         	{
-        		recognizer.Recognize(pointsList, selectType, !control.paused);
+        		recognizer.Recognize(pointsList, selectType);
         	}
         	pointsList.clear();
         	pointersDown = 0;
@@ -342,9 +391,6 @@ public class GestureDetector implements OnTouchListener
     }
     protected Point screenToMapPoint(Point p)
     {
-    	//control.graphicsController.playScreenSize = levelWidth / levelPixels = gamePixel per phone pixel;
-		//control.graphicsController.mapXSlide in phone pixels;
-		//control.graphicsController.mapYSlide in phone pixels;
     	double phoneToMap = control.graphicsController.playScreenSize;
     	double phoneX = control.graphicsController.mapXSlide + p.X*phoneToMap;
     	double phoneY = control.graphicsController.mapYSlide + p.Y*phoneToMap;

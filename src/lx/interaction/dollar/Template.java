@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Template
 {
-	String Name;
+	public String Name;
 	public Vector<Point> Points;
 
 	Template(String name, Vector<Point> points) 

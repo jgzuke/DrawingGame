@@ -224,11 +224,11 @@ public final class GraphicsController extends View
 		paint.setColor(Color.BLUE);
 		g.drawRect((int)(unitWidth*50-uHeight), (int)(unitHeight*20*(selected+1)), (int)(unitWidth*50+uHeight), (int)(unitHeight*20*(selected+2)), paint);
 		control.gestureDetector.drawGestureSelected(g);
-		control.selectionSpriteController.drawSprites(g, paint, imageLibrary);
 		
 		paint.setColor(Color.GRAY);
 		paint.setStyle(Style.FILL);
 		g.drawRect(0, 0, 150, 150, paint);
+		control.selectionSpriteController.drawSprites(g, paint, imageLibrary, unitWidth, unitHeight);
 	}
 	/**
 	 * Starts warning label

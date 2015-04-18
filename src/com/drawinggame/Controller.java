@@ -40,6 +40,7 @@ import java.util.Random;
 public final class Controller
 {
 	protected int curXShift;
+	protected boolean activityPaused = false;
 	protected int curYShift;
 	protected Control_Main selected = null;
 	protected StartActivity activity;
@@ -63,7 +64,7 @@ public final class Controller
 		 */
 		public void run()
 		{
-			frameCall();
+			if(!activityPaused) frameCall();
 			mHandler.postDelayed(this, 40);
 		}
 	};	
@@ -79,9 +80,9 @@ public final class Controller
 		
 		wallController = new WallController(startSet, this);
 		spriteController = new SpriteController(startSet, this);
-		selectionSpriteController = new SelectionSpriteController(startSet, this);
 		spriteController.playerGameControl.setEnemies(true);
 		spriteController.enemyGameControl.setEnemies(false);
+		selectionSpriteController = new SelectionSpriteController(startSet, this);
 		imageLibrary = new ImageLibrary(startSet, this); // creates image library
 		levelController = new LevelController(this);
 		
@@ -107,6 +108,9 @@ public final class Controller
 		{
 			spriteController.frameCall();
 			wallController.frameCall();
+		} else
+		{
+			selectionSpriteController.frameCall();
 		}
 	}
 	/**

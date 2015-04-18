@@ -79,7 +79,6 @@ public class StartActivity extends Activity
 	{
 		super.onStart();
 		//control.frameCaller.run();
-		control.paused = false;
 	}
 	/**
 	 * reads saved data
@@ -89,6 +88,7 @@ public class StartActivity extends Activity
 	public void onResume()
 	{
 		super.onResume();
+		control.activityPaused = false;
 		//control.frameCaller.run();
 		/*read();
 		if(savedData[0] == 1)
@@ -96,7 +96,6 @@ public class StartActivity extends Activity
 			readSaveData();
 		}*/
 		control.soundController.startMusic();
-		control.paused = false;
 	}
 	/**
 	 * stops music, stops timer, saves data
@@ -108,6 +107,7 @@ public class StartActivity extends Activity
 		setSaveData();
 		write();
 		control.soundController.stopMusic();
+		control.activityPaused = true;
 		Log.e("mine", "onPau");
 		//control.paused = true;
 	}
@@ -115,7 +115,6 @@ public class StartActivity extends Activity
 	public void onStop()
 	{
 		Log.e("mine", "onStop");
-		control.paused = true;
 		super.onStop();
 	}
 	
