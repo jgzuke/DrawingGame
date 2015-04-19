@@ -93,6 +93,27 @@ public final class SelectionSpriteController extends SpriteDrawer
 	{
 		allies.get(selected).clear();
 	}
+	private void changedSetting()
+	{
+		control.spriteController.groupDetails[selected][0] = sheilds.get(selected).size();
+		control.spriteController.groupDetails[selected][1] = archers.get(selected).size();
+		control.spriteController.groupDetails[selected][2] = mages.get(selected).size();
+	}
+	private void deleteEnemies()
+	{
+		for(int i = 0; i < allies.get(selected).size(); i++)
+		{
+			if(allies.get(selected).get(i).selected)
+			{
+				int type = allies.get(selected).get(i).humanType;
+				if(type==0) sheilds.remove(allies.get(selected).get(i));
+				if(type==1) archers.remove(allies.get(selected).get(i));
+				if(type==2) mages.remove(allies.get(selected).get(i));
+				allies.get(selected).remove(i);
+			}
+		}
+		changedSetting();
+	}
 	/**
 	 * creates person
 	 * @param type whether they are warrior, archer, mage etc
@@ -130,6 +151,7 @@ public final class SelectionSpriteController extends SpriteDrawer
 		newEnemy.x = 400;
 		newEnemy.y = 500;
 		formUp();
+		changedSetting();
 	}
 	/**
 	 * calls all sprites frame methods

@@ -82,7 +82,6 @@ public final class Controller
 		spriteController = new SpriteController(startSet, this);
 		spriteController.playerGameControl.setEnemies(true);
 		spriteController.enemyGameControl.setEnemies(false);
-		selectionSpriteController = new SelectionSpriteController(startSet, this);
 		imageLibrary = new ImageLibrary(startSet, this); // creates image library
 		levelController = new LevelController(this);
 		
@@ -91,6 +90,8 @@ public final class Controller
 		
 		graphicsController = new GraphicsController(this, imageLibrary, spriteController, wallController, levelController, startSet, dimensions);
 		graphicsController.setOnTouchListener(gestureDetector);
+
+		selectionSpriteController = new SelectionSpriteController(startSet, this);
 		frameCaller.run();
 	}
 	protected void die()

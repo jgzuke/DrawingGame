@@ -33,10 +33,10 @@ public class Recognizer
 	
 	void loadtemplates()
 	{
-		templates.addElement(loadTemplate("0", TemplateData.n));
-		templates.addElement(loadTemplate("1", TemplateData.s));
-		templates.addElement(loadTemplate("2", TemplateData.c));
-		templates.addElement(loadTemplate("3", TemplateData.v));
+		templates.addElement(loadTemplate("0", TemplateData.arr0));
+		templates.addElement(loadTemplate("1", TemplateData.arr1));
+		templates.addElement(loadTemplate("2", TemplateData.arr2));
+		templates.addElement(loadTemplate("3", TemplateData.arr3));
 		templates.addElement(loadTemplate("lineH", TemplateData.lineHorizontal));
 		templates.addElement(loadTemplate("lineH", TemplateData.lineHorizontalR));
 		templates.addElement(loadTemplate("lineH", TemplateData.lineHorizontalL));
