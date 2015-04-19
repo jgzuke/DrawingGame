@@ -231,7 +231,13 @@ public class GestureDetector implements OnTouchListener
         		{
     				settingSelected = (int) (pPhone.Y/(unitHeight*20)) - 1;
         		}
-    			control.selectionSpriteController.selectEnemy(pPhone.X, pPhone.Y);
+    			if(pPhone.X>phoneWidth-150 && pPhone.Y < (unitHeight*20)+150)
+        		{
+    				control.selectionSpriteController.deleteEnemies();
+        		} else
+        		{
+        			control.selectionSpriteController.selectEnemy(pPhone.X, pPhone.Y);
+        		}
     		}
     	} else
     	{

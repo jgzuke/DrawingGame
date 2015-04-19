@@ -98,18 +98,25 @@ public final class SelectionSpriteController extends SpriteDrawer
 		control.spriteController.groupDetails[selected][0] = sheilds.get(selected).size();
 		control.spriteController.groupDetails[selected][1] = archers.get(selected).size();
 		control.spriteController.groupDetails[selected][2] = mages.get(selected).size();
+		control.spriteController.setPrices();
 	}
-	private void deleteEnemies()
+	protected void deleteEnemies()
 	{
 		for(int i = 0; i < allies.get(selected).size(); i++)
 		{
 			if(allies.get(selected).get(i).selected)
 			{
+				if(allies.size() < 3)
+				{
+					Toast.makeText(context, "Need at least two units in a group", Toast.LENGTH_SHORT).show();
+					break;
+				}
 				int type = allies.get(selected).get(i).humanType;
 				if(type==0) sheilds.remove(allies.get(selected).get(i));
 				if(type==1) archers.remove(allies.get(selected).get(i));
 				if(type==2) mages.remove(allies.get(selected).get(i));
 				allies.get(selected).remove(i);
+				i --;
 			}
 		}
 		changedSetting();
@@ -159,7 +166,7 @@ public final class SelectionSpriteController extends SpriteDrawer
 	protected void frameCall()
 	{
 		selected = control.gestureDetector.settingSelected;
-		groupRadius = 100 + Math.sqrt(allies.get(selected).size())*spacing/5;
+		groupRadius = 75 + Math.sqrt(allies.get(selected).size())*spacing/4;
 		ratio = (float)(250/groupRadius);
 		if(allies.get(selected).size()==0) return;
 		if(organizing[selected])

@@ -85,7 +85,7 @@ public final class SpriteController extends SpriteDrawer
 		enemyGameControl = new Game_Control_Enemy(control);
 		setPrices();
 	}
-	void setPrices()
+	protected void setPrices()
 	{
 		for(int i = 0; i < 4; i++)
 		{
@@ -95,7 +95,7 @@ public final class SpriteController extends SpriteDrawer
 	/**
 	 * clears all arrays to restart game
 	 */
-	void clearObjectArrays()
+	protected void clearObjectArrays()
 	{
 		enemies.clear();
 		enemyStructures.clear();
