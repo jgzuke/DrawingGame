@@ -72,7 +72,11 @@ public class GestureDetector implements OnTouchListener
     }
     protected void drawGestureSelected(Canvas g)
 	{
+    	paint.setColor(Color.BLACK);
+    	paint.setStrokeWidth(7);
     	g.drawPath(getPathFromVector(recognizer.templates.get(settingSelected).Points, (int)(unitWidth*25-unitHeight*5), (int)(unitHeight*60), 0.6*(unitWidth*50 - unitHeight*10)), paint);
+    	paint.setColor(Color.WHITE);
+    	paint.setStrokeWidth(4);
     	g.drawPath(getPathFromVector(recognizer.templates.get(0).Points, (int)(unitWidth*50), (int)(unitHeight*30), 0.6*(unitHeight*20)), paint);
     	g.drawPath(getPathFromVector(recognizer.templates.get(1).Points, (int)(unitWidth*50), (int)(unitHeight*50), 0.6*(unitHeight*20)), paint);
     	g.drawPath(getPathFromVector(recognizer.templates.get(2).Points, (int)(unitWidth*50), (int)(unitHeight*70), 0.6*(unitHeight*20)), paint);

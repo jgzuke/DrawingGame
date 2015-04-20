@@ -82,7 +82,7 @@ public final class Controller
 		spriteController = new SpriteController(startSet, this);
 		spriteController.playerGameControl.setEnemies(true);
 		spriteController.enemyGameControl.setEnemies(false);
-		imageLibrary = new ImageLibrary(startSet, this); // creates image library
+		imageLibrary = new ImageLibrary(startSet, this, (int)dimensions[0], (int)dimensions[1]); // creates image library
 		levelController = new LevelController(this);
 		
 		imageLibrary.loadAllImages();

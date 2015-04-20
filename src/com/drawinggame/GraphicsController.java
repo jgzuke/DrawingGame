@@ -187,11 +187,8 @@ public final class GraphicsController extends View
 		g.restore();
 		paint.setColor(Color.GRAY);
 		paint.setStyle(Style.FILL);
-		g.drawRect(0, 0, 150, 150, paint);
-		if(!control.gestureDetector.selectType.equals("none")) // something selected
-		{
-			g.drawRect(150, 0, 300, 150, paint);
-		}
+		g.drawBitmap(imageLibrary.icon_menu, 0, 0, paint);
+		g.drawBitmap(imageLibrary.icon_cancel, 150, 0, paint);
 		int spacing = 10;
 		int top = phoneHeight-spacing;
 		int manaHeight = phoneHeight-150-2*spacing;
@@ -212,23 +209,34 @@ public final class GraphicsController extends View
 		paint.setColor(Color.LTGRAY);
 		paint.setStyle(Style.FILL);
 		g.drawRect(0, 0, phoneWidth, phoneHeight, paint);
-		
+		/*
+		menu_top = loadImage("menu_top", (int)(w), (int)(h/5));
+		menu_side = loadImage("menu_side", (int)(w/2 - h/10), (int)(h*4/5));
+		menu_middle = loadImage("menu_middle", (int)(h/5), (int)(h*4/5));
+		icon_back = loadImage("icon_back", (int)(h/5), (int)(h*4/5));
+		icon_delete = loadImage("icon_delete", (int)(h/5), (int)(h/5));
+		icon_cancel = loadImage("icon_cancel", (int)(h/5), (int)(h/5));
+		icon_menu = loadImage("icon_menu", (int)(h/5), (int)(h/5));
+		 */
 		paint.setColor(Color.RED);
 		paint.setStyle(Style.STROKE);
 		double uHeight = unitHeight*10;
-		g.drawRect(0, 0, (int)(unitWidth*100), (int)(unitHeight*20), paint);
-		g.drawRect((int)(unitWidth*50-uHeight), (int)(unitHeight*20), (int)(unitWidth*50+uHeight), (int)(unitHeight*40), paint);
-		g.drawRect((int)(unitWidth*50-uHeight), (int)(unitHeight*40), (int)(unitWidth*50+uHeight), (int)(unitHeight*60), paint);
-		g.drawRect((int)(unitWidth*50-uHeight), (int)(unitHeight*60), (int)(unitWidth*50+uHeight), (int)(unitHeight*80), paint);
-		g.drawRect((int)(unitWidth*50-uHeight), (int)(unitHeight*80), (int)(unitWidth*50+uHeight), (int)(unitHeight*100), paint);
+		g.drawBitmap(imageLibrary.menu_top, 0, 0, paint);
+		g.drawBitmap(imageLibrary.menu_middle, (int)(unitWidth*50-uHeight), (int)(unitHeight*20), paint);
+		g.drawBitmap(imageLibrary.menu_side, 0, (int)(unitHeight*20), paint);
+		g.drawBitmap(imageLibrary.menu_side, (int)(unitWidth*50+uHeight), (int)(unitHeight*20), paint);
+		//g.drawRect(0, 0, (int)(unitWidth*100), (int)(unitHeight*20), paint);
+		//g.drawRect((int)(unitWidth*50-uHeight), (int)(unitHeight*20), (int)(unitWidth*50+uHeight), (int)(unitHeight*40), paint);
+		//g.drawRect((int)(unitWidth*50-uHeight), (int)(unitHeight*40), (int)(unitWidth*50+uHeight), (int)(unitHeight*60), paint);
+		//g.drawRect((int)(unitWidth*50-uHeight), (int)(unitHeight*60), (int)(unitWidth*50+uHeight), (int)(unitHeight*80), paint);
+		//g.drawRect((int)(unitWidth*50-uHeight), (int)(unitHeight*80), (int)(unitWidth*50+uHeight), (int)(unitHeight*100), paint);
 		paint.setColor(Color.BLUE);
 		g.drawRect((int)(unitWidth*50-uHeight), (int)(unitHeight*20*(selected+1)), (int)(unitWidth*50+uHeight), (int)(unitHeight*20*(selected+2)), paint);
 		control.gestureDetector.drawGestureSelected(g);
 		control.selectionSpriteController.drawSprites(g, paint, imageLibrary, unitWidth, unitHeight);
-		paint.setColor(Color.GRAY);
-		paint.setStyle(Style.FILL);
-		g.drawRect(phoneWidth-150, (int)(unitHeight*20), phoneWidth, (int)(unitHeight*20)+150, paint);
-		g.drawRect(0, 0, 150, 150, paint);
+		
+		g.drawBitmap(imageLibrary.icon_back, 0, 0, paint);
+		g.drawBitmap(imageLibrary.icon_delete, phoneWidth-150, (int)(unitHeight*20), paint);
 	}
 	/**
 	 * Starts warning label

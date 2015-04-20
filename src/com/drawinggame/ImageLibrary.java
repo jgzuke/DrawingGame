@@ -20,16 +20,27 @@ public final class ImageLibrary extends ImageLoader
 	//protected Bitmap currentLevelTop;
 	protected Bitmap backDrop;
 	protected Bitmap[] createMarkers = new Bitmap[8];
+	protected Bitmap menu_top;
+	protected Bitmap menu_side;
+	protected Bitmap menu_middle;
+	protected Bitmap icon_back;
+	protected Bitmap icon_delete;
+	protected Bitmap icon_cancel;
+	protected Bitmap icon_menu;
 	private Controller control;
+	private int phoneWidth;
+	private int phoneHeight;
 	/**
 	 * loads in images and optimizes settings for loading
 	 * @param contextSet start activity for getting resources etc
 	 * @param controlSet control object
 	 */
-	public ImageLibrary(Context contextSet, Controller controlSet)
+	public ImageLibrary(Context contextSet, Controller controlSet, int pWidth, int pHeight)
 	{
 		super(contextSet);
 		control = controlSet;
+		phoneWidth = pWidth;
+		phoneHeight = pHeight;
 		loadAllImages();
 	}
 	/**
@@ -58,6 +69,15 @@ public final class ImageLibrary extends ImageLoader
 		enemyImages[3]= loadArray1D(55, "human_swordsman", 110, 70);
 		enemyImages[4]= loadArray1D(49, "human_archer", 80, 50);
 		enemyImages[5]= loadArray1D(31, "human_mage", 30, 34);
+		double w = phoneWidth;
+		double h = phoneHeight;
+		menu_top = loadImage("menu_top", (int)(w), (int)(h/5));
+		menu_side = loadImage("menu_side", (int)(w/2 - h/10), (int)(h*4/5));
+		menu_middle = loadImage("menu_middle", (int)(h/5), (int)(h*4/5));
+		icon_back = loadImage("icon_back", 150, 150);
+		icon_delete = loadImage("icon_delete", 150, 150);
+		icon_cancel = loadImage("icon_cancel", 150, 150);
+		icon_menu = loadImage("icon_menu", 150, 150);
 	}
 	/**
 	 * loads level image layers and background image
