@@ -119,7 +119,7 @@ public final class SpriteController extends SpriteDrawer
 		if(isOnPlayersTeam)
 		{
 			if(playerGameControl.mana < manaPrices[type]) return;
-			//playerGameControl.mana -= manaPrices[type]; //TODO uncomment this
+			playerGameControl.mana -= manaPrices[type];
 		} else
 		{
 			if(enemyGameControl.mana < manaPrices[type]) return;

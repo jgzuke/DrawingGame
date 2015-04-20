@@ -3,7 +3,7 @@ package lx.interaction.dollar;
 public class TemplateData
 {
 	public static int arr0[] = {0,1, 1,0, 2,1, 0,1};
-	public static int arr1[] = {0,1, 0,0, 1,0, 1,1, 0,0};
+	public static int arr1[] = {0,1, 0,0, 1,0, 1,1, 0,1};
 	public static int arr2[] = {0,0, 1,4, 2,0, 3,4, 4,0};
 	public static int arr3[] = {0,0, 8,0, 1,4, 4,-3, 7,4, 0,0};
 	public static int n[] = {0,250, 0,0, 250,250, 250,0};

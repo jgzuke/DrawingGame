@@ -73,10 +73,13 @@ public final class SelectionSpriteController extends SpriteDrawer
 			sheilds.add(new ArrayList<Enemy_Sheild>());
 			allies.add(new ArrayList<Enemy>());
 			selected = i;
+			int sheildsN = control.spriteController.groupDetails[i][0];
+			int archersN = control.spriteController.groupDetails[i][1];
+			int magesN = control.spriteController.groupDetails[i][2];
 			layoutType[i] = control.spriteController.groupDetails[i][3];
-			for(int j = 0; j < control.spriteController.groupDetails[i][0]; j++) makeEnemy(0);
-			for(int j = 0; j < control.spriteController.groupDetails[i][1]; j++) makeEnemy(1);
-			for(int j = 0; j < control.spriteController.groupDetails[i][2]; j++) makeEnemy(2);
+			for(int j = 0; j < sheildsN; j++) makeEnemy(0);
+			for(int j = 0; j < archersN; j++) makeEnemy(1);
+			for(int j = 0; j < magesN; j++) makeEnemy(2);
 		}
 		selected = 0;
 	}
@@ -106,19 +109,20 @@ public final class SelectionSpriteController extends SpriteDrawer
 		{
 			if(allies.get(selected).get(i).selected)
 			{
-				if(allies.size() < 3)
+				if(allies.get(selected).size() < 3)
 				{
 					Toast.makeText(context, "Need at least two units in a group", Toast.LENGTH_SHORT).show();
 					break;
 				}
 				int type = allies.get(selected).get(i).humanType;
-				if(type==0) sheilds.remove(allies.get(selected).get(i));
-				if(type==1) archers.remove(allies.get(selected).get(i));
-				if(type==2) mages.remove(allies.get(selected).get(i));
+				if(type==0) sheilds.get(selected).remove(allies.get(selected).get(i));
+				if(type==1) archers.get(selected).remove(allies.get(selected).get(i));
+				if(type==2) mages.get(selected).remove(allies.get(selected).get(i));
 				allies.get(selected).remove(i);
 				i --;
 			}
 		}
+		formUp();
 		changedSetting();
 	}
 	/**
@@ -155,7 +159,7 @@ public final class SelectionSpriteController extends SpriteDrawer
 			allies.get(selected).add(0, newEnemy);
 			break;
 		}
-		newEnemy.x = 400;
+		newEnemy.x = 480;
 		newEnemy.y = 500;
 		formUp();
 		changedSetting();
