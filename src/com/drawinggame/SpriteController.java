@@ -50,10 +50,10 @@ import com.spritelib.Sprite;
 import com.spritelib.SpriteDrawer;
 public final class SpriteController extends SpriteDrawer
 {
-	protected static int magePrice = 90;
+	protected static int magePrice = 85;
 	protected static int archerPrice = 60;
-	protected static int sheildPrice = 80;
-	protected static double depreciation = 0.967;
+	protected static int sheildPrice = 75;
+	protected static double depreciation = 0.965;
 	protected Controller control;
 	protected ArrayList<Control_Main> allyControllers = new ArrayList<Control_Main>();
 	protected ArrayList<Control_Main> enemyControllers = new ArrayList<Control_Main>();
@@ -67,10 +67,11 @@ public final class SpriteController extends SpriteDrawer
 	protected ArrayList<Proj_Tracker_AOE> proj_TrackerE_AOEs = new ArrayList<Proj_Tracker_AOE>();
 	protected ArrayList<CreationMarker> creationMarkers = new ArrayList<CreationMarker>();
 	protected int[][] groupDetails = {{3, 2, 1, 0}, {3, 2, 3, 1}, {3, 2, 1, 2}, {3, 0, 4, 1}};
-	
+	protected int[][] groupDetailsEnemy = {{3, 2, 1, 0}, {3, 2, 3, 1}, {3, 2, 1, 2}, {3, 0, 4, 1}};
 	//makeGroup(s, a, m, form, x, y, isOnPlayersTeam, toAdd, toAddController);
 	protected Bitmap playerBlessing;
 	protected int [] manaPrices = {sheildPrice, archerPrice, magePrice, 0, 0, 0, 0};
+	protected int [] manaPricesEnemy = {sheildPrice, archerPrice, magePrice, 0, 0, 0, 0};
 	protected Bitmap isSelected;
 	protected Game_Control_Player playerGameControl;
 	protected Game_Control_Enemy enemyGameControl;
@@ -84,12 +85,20 @@ public final class SpriteController extends SpriteDrawer
 		playerGameControl = new Game_Control_Player(control);
 		enemyGameControl = new Game_Control_Enemy(control);
 		setPrices();
+		setPricesEnemy();
 	}
 	protected void setPrices()
 	{
 		for(int i = 0; i < 4; i++)
 		{
 			manaPrices[i+3] = (int)Math.pow(groupDetails[i][0]*sheildPrice + groupDetails[i][1]*archerPrice + groupDetails[i][2]*magePrice, depreciation);
+		}//100, 60, 140
+	}
+	protected void setPricesEnemy()
+	{
+		for(int i = 0; i < 4; i++)
+		{
+			manaPricesEnemy[i+3] = (int)Math.pow(groupDetailsEnemy[i][0]*sheildPrice + groupDetailsEnemy[i][1]*archerPrice + groupDetailsEnemy[i][2]*magePrice, depreciation);
 		}//100, 60, 140
 	}
 	/**
@@ -122,8 +131,8 @@ public final class SpriteController extends SpriteDrawer
 			playerGameControl.mana -= manaPrices[type];
 		} else
 		{
-			if(enemyGameControl.mana < manaPrices[type]) return;
-			enemyGameControl.mana -= manaPrices[type];
+			if(enemyGameControl.mana < manaPricesEnemy[type]) return;
+			enemyGameControl.mana -= manaPricesEnemy[type];
 		}
 		ArrayList<Enemy> toAdd;
 		ArrayList<Control_Main> toAddController;
@@ -147,7 +156,10 @@ public final class SpriteController extends SpriteDrawer
 		case 4:
 		case 5:
 		case 6:
-			makeGroup(groupDetails[type-3][0], groupDetails[type-3][1], groupDetails[type-3][2], groupDetails[type-3][3], x, y, isOnPlayersTeam, toAdd, toAddController);
+			int [] deets;
+			if(isOnPlayersTeam) deets = groupDetails[type-3];
+			else deets = groupDetailsEnemy[type-3];
+			makeGroup(deets[0], deets[1], deets[2], deets[3], x, y, isOnPlayersTeam, toAdd, toAddController);
 			break;
 		}
 	}

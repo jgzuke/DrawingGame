@@ -91,7 +91,7 @@ public class Recognizer
 		double error = Double.MAX_VALUE;
 		for (int i = 0; i < templates.size(); i++)
 		{
-			double d = Utils.PathDistance(points, templates.elementAt(i).Points);
+			double d = Utils.DistanceAtAngleWithinPointOne(points, templates.elementAt(i));
 			if((templates.elementAt(i)).Name.startsWith("line")) d *= 3;
 			if (d < error)
 			{

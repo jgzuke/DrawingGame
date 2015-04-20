@@ -37,12 +37,10 @@ public class Utils
 				D += d;
 			}
 		}
-		// somtimes we fall a rounding-error short of adding the last point, so add it if so
 		if (dstPts.size() == n - 1)
 		{
 			dstPts.addElement(srcPts.elementAt(srcPts.size() - 1));
 		}
-
 		return dstPts;
 	}
 
@@ -177,7 +175,17 @@ public class Utils
 		}
 		return Math.min(f1, f2);
 	}			
-
+	public static double DistanceAtAngleWithinPointOne(Vector<Point> points, Template T)
+	{
+		double d = PathDistance(points, T.Points);
+		Vector<Point> newpoints = RotateBy(points, 0.1);
+		double d2 = PathDistance(points, T.Points);
+		newpoints = RotateBy(points, -0.1);
+		double d3 = PathDistance(points, T.Points);
+		if(d < d2 && d < d3) return d;
+		if(d2 < d3) return d2;
+		return d3;
+	}
 	public static double DistanceAtAngle(Vector<Point> points, Template T, double theta)
 	{
 		Vector<Point> newpoints = RotateBy(points, theta);
