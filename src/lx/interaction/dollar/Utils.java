@@ -34,20 +34,6 @@ public class Utils
 		Log.e("myid", "simplicity, ".concat(Double.toString(simplicity)));
 		return simplicity;
 	}
-	public static Vector<Point> ResampleEarly(Vector<Point> points)
-	{
-		Vector<Point> pointsNew = Resample(points, Recognizer.NumPoints+2);
-		pointsNew.remove(pointsNew.size()-1);
-		pointsNew.remove(pointsNew.size()-1);
-		return pointsNew;
-	}
-	public static Vector<Point> ResampleLate(Vector<Point> points)
-	{
-		Vector<Point> pointsNew = Resample(points, Recognizer.NumPoints+2);
-		pointsNew.remove(0);
-		pointsNew.remove(0);
-		return pointsNew;
-	}
 	public static Vector<Point> Resample(Vector<Point> points)
 	{
 		return Resample(points, Recognizer.NumPoints);
@@ -377,8 +363,14 @@ public class Utils
 	}
 	public static double Distance(Vector<Point> points, Template T)
 	{
-		double d1 = DistanceEarlyLate(ResampleEarly(points), T);
-		double d2 = DistanceEarlyLate(ResampleLate(points), T);
+		Vector<Point> pointsLate = Resample(points, Recognizer.NumPoints+2);
+		Vector<Point> pointsEarly = (Vector<Point>) pointsLate.clone();
+		pointsEarly.remove(pointsEarly.size()-1);
+		pointsEarly.remove(pointsEarly.size()-1);
+		pointsLate.remove(0);
+		pointsLate.remove(0);
+		double d1 = DistanceEarlyLate(pointsEarly, T);
+		double d2 = DistanceEarlyLate(pointsLate, T);
 		double d3 = DistanceEarlyLate(points, T);
 		return min(d1, d2, d3);
 	}

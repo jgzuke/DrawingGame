@@ -20,22 +20,49 @@ public class Template
 	{
 		this.Name = name;
 		Points = Utils.Resample(points);
-		Points = Utils.ScaleToSquare(this.Points, Recognizer.SquareSize);
-		Points = Utils.TranslateToOrigin(this.Points);
-		PointsLate = Utils.ResampleEarly((Vector<Point>) points);
-		PointsEarly	= Utils.ResampleLate((Vector<Point>) points);
+		Points = Utils.ScaleToSquare(Points, Recognizer.SquareSize);
+		Points = Utils.TranslateToOrigin(Points);
 		Points1 = Utils.RotateBy(Points, 0.1);
 		Points2 = Utils.RotateBy(Points, -0.1);
-		PointsLate1 = Utils.RotateBy(PointsLate, 0.1);
-		PointsLate2 = Utils.RotateBy(PointsLate, -0.1);
-		PointsEarly1 = Utils.RotateBy(PointsEarly, 0.1);
-		PointsEarly2 = Utils.RotateBy(PointsEarly, -0.1);
+		simplicity = Utils.getSimplicity(Points);
 		
-		simplicity = Utils.getSimplicity(this.Points);
+		Vector<Point> bigger = Utils.Resample(Points, Recognizer.NumPoints+2);
+		PointsEarly = ResampleEarly(bigger);
+		PointsLate = ResampleLate(bigger);
+		bigger = Utils.Resample(Points1, Recognizer.NumPoints+2);
+		PointsEarly1 = ResampleEarly(bigger);
+		PointsLate1 = ResampleLate(bigger);
+		bigger = Utils.Resample(Points2, Recognizer.NumPoints+2);
+		PointsEarly2 = ResampleEarly(bigger);
+		PointsLate2 = ResampleLate(bigger);
 	}
 	public void replacePoints(Vector<Point> points)
 	{
-		this.Points = points;
-		simplicity = Utils.getSimplicity(this.Points);
+		Points = points;
+		Points1 = Utils.RotateBy(Points, 0.1);
+		Points2 = Utils.RotateBy(Points, -0.1);
+		Vector<Point> bigger = Utils.Resample(Points, Recognizer.NumPoints+2);
+		PointsEarly = ResampleEarly(bigger);
+		PointsLate = ResampleLate(bigger);
+		bigger = Utils.Resample(Points1, Recognizer.NumPoints+2);
+		PointsEarly1 = ResampleEarly(bigger);
+		PointsLate1 = ResampleLate(bigger);
+		bigger = Utils.Resample(Points2, Recognizer.NumPoints+2);
+		PointsEarly2 = ResampleEarly(bigger);
+		PointsLate2 = ResampleLate(bigger);
+		simplicity = Utils.getSimplicity(Points);
+	}
+	public Vector<Point> ResampleLate(Vector<Point> pointsNew)
+	{
+		pointsNew.remove(0);
+		pointsNew.remove(0);
+		return pointsNew;
+	}
+	public Vector<Point> ResampleEarly(Vector<Point> points)
+	{
+		Vector<Point> pointsNew = (Vector<Point>) points.clone();
+		pointsNew.remove(pointsNew.size()-1);
+		pointsNew.remove(pointsNew.size()-1);
+		return pointsNew;
 	}
 }
