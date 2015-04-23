@@ -40,6 +40,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -127,11 +128,18 @@ public final class SpriteController extends SpriteDrawer
 	{
 		if(isOnPlayersTeam)
 		{
-			if(playerGameControl.mana < manaPrices[type]) return;
+			if(playerGameControl.mana < manaPrices[type])
+			{
+				Toast.makeText(control.context, "Not enough mana.", Toast.LENGTH_SHORT).show();
+				return;
+			}
 			playerGameControl.mana -= manaPrices[type];
 		} else
 		{
-			if(enemyGameControl.mana < manaPricesEnemy[type]) return;
+			if(enemyGameControl.mana < manaPricesEnemy[type])
+			{
+				return;
+			}
 			enemyGameControl.mana -= manaPricesEnemy[type];
 		}
 		ArrayList<Enemy> toAdd;
@@ -388,14 +396,17 @@ public final class SpriteController extends SpriteDrawer
 		}
 		for(int i = 0; i < proj_TrackerAs.size(); i++)
 		{
+			paint.setAlpha(proj_TrackerAs.get(i).alpha);
 			draw(proj_TrackerAs.get(i), g, paint);
 		}
 		for(int i = 0; i < proj_TrackerEs.size(); i++)
 		{
+			paint.setAlpha(proj_TrackerEs.get(i).alpha);
 			draw(proj_TrackerEs.get(i), g, paint);
 		}
 		for(int i = 0; i < proj_TrackerE_AOEs.size(); i++)
 		{
+			paint.setAlpha(proj_TrackerE_AOEs.get(i).alpha);
 				aoeRect.top = (int)(proj_TrackerE_AOEs.get(i).y - (proj_TrackerE_AOEs.get(i).getHeight() / 2.5));
 				aoeRect.bottom = (int)(proj_TrackerE_AOEs.get(i).y + (proj_TrackerE_AOEs.get(i).getHeight() / 2.5));
 				aoeRect.left = (int)(proj_TrackerE_AOEs.get(i).x - (proj_TrackerE_AOEs.get(i).getWidth() / 2.5));
@@ -404,6 +415,7 @@ public final class SpriteController extends SpriteDrawer
 		}
 		for(int i = 0; i < proj_TrackerA_AOEs.size(); i++)
 		{
+			paint.setAlpha(proj_TrackerA_AOEs.get(i).alpha);
 				aoeRect.top = (int)(proj_TrackerA_AOEs.get(i).y - (proj_TrackerA_AOEs.get(i).getHeight() / 2.5));
 				aoeRect.bottom = (int)(proj_TrackerA_AOEs.get(i).y + (proj_TrackerA_AOEs.get(i).getHeight() / 2.5));
 				aoeRect.left = (int)(proj_TrackerA_AOEs.get(i).x - (proj_TrackerA_AOEs.get(i).getWidth() / 2.5));
@@ -422,8 +434,8 @@ public final class SpriteController extends SpriteDrawer
 	 */
 	protected void createProj_Tracker(double rotation, double Vel, int power, double x, double y, boolean onPlayersTeam)
 	{
-		if(onPlayersTeam) proj_TrackerAs.add(new Proj_Tracker(control, (int)x, (int)y, power, Vel, rotation, this, onPlayersTeam));
-		else proj_TrackerEs.add(new Proj_Tracker(control, (int)x, (int)y, power, Vel, rotation, this, onPlayersTeam));
+		if(onPlayersTeam) proj_TrackerAs.add(new Proj_Tracker(control, (int)x, (int)y, power, Vel, rotation, this, control.imageLibrary.shotPlayer[0], onPlayersTeam));
+		else proj_TrackerEs.add(new Proj_Tracker(control, (int)x, (int)y, power, Vel, rotation, this, control.imageLibrary.shotPlayer[1], onPlayersTeam));
 	}
 	/**
 	 * creates an emeny AOE explosion

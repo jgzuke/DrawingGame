@@ -75,6 +75,10 @@ public class GestureDetector implements OnTouchListener
     	paint.setColor(Color.BLACK);
     	paint.setStrokeWidth(7);
     	g.drawPath(getPathFromVector(recognizer.templates.get(settingSelected).Points, (int)(unitWidth*25-unitHeight*5), (int)(unitHeight*60), 0.6*(unitWidth*50 - unitHeight*10)), paint);
+    	paint.setColor(Color.RED);
+    	g.drawPath(getPathFromVector(recognizer.templates.get(settingSelected).PointsEarly, (int)(unitWidth*25-unitHeight*5), (int)(unitHeight*60), 0.6*(unitWidth*50 - unitHeight*10)), paint);
+    	paint.setColor(Color.BLUE);
+    	g.drawPath(getPathFromVector(recognizer.templates.get(settingSelected).PointsLate, (int)(unitWidth*25-unitHeight*5), (int)(unitHeight*60), 0.6*(unitWidth*50 - unitHeight*10)), paint);
     	paint.setColor(Color.WHITE);
     	paint.setStrokeWidth(4);
     	g.drawPath(getPathFromVector(recognizer.templates.get(0).Points, (int)(unitWidth*50), (int)(unitHeight*30), 0.6*(unitHeight*20)), paint);
@@ -95,6 +99,7 @@ public class GestureDetector implements OnTouchListener
     	}
     	if(lastShape != null && timeSinceDraw < 50)
     	{
+    		paint.setColor(Color.argb(127, 0, 0, 0));
     		//g.saveLayerAlpha(0, 0, g.getWidth(), g.getHeight(), 255 - 5*timeSinceDraw, Canvas.HAS_ALPHA_LAYER_SAVE_FLAG);
     		paint.setColor(Color.GRAY);
     		g.drawPath(lastShape, paint);
@@ -130,7 +135,7 @@ public class GestureDetector implements OnTouchListener
 		{
 			if(b.X+b.Width < unitWidth*50-unitHeight*10 && b.Y > unitHeight*20)
 			{
-				recognizer.templates.get(settingSelected).Points = points;
+				recognizer.templates.get(settingSelected).replacePoints(points);
 				return;
 			}
 			if(b.X < unitWidth*50-unitHeight*10)
@@ -145,7 +150,7 @@ public class GestureDetector implements OnTouchListener
 		{
 			if(recognizer.templates.get(settingSelected).Name.equals(type))
 			{
-				recognizer.templates.get(settingSelected).Points = points;
+				recognizer.templates.get(settingSelected).replacePoints(points);
 			} else
 			{
 				Toast.makeText(context, "Too close to another gesture", Toast.LENGTH_SHORT).show();
@@ -258,6 +263,7 @@ public class GestureDetector implements OnTouchListener
     	if(p.X < 150 && p.Y < 150)
     	{
     		control.paused = !control.paused;
+    		timeSinceDraw = 50;
     		return true;
     	}
     	if(p.X < 300 && p.Y < 150 && !control.gestureDetector.selectType.equals("none"))
@@ -274,7 +280,7 @@ public class GestureDetector implements OnTouchListener
 		{
 			if(b.X+b.Width < unitWidth*50-unitHeight*10 && b.Y > unitHeight*20)
 			{
-				recognizer.templates.get(settingSelected).Points = points;
+				recognizer.templates.get(settingSelected).replacePoints(points);
 				return;
 			}
 			if(b.X < unitWidth*50-unitHeight*10)

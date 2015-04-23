@@ -3,10 +3,57 @@ package lx.interaction.dollar;
 import java.util.Vector;
 import java.util.Enumeration;
 
+import android.util.Log;
+
 public class Utils
 {	 
+	public static double getSimplicity(Vector<Point> points)
+	{
+		if(points.size() < 3) return 1;
+		double sum = 0;
+		double difference = 0;
+		Point p;
+		Point p1 = points.get(0);
+		Point p2 = points.get(1);
+		for(int i = 2; i < points.size(); i++)
+		{
+			p = p1;
+			p1 = p2;
+			p2 = points.get(i);
+			double rot1 = Math.toDegrees(Math.atan2(p1.Y-p.Y, p1.X-p.X));
+			double rot2 = Math.toDegrees(Math.atan2(p2.Y-p1.Y, p2.X-p1.X));
+			difference = rot2-rot1;
+			while(difference > 180) difference -= 360;
+			while(difference < -180) difference += 360;
+			sum += Math.abs(difference);
+		}
+		int by90 = (int)(sum/90);
+		double simplicity = 0.4 + (1.5/(0.5+by90));
+		Log.e("myid", "sum".concat(Double.toString(sum)));
+		Log.e("myid", "by90, ".concat(Integer.toString(by90)));
+		Log.e("myid", "simplicity, ".concat(Double.toString(simplicity)));
+		return simplicity;
+	}
+	public static Vector<Point> ResampleEarly(Vector<Point> points)
+	{
+		Vector<Point> pointsNew = Resample(points, Recognizer.NumPoints+2);
+		pointsNew.remove(pointsNew.size()-1);
+		pointsNew.remove(pointsNew.size()-1);
+		return pointsNew;
+	}
+	public static Vector<Point> ResampleLate(Vector<Point> points)
+	{
+		Vector<Point> pointsNew = Resample(points, Recognizer.NumPoints+2);
+		pointsNew.remove(0);
+		pointsNew.remove(0);
+		return pointsNew;
+	}
+	public static Vector<Point> Resample(Vector<Point> points)
+	{
+		return Resample(points, Recognizer.NumPoints);
+	}
 	public static Vector<Point> Resample(Vector<Point> points, int n)
-	{		
+	{	
 		double I = PathLength(points) / (n - 1); // interval length
 		double D = 0.0;
 		
@@ -106,7 +153,7 @@ public class Utils
 		Rectangle B = BoundingBox(points);
 		Vector<Point> newpoints = new Vector<Point>(points.size());
 		Double biggerDist = B.Width;
-		boolean isLine = B.Width/B.Height > 4;
+		boolean isLine = B.Width/B.Height > 3.5;
 		if(biggerDist < B.Height)
 		{
 			biggerDist = B.Height;
@@ -175,17 +222,6 @@ public class Utils
 		}
 		return Math.min(f1, f2);
 	}			
-	public static double DistanceAtAngleWithinPointOne(Vector<Point> points, Template T)
-	{
-		double d = PathDistance(points, T.Points);
-		Vector<Point> newpoints = RotateBy(points, 0.1);
-		double d2 = PathDistance(points, T.Points);
-		newpoints = RotateBy(points, -0.1);
-		double d3 = PathDistance(points, T.Points);
-		if(d < d2 && d < d3) return d;
-		if(d2 < d3) return d2;
-		return d3;
-	}
 	public static double DistanceAtAngle(Vector<Point> points, Template T, double theta)
 	{
 		Vector<Point> newpoints = RotateBy(points, theta);
@@ -289,7 +325,8 @@ public class Utils
 	// compute the centroid of the points given
 	public static Point Centroid(Vector<Point> points)
 	{
-		double xsum = 0.0;
+		return getCentre(points);
+		/*double xsum = 0.0;
 		double ysum = 0.0;
 		
 		Enumeration<Point> e = points.elements();
@@ -301,7 +338,9 @@ public class Utils
 			xsum += p.X;
 			ysum += p.Y;
 		}
-		return new Point(xsum / points.size(), ysum / points.size());
+		return new Point(xsum / points.size(), ysum / points.size());*/
+		
+		
 	}
 
 	public static double PathLength(Vector<Point> points)
@@ -329,8 +368,24 @@ public class Utils
 		if(distance > distance2) return distance2 / path1.size();
 		return distance / path1.size();
 	}
-
-	
-
-
+	public static double DistanceEarlyLate(Vector<Point> points, Template T)
+	{
+		double d1 = min(PathDistance(points, T.Points), PathDistance(points, T.Points1), PathDistance(points, T.Points2));
+		double d2 = min(PathDistance(points, T.PointsEarly), PathDistance(points, T.PointsEarly1), PathDistance(points, T.PointsEarly2));
+		double d3 = min(PathDistance(points, T.PointsLate), PathDistance(points, T.PointsLate1), PathDistance(points, T.PointsLate2));
+		return min(d1, d2, d3);
+	}
+	public static double Distance(Vector<Point> points, Template T)
+	{
+		double d1 = DistanceEarlyLate(ResampleEarly(points), T);
+		double d2 = DistanceEarlyLate(ResampleLate(points), T);
+		double d3 = DistanceEarlyLate(points, T);
+		return min(d1, d2, d3);
+	}
+	public static double min(double d1, double d2, double d3)
+	{
+		if(d1 < d2 && d1 < d3) return d1;
+		if(d2 < d3) return d2;
+		return d3;
+	}
 }

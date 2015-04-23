@@ -188,7 +188,7 @@ public final class GraphicsController extends View
 		paint.setColor(Color.GRAY);
 		paint.setStyle(Style.FILL);
 		g.drawBitmap(imageLibrary.icon_menu, 0, 0, paint);
-		g.drawBitmap(imageLibrary.icon_cancel, 150, 0, paint);
+		if(control.selected != null)g.drawBitmap(imageLibrary.icon_cancel, 150, 0, paint);
 		int spacing = 10;
 		int top = phoneHeight-spacing;
 		int manaHeight = phoneHeight-150-2*spacing;

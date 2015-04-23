@@ -6,6 +6,7 @@ package com.drawinggame;
 import java.util.ArrayList;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import com.spritelib.Sprite;
 
@@ -22,18 +23,21 @@ public final class Proj_Tracker extends Sprite
 	protected Bitmap [] video;
 	private double r2d = 180/Math.PI;
 	private double speed;
+	protected byte alpha;
 	private SpriteController spriteController;
 	private ArrayList<Enemy> enemies;
 	private boolean onPlayersTeam;
 	private ArrayList<Structure> structures;
+	
 	Controller control;
-	public Proj_Tracker(Controller creator, int X, int Y, int Power, double Speed, double Rotation, SpriteController spriteControllerSet, boolean isOnPlayersTeam)
+	public Proj_Tracker(Controller creator, int X, int Y, int Power, double Speed, double Rotation, SpriteController spriteControllerSet, Bitmap image, boolean isOnPlayersTeam)
 	{
-		super(X, Y, Rotation, creator.imageLibrary.shotPlayer[0]);
+		super(X, Y, Rotation, image);
 		spriteController = spriteControllerSet;
 		video = creator.imageLibrary.shotPlayer;
 		control = creator;
 		speed = Speed;
+		alpha = (byte) 254;
 		xForward = Math.cos(Rotation/r2d) * Speed;
 		yForward = Math.sin(Rotation/r2d) * Speed;
 		if(control.wallController.checkHitBack(x, y, false))
@@ -72,15 +76,28 @@ public final class Proj_Tracker extends Sprite
 	@ Override
 	protected void frameCall()
 	{
-		for(int i = 0; i < 8; i++)
+		alpha -= 3;
+		if(onPlayersTeam)
 		{
-			realX += xForward/8;
-			realY += yForward/8;
+			image = control.imageLibrary.shotPlayer[(int)(Math.random()*5)];
+		} else
+		{
+			image = control.imageLibrary.shotEnemy[(int)(Math.random()*5)];
+		}
+		for(int i = 0; i < 4; i++)
+		{
+			realX += xForward/4;
+			realY += yForward/4;
 			hitTarget((int)realX, (int)realY);
 			hitBack((int)realX, (int)realY);
 		}
 		x = (int) realX;
 		y = (int) realY;
+		if(alpha == 0)
+		{
+			explodeBack();
+			Log.e("myid", "works");
+		}
 	}
 	protected boolean goodTarget(Sprite s, int d)
 	{
@@ -90,7 +107,7 @@ public final class Proj_Tracker extends Sprite
 		double newRotation = Math.atan2(yDif, xDif) * r2d;
 		double needToTurn = Math.abs(rotation-newRotation);
 		if(needToTurn>180) needToTurn = 360-needToTurn;
-		if(needToTurn<20&&distance<d)
+		if(needToTurn*distance<1500&&distance<d)
 		{
 			return !control.wallController.checkObstructionsPoint((int)x, (int)y, (int)s.x, (int)s.y, false, 10);
 		}
@@ -109,7 +126,6 @@ public final class Proj_Tracker extends Sprite
 	}
 	public void explodeBack()
 	{
-		spriteController.createProj_TrackerAOE((int) realX, (int) realY, 30, false, onPlayersTeam);
 		if(onPlayersTeam)
 		{
 			control.spriteController.proj_TrackerAs.remove(this);
@@ -120,7 +136,7 @@ public final class Proj_Tracker extends Sprite
 	}
 	public void explode()
 	{
-		spriteController.createProj_TrackerAOE((int) realX, (int) realY, power/2, true, onPlayersTeam);
+		spriteController.createProj_TrackerAOE((int) realX, (int) realY, (power*alpha/400)+50, true, onPlayersTeam);
 		if(onPlayersTeam)
 		{
 			control.spriteController.proj_TrackerAs.remove(this);
@@ -145,7 +161,7 @@ public final class Proj_Tracker extends Sprite
 				double distance = Math.pow(xDif, 2) + Math.pow(yDif, 2);
 				if(distance < 600)
 				{
-					enemies.get(i).getHit((int)power);
+					enemies.get(i).getHit((int)(power*alpha/255));
 					explode();
 					return;
 				}

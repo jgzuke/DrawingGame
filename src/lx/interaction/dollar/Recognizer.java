@@ -13,7 +13,7 @@ public class Recognizer
 	//
 	// Recognizer class constants
 	//
-	public static int NumPoints = 64;
+	public static int NumPoints = 32;
 	public static double SquareSize = 250.0;
 	double AngleRange = 0.0;
 	double AnglePrecision = 1.0;
@@ -53,7 +53,7 @@ public class Recognizer
 	}
 	void replaceTemplate(int i, Vector<Point> array) // i = 0-3
 	{
-		templates.get(i).Points = array;
+		templates.get(i).replacePoints(array);
 	}
 	Template loadTemplate(String name, int[] array)
 	{
@@ -76,7 +76,7 @@ public class Recognizer
 		Rectangle myBounds = new Rectangle(0,0,0,0);
 		Utils.BoundingBox(points, myBounds);
 		if(isClick(myBounds)) return;
-		points = Utils.Resample(points, NumPoints);
+		points = Utils.Resample(points);
 		Vector<Point> pointsOrig = (Vector<Point>) points.clone();
 		gestureDetector.setLastShape(pointsOrig);
 		Point moveCoords = Utils.getCentre(points);					// use this to get the x, y of the gestures centre
@@ -91,8 +91,8 @@ public class Recognizer
 		double error = Double.MAX_VALUE;
 		for (int i = 0; i < templates.size(); i++)
 		{
-			double d = Utils.DistanceAtAngleWithinPointOne(points, templates.elementAt(i));
-			if((templates.elementAt(i)).Name.startsWith("line")) d *= 3;
+			double d = Utils.Distance(points, templates.elementAt(i));
+			d *= (templates.elementAt(i)).simplicity;
 			if (d < error)
 			{
 				error = d;
