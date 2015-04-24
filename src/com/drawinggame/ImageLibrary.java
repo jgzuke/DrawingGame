@@ -2,13 +2,18 @@
  * Loads, stores and resizes all graphics
  */
 package com.drawinggame;
-import com.spritelib.ImageLoader;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
-public final class ImageLibrary extends ImageLoader
+public final class ImageLibrary
 {
+	public String getting;
+	public Resources res;
+	public String packageName;
+	public BitmapFactory.Options opts;
 	protected Bitmap[][] enemyImages = new Bitmap[6][100]; //array holding videos for each enemy, null when uneeded
 	protected Bitmap structure_Spawn;
 	protected Bitmap isSelected;
@@ -38,7 +43,13 @@ public final class ImageLibrary extends ImageLoader
 	 */
 	public ImageLibrary(Context contextSet, Controller controlSet, int pWidth, int pHeight)
 	{
-		super(contextSet);
+		opts = new BitmapFactory.Options();
+		opts.inDither = false;
+		opts.inPurgeable = true;
+		opts.inInputShareable = true;
+		opts.inTempStorage = new byte[16 * 1024];
+		packageName = contextSet.getPackageName();
+		res = contextSet.getResources();
 		control = controlSet;
 		phoneWidth = pWidth;
 		phoneHeight = pHeight;
@@ -64,12 +75,22 @@ public final class ImageLibrary extends ImageLoader
 		
 		time = System.nanoTime();
 		enemyImages[0]= loadArray1D(55, "goblin_swordsman", 110, 70);
+		Log.e("myid", "gs".concat(Long.toString((System.nanoTime()-time)/100000)));
+		time = System.nanoTime();
 		enemyImages[1]= loadArray1D(49, "goblin_archer", 80, 50);
+		Log.e("myid", "ga".concat(Long.toString((System.nanoTime()-time)/100000)));
+		time = System.nanoTime();
 		enemyImages[2]= loadArray1D(31, "goblin_mage", 30, 34);
+		Log.e("myid", "gm".concat(Long.toString((System.nanoTime()-time)/100000)));
+		time = System.nanoTime();
 		enemyImages[3]= loadArray1D(55, "human_swordsman", 110, 70);
+		Log.e("myid", "hs".concat(Long.toString((System.nanoTime()-time)/100000)));
+		time = System.nanoTime();
 		enemyImages[4]= loadArray1D(49, "human_archer", 80, 50);
+		Log.e("myid", "ha".concat(Long.toString((System.nanoTime()-time)/100000)));
+		time = System.nanoTime();
 		enemyImages[5]= loadArray1D(31, "human_mage", 30, 34);
-		Log.e("myid", "enemies".concat(Long.toString((System.nanoTime()-time)/100000)));
+		Log.e("myid", "hm".concat(Long.toString((System.nanoTime()-time)/100000)));
 		
 		time = System.nanoTime();
 		double w = phoneWidth;
@@ -141,5 +162,107 @@ public final class ImageLibrary extends ImageLoader
 			currentLevelTop = null;
 		}*/
 		recycleEnemies();
+	}
+	/**
+	 * recycles desired array of images
+	 * @param length length of array
+	 * @param array array to recycle
+	 */
+	protected void recycleArray(Bitmap[] array)
+	{
+		int length = array.length;
+		for(int i = 0; i < length; i++)
+		{
+			if(array[i] != null)
+			{
+				array[i].recycle();
+				array[i] = null;
+			}
+		}
+	}
+	/**
+	 * recycles desired array of images
+	 * @param length length of array
+	 * @param array array to recycle
+	 */
+	protected void recycleArray(Bitmap[][] array)
+	{
+		int length = array.length;
+		for(int i = 0; i < length; i++)
+		{
+			if(array[i] != null)
+			{
+				int length2 = array[i].length;
+				for(int j = 0; j < length2; j++)
+				{
+					if(array[i][j] != null)
+					{
+						array[i][j].recycle();
+						array[i][j] = null;
+					}
+				}
+			}
+		}
+	}
+	/**
+	 * Loads and resizes array of images
+	 * @param length Length of array to load
+	 * @param start Starting string which precedes array index to match resource name
+	 * @param width End width of image being loaded
+	 * @param height End height of image being loaded
+	 */
+	public Bitmap[] loadArray1D(int length, String start, int width, int height)
+	{
+		Bitmap[] newArray = new Bitmap[length];
+		for(int i = 0; i < length; i++)
+		{
+			getting = start + correctDigits(i + 1, 4);
+			newArray[i] = loadImage(getting, width, height);
+		}
+		return newArray;
+	}
+	/**
+	 * Loads and resizes array of images
+	 * @param length Length of array to load
+	 * @param start Starting string which precedes array index to match resource name
+	 * @param width End width of image being loaded
+	 * @param height End height of image being loaded
+	 */
+	public Bitmap[][] loadArray2D(int length, int length2, String start, int width, int height)
+	{
+		Bitmap[][] newArray = new Bitmap[length][length2];
+		for(int i = 0; i < length; i++)
+		{
+			for(int j = 0; j < length2; j++)
+			{
+				getting = start + correctDigits(i + (j*length) + 1, 4);
+				newArray[i][j] = loadImage(getting, width, height);
+			}
+		}
+		return newArray;
+	}
+	/**
+	 * Adds 0's before string to make it four digits long
+	 * Animations done in flash which when exporting .png sequence end file name with four character number
+	 * @return Returns four character version of number
+	 */
+	protected String correctDigits(int start, int digits)
+	{
+		String end = Integer.toString(start);
+		while(end.length() < digits)
+		{
+			end = "0" + end;
+		}
+		return end;
+	}
+	/**
+	 * Loads image of name given from resources and scales to specified width and height
+	 * @return Returns bitmap loaded and resized
+	 */
+	public Bitmap loadImage(String imageName, int width, int height)
+	{
+		int imageNumber = res.getIdentifier(imageName, "drawable", packageName);
+		//return BitmapFactory.decodeResource(res, imageNumber, opts);
+		return Bitmap.createScaledBitmap(BitmapFactory.decodeResource(res, imageNumber, opts), width, height, false);
 	}
 }

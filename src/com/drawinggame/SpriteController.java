@@ -37,6 +37,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.widget.Toast;
@@ -48,8 +49,9 @@ import lx.interaction.dollar.Point;
 
 import com.spritelib.Sprite;
 import com.spritelib.SpriteDrawer;
-public final class SpriteController extends SpriteDrawer
+public final class SpriteController
 {
+	private Matrix rotateImages = new Matrix();
 	protected static int magePrice = 85;
 	protected static int archerPrice = 60;
 	protected static int sheildPrice = 75;
@@ -376,7 +378,7 @@ public final class SpriteController extends SpriteDrawer
 		for(int i = 0; i < creationMarkers.size(); i++)
 		{
 			paint.setAlpha(creationMarkers.get(i).getAlpha());
-			draw(creationMarkers.get(i), g, paint);
+			drawFlat(creationMarkers.get(i), g, paint);
 		}
 		paint.setAlpha(255);
 		for(int i = 0; i < allies.size(); i++)
@@ -404,20 +406,20 @@ public final class SpriteController extends SpriteDrawer
 		for(int i = 0; i < proj_TrackerE_AOEs.size(); i++)
 		{
 			paint.setAlpha(proj_TrackerE_AOEs.get(i).alpha);
-				aoeRect.top = (int)(proj_TrackerE_AOEs.get(i).y - (proj_TrackerE_AOEs.get(i).getHeight() / 2.5));
-				aoeRect.bottom = (int)(proj_TrackerE_AOEs.get(i).y + (proj_TrackerE_AOEs.get(i).getHeight() / 2.5));
-				aoeRect.left = (int)(proj_TrackerE_AOEs.get(i).x - (proj_TrackerE_AOEs.get(i).getWidth() / 2.5));
-				aoeRect.right = (int)(proj_TrackerE_AOEs.get(i).x + (proj_TrackerE_AOEs.get(i).getWidth() / 2.5));
-				drawRect(proj_TrackerE_AOEs.get(i).image, aoeRect, g, paint);
+			aoeRect.top = (int)(proj_TrackerE_AOEs.get(i).y - (proj_TrackerE_AOEs.get(i).getHeight() / 2.5));
+			aoeRect.bottom = (int)(proj_TrackerE_AOEs.get(i).y + (proj_TrackerE_AOEs.get(i).getHeight() / 2.5));
+			aoeRect.left = (int)(proj_TrackerE_AOEs.get(i).x - (proj_TrackerE_AOEs.get(i).getWidth() / 2.5));
+			aoeRect.right = (int)(proj_TrackerE_AOEs.get(i).x + (proj_TrackerE_AOEs.get(i).getWidth() / 2.5));
+			drawRect(proj_TrackerE_AOEs.get(i).image, aoeRect, g, paint);
 		}
 		for(int i = 0; i < proj_TrackerA_AOEs.size(); i++)
 		{
 			paint.setAlpha(proj_TrackerA_AOEs.get(i).alpha);
-				aoeRect.top = (int)(proj_TrackerA_AOEs.get(i).y - (proj_TrackerA_AOEs.get(i).getHeight() / 2.5));
-				aoeRect.bottom = (int)(proj_TrackerA_AOEs.get(i).y + (proj_TrackerA_AOEs.get(i).getHeight() / 2.5));
-				aoeRect.left = (int)(proj_TrackerA_AOEs.get(i).x - (proj_TrackerA_AOEs.get(i).getWidth() / 2.5));
-				aoeRect.right = (int)(proj_TrackerA_AOEs.get(i).x + (proj_TrackerA_AOEs.get(i).getWidth() / 2.5));
-				drawRect(proj_TrackerA_AOEs.get(i).image, aoeRect, g, paint);
+			aoeRect.top = (int)(proj_TrackerA_AOEs.get(i).y - (proj_TrackerA_AOEs.get(i).getHeight() / 2.5));
+			aoeRect.bottom = (int)(proj_TrackerA_AOEs.get(i).y + (proj_TrackerA_AOEs.get(i).getHeight() / 2.5));
+			aoeRect.left = (int)(proj_TrackerA_AOEs.get(i).x - (proj_TrackerA_AOEs.get(i).getWidth() / 2.5));
+			aoeRect.right = (int)(proj_TrackerA_AOEs.get(i).x + (proj_TrackerA_AOEs.get(i).getWidth() / 2.5));
+			drawRect(proj_TrackerA_AOEs.get(i).image, aoeRect, g, paint);
 		}
 	}
 	/**
@@ -457,7 +459,6 @@ public final class SpriteController extends SpriteDrawer
 		if(onPlayersTeam) proj_TrackerA_AOEs.add(new Proj_Tracker_AOE(control, (int) x, (int) y, power, false, this, control.imageLibrary.shotAOEPlayer, true, onPlayersTeam));
 		else proj_TrackerE_AOEs.add(new Proj_Tracker_AOE(control, (int) x, (int) y, power, false, this, control.imageLibrary.shotAOEEnemy, true, onPlayersTeam));
 	}
-	@Override
 	protected boolean onScreen(double x, double y, int width, int height) {return true;}
 	/**
 	 * selects enemy with click
@@ -635,5 +636,54 @@ public final class SpriteController extends SpriteDrawer
 				allies.get(i).selected = false;
 			}
 		}
+	}
+	
+	
+	
+	
+	
+	
+	/**
+	 * draws a sprite
+	 */
+	public void drawFlat(Sprite sprite, Canvas g, Paint p)
+	{
+		if(sprite!=null)
+		{
+			g.drawBitmap(sprite.image, (int)sprite.x-(sprite.width/2), (int)sprite.y-(sprite.height/2), p);
+		}
+	}
+	/**
+	 * draws a sprite
+	 */
+	public void drawFlat(Sprite sprite, Bitmap image, Canvas g, Paint p)
+	{
+		int w = image.getWidth();
+		int h  = image.getHeight();
+		if(sprite!=null)
+		{
+			g.drawBitmap(image, (int)sprite.x-(w/2), (int)sprite.y-(h/2), p);
+		}
+	}
+	/**
+	 * draws a sprite
+	 */
+	public void draw(Sprite sprite, Canvas g, Paint p)
+	{
+		if(sprite!=null)
+		{
+				rotateImages.reset();
+				rotateImages.postTranslate(-sprite.width / 2, -sprite.height / 2);
+				rotateImages.postRotate((float) sprite.rotation);
+				rotateImages.postTranslate((float) sprite.x, (float) sprite.y);
+				g.drawBitmap(sprite.image, rotateImages, p);
+		}
+	}
+	/**
+	 * Replaces canvas.drawBitmap(Bitmap, Rect, Rect, Paint) and auto scales
+	 */
+	public void drawRect(Bitmap image, Rect r, Canvas g, Paint p)
+	{
+		g.drawBitmap(image, null, r, p);
 	}
 }
