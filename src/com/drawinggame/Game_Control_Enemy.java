@@ -17,9 +17,9 @@ public final class Game_Control_Enemy extends Game_Control
 			timer = 30;
 		}
 		Control_Main e;
-		for(int i = 0; i < spriteControl.enemyControllers.size(); i++)
+		for(int i = 0; i < allyControllers.size(); i++)
 		{
-			e = enemyControllers.get(i);
+			e = allyControllers.get(i);
 		}
 	}
 }

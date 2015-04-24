@@ -74,7 +74,7 @@ public final class ImageLibrary
 		Log.e("myid", "misc".concat(Long.toString((System.nanoTime()-time)/100000)));
 		
 		time = System.nanoTime();
-		enemyImages[0]= loadArray1D(55, "goblin_swordsman", 110, 70);
+		enemyImages[0]= loadArray1D(55, "goblin_sheild", 110, 70);
 		Log.e("myid", "gs".concat(Long.toString((System.nanoTime()-time)/100000)));
 		time = System.nanoTime();
 		enemyImages[1]= loadArray1D(49, "goblin_archer", 80, 50);
@@ -83,7 +83,7 @@ public final class ImageLibrary
 		enemyImages[2]= loadArray1D(31, "goblin_mage", 30, 34);
 		Log.e("myid", "gm".concat(Long.toString((System.nanoTime()-time)/100000)));
 		time = System.nanoTime();
-		enemyImages[3]= loadArray1D(55, "human_swordsman", 110, 70);
+		enemyImages[3]= loadArray1D(55, "human_sheild", 110, 70);
 		Log.e("myid", "hs".concat(Long.toString((System.nanoTime()-time)/100000)));
 		time = System.nanoTime();
 		enemyImages[4]= loadArray1D(49, "human_archer", 80, 50);
@@ -213,11 +213,11 @@ public final class ImageLibrary
 	 */
 	public Bitmap[] loadArray1D(int length, String start, int width, int height)
 	{
+		Bitmap sheet = loadImage(start, width*length, height);
 		Bitmap[] newArray = new Bitmap[length];
 		for(int i = 0; i < length; i++)
 		{
-			getting = start + correctDigits(i + 1, 4);
-			newArray[i] = loadImage(getting, width, height);
+			newArray[i] = Bitmap.createBitmap(sheet, i*width, 0, width, height);
 		}
 		return newArray;
 	}
