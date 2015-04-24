@@ -3,8 +3,6 @@ package com.drawinggame;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.util.Log;
-
 import lx.interaction.dollar.Point;
 
 public final class Control_Group extends Control_Main
@@ -376,7 +374,6 @@ public final class Control_Group extends Control_Main
 	}
 	protected void startOrganizing(List<Point> sheildPositions,List<Point> archerPositions, List<Point> magePositions, double addX, double addY, int setRotation)
 	{
-		Log.e("myid", "testqwet");
 		for(int i = 0; i < humans.size(); i++)
 		{
 			humans.get(i).hasDestination = true;

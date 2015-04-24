@@ -30,6 +30,7 @@ public class StartActivity extends Activity
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+		Long time = System.nanoTime();
 		setWindow();
 		control = new Controller(this, this, getScreenDimensions());
 		setContentView(control.graphicsController);
@@ -41,6 +42,9 @@ public class StartActivity extends Activity
 			write();
 		}
 		readSaveData();*/
+		Long newTime = System.nanoTime();
+		Long diff = (newTime-time)/100000;
+		Log.e("myid", "totalTime: ".concat(Long.toString(diff)));
 	}
 	/**
 	 * sets screen variables as well as audio settings

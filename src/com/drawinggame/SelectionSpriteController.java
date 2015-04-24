@@ -36,7 +36,6 @@ package com.drawinggame;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -208,7 +207,6 @@ public final class SelectionSpriteController extends SpriteDrawer
 	protected void formUp()
 	{
 		organizing[selected] = true;
-		Log.e("myid", "forming");
 		if(layoutType[selected] == 0)
 		{
 			setGroupLayoutAttack();

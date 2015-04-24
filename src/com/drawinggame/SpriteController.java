@@ -39,7 +39,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -142,6 +141,7 @@ public final class SpriteController extends SpriteDrawer
 			}
 			enemyGameControl.mana -= manaPricesEnemy[type];
 		}
+		creationMarkers.add(new CreationMarker(x, y, control.imageLibrary.createMarker, this));		
 		ArrayList<Enemy> toAdd;
 		ArrayList<Control_Main> toAddController;
 		if(isOnPlayersTeam)
@@ -175,7 +175,6 @@ public final class SpriteController extends SpriteDrawer
 	{
 		int imageType = 0;
 		if(isOnPlayersTeam) imageType += 3;
-		creationMarkers.add(new CreationMarker(x, y, control.imageLibrary.createMarkers[imageType], this));
 		Enemy newEnemy = null;
 		switch(type)
 		{
@@ -199,8 +198,6 @@ public final class SpriteController extends SpriteDrawer
 	}
 	protected void makeGroup(int sheilds, int archers, int mages, int formation, int x, int y, boolean isOnPlayersTeam, ArrayList<Enemy> toAdd, ArrayList<Control_Main> toAddController)
 	{
-		if(isOnPlayersTeam) creationMarkers.add(new CreationMarker(x, y, control.imageLibrary.createMarkers[6], this));
-		else creationMarkers.add(new CreationMarker(x, y, control.imageLibrary.createMarkers[7], this));
 		ArrayList<Enemy> newGroup = new ArrayList<Enemy>();
 		Control_Group enemyGroup = null;
 		for(int i = 0; i < mages; i++)
@@ -473,15 +470,12 @@ public final class SpriteController extends SpriteDrawer
 		deselectEnemies();
 		ArrayList<Enemy> group = new ArrayList<Enemy>();
 		int countGroup = 0;
-		Log.e("myid", "drewacirclecheck");
 		for(int i = 0; i < allies.size(); i++)
 		{
 			if(allies.get(i) != null)
 			{
-				Log.e("myid", "drewacirclecheckskinda");
 				if(enemyInsideCircle(points, allies.get(i).x, allies.get(i).y))
 				{
-					Log.e("myid", "drewacirclechecksyep");
 					countGroup ++;
 					if(countGroup > 28) break;
 					group.add(allies.get(i));

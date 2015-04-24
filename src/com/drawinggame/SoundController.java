@@ -43,32 +43,12 @@ public class SoundController
 		audioManager = (AudioManager) activity.getSystemService(Context.AUDIO_SERVICE);
 		soundPoolMap[0] = spool.load(context, R.raw.shoot_burn, 1);
 		soundPoolMap[1] = spool.load(context, R.raw.shoot_electric, 1);
-		soundPoolMap[4] = spool.load(context, R.raw.shoot_burst, 1);
 		soundPoolMap[5] = spool.load(context, R.raw.shoot_shoot, 1);
 		soundPoolMap[7] = spool.load(context, R.raw.enemy_sword1, 1);
 		soundPoolMap[8] = spool.load(context, R.raw.enemy_sword2, 1);
 		soundPoolMap[9] = spool.load(context, R.raw.enemy_swordmiss, 1);
 		soundPoolMap[10] = spool.load(context, R.raw.enemy_arrowhit, 1);
 		soundPoolMap[11] = spool.load(context, R.raw.enemy_arrowrelease, 1);
-		soundPoolMap[12] = spool.load(context, R.raw.effect_pageflip, 1);
-		soundPoolMap[13] = spool.load(context, R.raw.money_1, 1);
-		soundPoolMap[14] = spool.load(context, R.raw.money_2, 1);
-	}
-	/**
-	 * plays a random money effect
-	 */
-	protected void playMoney()
-	{
-		float newV = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-		newV = (float)(newV * volumeEffect / 127);
-		if(Math.random()>0.5)
-		{
-			spool.play(soundPoolMap[13], newV, newV, 1, 0, 1f);
-		} else
-		{
-			spool.play(soundPoolMap[14], newV, newV, 1, 0, 1f);
-		}
-		//TODO
 	}
 	/**
 	 * resets volume
@@ -109,17 +89,12 @@ public class SoundController
 		newV = (float)(newV * volumeEffect / 127);
 		if(toPlay.equals("burn")) spool.play(soundPoolMap[0], newV, newV, 1, 0, 1f);
 		if(toPlay.equals("electric")) spool.play(soundPoolMap[1], newV, newV, 1, 0, 1f);
-		if(toPlay.equals("water")) spool.play(soundPoolMap[2], newV, newV, 1, 0, 1f);
-		if(toPlay.equals("earth")) spool.play(soundPoolMap[3], newV, newV, 1, 0, 1f);
-		if(toPlay.equals("burst")) spool.play(soundPoolMap[4], newV, newV, 1, 0, 1f);
 		if(toPlay.equals("shoot")) spool.play(soundPoolMap[5], newV, newV, 1, 0, 1f);
-		if(toPlay.equals("powerup")) spool.play(soundPoolMap[6], newV, newV, 1, 0, 1f);
 		if(toPlay.equals("sword1")) spool.play(soundPoolMap[7], newV, newV, 1, 0, 1f);
 		if(toPlay.equals("sword2")) spool.play(soundPoolMap[8], newV, newV, 1, 0, 1f);
 		if(toPlay.equals("swordmiss")) spool.play(soundPoolMap[9], newV, newV, 1, 0, 1f);
 		if(toPlay.equals("arrowhit")) spool.play(soundPoolMap[10], newV, newV, 1, 0, 1f);
 		if(toPlay.equals("arrowrelease")) spool.play(soundPoolMap[11], newV, newV, 1, 0, 1f);
-		if(toPlay.equals("pageflip")) spool.play(soundPoolMap[12], newV, newV, 1, 0, 1f);
 	}
 	/**
 	 * stops background music and releases it

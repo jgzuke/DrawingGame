@@ -3,8 +3,6 @@ package lx.interaction.dollar;
 import java.util.Vector;
 import java.util.Enumeration;
 
-import android.util.Log;
-
 public class Utils
 {	 
 	public static double getSimplicity(Vector<Point> points)
@@ -29,9 +27,6 @@ public class Utils
 		}
 		int by90 = (int)(sum/90);
 		double simplicity = 0.4 + (1.5/(0.5+by90));
-		Log.e("myid", "sum".concat(Double.toString(sum)));
-		Log.e("myid", "by90, ".concat(Integer.toString(by90)));
-		Log.e("myid", "simplicity, ".concat(Double.toString(simplicity)));
 		return simplicity;
 	}
 	public static Vector<Point> Resample(Vector<Point> points)

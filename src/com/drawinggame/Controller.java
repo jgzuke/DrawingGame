@@ -35,6 +35,7 @@
 package com.drawinggame;
 import android.content.Context;
 import android.os.Handler;
+import android.util.Log;
 
 import java.util.Random;
 public final class Controller
@@ -73,26 +74,43 @@ public final class Controller
 	 */
 	public Controller(Context startSet, StartActivity activitySet, double [] dimensions)
 	{
+		Long timeBig = System.nanoTime();
 		activity = activitySet;
 		context = startSet;
-		gestureDetector = new GestureDetector(startSet, this, (int)dimensions[0], (int)dimensions[1]);
-		soundController = new SoundController(startSet, activitySet);
 		
+		Long time = System.nanoTime();
+		gestureDetector = new GestureDetector(startSet, this, (int)dimensions[0], (int)dimensions[1]);
+		Log.e("myid", "gesture: ".concat(Long.toString((System.nanoTime()-time)/100000)));
+		
+		time = System.nanoTime();
+		soundController = new SoundController(startSet, activitySet);
+		Log.e("myid", "sound: ".concat(Long.toString((System.nanoTime()-time)/100000)));
+		
+		time = System.nanoTime();
 		wallController = new WallController(startSet, this);
 		spriteController = new SpriteController(startSet, this);
 		spriteController.playerGameControl.setEnemies(true);
 		spriteController.enemyGameControl.setEnemies(false);
+		Log.e("myid", "sprite, wall, sound, gesture: ".concat(Long.toString((System.nanoTime()-time)/100000)));
+		
+		time = System.nanoTime();
 		imageLibrary = new ImageLibrary(startSet, this, (int)dimensions[0], (int)dimensions[1]); // creates image library
+		Log.e("myid", "imageLibrary: ".concat(Long.toString((System.nanoTime()-time)/100000)));
+		
+		time = System.nanoTime();
 		levelController = new LevelController(this);
-		
-		imageLibrary.loadAllImages();
 		levelController.loadLevel(1);
+		Log.e("myid", "levelControl: ".concat(Long.toString((System.nanoTime()-time)/100000)));
 		
+		time = System.nanoTime();
 		graphicsController = new GraphicsController(this, imageLibrary, spriteController, wallController, levelController, startSet, dimensions);
 		graphicsController.setOnTouchListener(gestureDetector);
-
+		Log.e("myid", "graphicsControl: ".concat(Long.toString((System.nanoTime()-time)/100000)));
+		
+		
 		selectionSpriteController = new SelectionSpriteController(startSet, this);
 		frameCaller.run();
+		Log.e("myid", "totalControl: ".concat(Long.toString((System.nanoTime()-timeBig)/100000)));
 	}
 	protected void die()
 	{

@@ -2,8 +2,6 @@ package com.drawinggame;
 
 import java.util.ArrayList;
 
-import android.util.Log;
-
 import lx.interaction.dollar.Point;
 
 abstract public class Control_Main

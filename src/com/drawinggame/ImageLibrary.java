@@ -6,6 +6,7 @@ import com.spritelib.ImageLoader;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 public final class ImageLibrary extends ImageLoader
 {
 	protected Bitmap[][] enemyImages = new Bitmap[6][100]; //array holding videos for each enemy, null when uneeded
@@ -19,7 +20,7 @@ public final class ImageLibrary extends ImageLoader
 	//protected Bitmap currentLevel;
 	//protected Bitmap currentLevelTop;
 	protected Bitmap backDrop;
-	protected Bitmap[] createMarkers = new Bitmap[8];
+	protected Bitmap createMarker;
 	protected Bitmap menu_top;
 	protected Bitmap menu_side;
 	protected Bitmap menu_middle;
@@ -48,36 +49,42 @@ public final class ImageLibrary extends ImageLoader
 	 */
 	protected void loadAllImages()
 	{
-		isSelected = loadImage("icon_isselected", 60, 60);
+		Long time = System.nanoTime();
 		shotAOEEnemy = loadImage("shootplayeraoe", 80, 80);
 		shotEnemy = loadArray1D(5, "shootplayer", 35, 15);
 		shotAOEPlayer = loadImage("shootenemyaoe", 80, 80);
 		shotPlayer = loadArray1D(5, "shootenemy", 35, 15);
+		Log.e("myid", "shots".concat(Long.toString((System.nanoTime()-time)/100000)));
 		
-		createMarkers[0] = loadImage("createswordsman", 44, 66);
-		createMarkers[1] = loadImage("createarcher", 35, 64);
-		createMarkers[2] = loadImage("createmage", 36, 62);
-		createMarkers[3] = loadImage("createswordsman", 44, 66);
-		createMarkers[4] = loadImage("createarcher", 35, 64);
-		createMarkers[5] = loadImage("createmage", 36, 62);
-		createMarkers[6] = loadImage("createswordsman", 88, 132);
-		createMarkers[7] = loadImage("createarcher", 88, 132);
+		time = System.nanoTime();
+		createMarker = loadImage("createswordsman", 44, 66);
 		backDrop = loadImage("leveltile1", 400, 400);
+		isSelected = loadImage("icon_isselected", 60, 60);
+		Log.e("myid", "misc".concat(Long.toString((System.nanoTime()-time)/100000)));
+		
+		time = System.nanoTime();
 		enemyImages[0]= loadArray1D(55, "goblin_swordsman", 110, 70);
 		enemyImages[1]= loadArray1D(49, "goblin_archer", 80, 50);
 		enemyImages[2]= loadArray1D(31, "goblin_mage", 30, 34);
 		enemyImages[3]= loadArray1D(55, "human_swordsman", 110, 70);
 		enemyImages[4]= loadArray1D(49, "human_archer", 80, 50);
 		enemyImages[5]= loadArray1D(31, "human_mage", 30, 34);
+		Log.e("myid", "enemies".concat(Long.toString((System.nanoTime()-time)/100000)));
+		
+		time = System.nanoTime();
 		double w = phoneWidth;
 		double h = phoneHeight;
 		menu_top = loadImage("menu_top", (int)(w), (int)(h/5));
 		menu_side = loadImage("menu_side", (int)(w/2 - h/10), (int)(h*4/5));
 		menu_middle = loadImage("menu_middle", (int)(h/5), (int)(h*4/5));
+		Log.e("myid", "menu".concat(Long.toString((System.nanoTime()-time)/100000)));
+		
+		time = System.nanoTime();
 		icon_back = loadImage("icon_back", 150, 150);
 		icon_delete = loadImage("icon_delete", 150, 150);
 		icon_cancel = loadImage("icon_cancel", 150, 150);
 		icon_menu = loadImage("icon_menu", 150, 150);
+		Log.e("myid", "icons".concat(Long.toString((System.nanoTime()-time)/100000)));
 	}
 	/**
 	 * loads level image layers and background image
