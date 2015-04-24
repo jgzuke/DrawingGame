@@ -13,27 +13,24 @@ public final class R {
     public static final class drawable {
         public static final int concat=0x7f020000;
         public static final int createswordsman=0x7f020001;
-        public static final int goblin_archer=0x7f020002;
-        public static final int goblin_mage=0x7f020003;
-        public static final int goblin_sheild=0x7f020004;
-        public static final int human_archer=0x7f020005;
-        public static final int human_mage=0x7f020006;
-        public static final int human_sheild=0x7f020007;
-        public static final int ic_launcher=0x7f020008;
-        public static final int icon_back=0x7f020009;
-        public static final int icon_cancel=0x7f02000a;
-        public static final int icon_delete=0x7f02000b;
-        public static final int icon_gameicon=0x7f02000c;
-        public static final int icon_isselected=0x7f02000d;
-        public static final int icon_menu=0x7f02000e;
-        public static final int leveltile1=0x7f02000f;
-        public static final int menu_middle=0x7f020010;
-        public static final int menu_side=0x7f020011;
-        public static final int menu_top=0x7f020012;
-        public static final int shootenemy=0x7f020013;
-        public static final int shootenemyaoe=0x7f020014;
-        public static final int shootplayer=0x7f020015;
-        public static final int shootplayeraoe=0x7f020016;
+        public static final int ic_launcher=0x7f020002;
+        public static final int icon_back=0x7f020003;
+        public static final int icon_cancel=0x7f020004;
+        public static final int icon_delete=0x7f020005;
+        public static final int icon_gameicon=0x7f020006;
+        public static final int icon_isselected=0x7f020007;
+        public static final int icon_menu=0x7f020008;
+        public static final int leveltile1=0x7f020009;
+        public static final int menu_middle=0x7f02000a;
+        public static final int menu_side=0x7f02000b;
+        public static final int menu_top=0x7f02000c;
+        public static final int shootenemy=0x7f02000d;
+        public static final int shootenemyaoe=0x7f02000e;
+        public static final int shootplayer=0x7f02000f;
+        public static final int shootplayeraoe=0x7f020010;
+        public static final int sprite_enemies=0x7f020011;
+        public static final int sprite_shoot=0x7f020012;
+        public static final int sprite_shootaoe=0x7f020013;
     }
     public static final class id {
         public static final int action_settings=0x7f08000c;
