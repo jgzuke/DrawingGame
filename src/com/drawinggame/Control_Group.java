@@ -73,6 +73,7 @@ public final class Control_Group extends Control_Main
 		if(humans.size()==0) return;
 		boolean lastGoupEngaged = groupEngaged;
 		groupEngaged = false;
+		doingNothing = false;
 		if(organizing)
 		{
 			boolean doneOrganizing = true;
@@ -121,6 +122,9 @@ public final class Control_Group extends Control_Main
 				groupRadius = Math.sqrt(humans.size()) * spacing;
 				hasChangedMembers = false;
 				formUp();
+			} else
+			{
+				doingNothing = true;
 			}
 		}
 		groupLocation = averagePoint();

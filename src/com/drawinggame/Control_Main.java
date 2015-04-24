@@ -6,6 +6,7 @@ import lx.interaction.dollar.Point;
 
 abstract public class Control_Main
 {
+	protected boolean doingNothing = false;
 	protected Controller control;
 	protected boolean isGroup;
 	protected boolean retreating = false;

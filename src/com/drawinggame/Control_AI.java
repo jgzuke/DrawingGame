@@ -1,7 +1,7 @@
 package com.drawinggame;
 public class Control_AI
 {
-	protected static void archerFrame(Enemy_Archer archer, boolean retreating, boolean groupEngaged)
+	protected static boolean archerFrame(Enemy_Archer archer, boolean retreating, boolean groupEngaged)
 	{
 		
 		if(archer.action.equals("Shoot"))
@@ -16,7 +16,7 @@ public class Control_AI
 			} else if(groupEngaged)
 			{
 				Enemy target = archer.myController.findClosestEnemy(archer);
-				if(target == null) return;
+				if(target == null) return false;
 				double distanceToTarget = archer.distanceTo(target);
 				if(distanceToTarget < 70 || archer.hp<600 && distanceToTarget<100)
 				{
@@ -31,14 +31,18 @@ public class Control_AI
 			} else if(archer.hasDestination)
 			{
 				archer.runTowardsDestination();
+			} else
+			{
+				return false;
 			}
 		}
+		return true;
 	}
-	protected static void mageFrame(Enemy_Mage mage, boolean retreating, boolean groupEngaged)
+	protected static boolean mageFrame(Enemy_Mage mage, boolean retreating, boolean groupEngaged)
 	{
 		if(mage.action.equals("Roll"))
 		{
-			return;
+			return true;
 		}
 		Enemy target = mage.myController.findClosestEnemy(mage);
 		if(target != null)
@@ -87,10 +91,14 @@ public class Control_AI
 			} else if(mage.hasDestination)
 			{
 				mage.runTowardsDestination();
+			} else
+			{
+				return false;
 			}
 		}
+		return true;
 	}
-	protected static void sheildFrame(Enemy_Sheild sheild, boolean retreating, boolean groupEngaged)
+	protected static boolean sheildFrame(Enemy_Sheild sheild, boolean retreating, boolean groupEngaged)
 	{
 		if(sheild.action.equals("Melee"))
 		{
@@ -109,7 +117,7 @@ public class Control_AI
 			} else if(groupEngaged)
 			{
 				Enemy target = sheild.myController.findClosestEnemy(sheild);
-				if(target == null) return;
+				if(target == null) return false;
 				double distanceToTarget = sheild.distanceTo(target);
 				if(distanceToTarget < 30)
 				{
@@ -121,8 +129,12 @@ public class Control_AI
 			} else if(sheild.hasDestination)
 			{
 				sheild.runTowardsDestination();
+			} else
+			{
+				return false;
 			}
 		}
+		return true;
 	}
 	protected static void archerDoneFiring(Enemy_Archer archer, boolean canShoot)
 	{

@@ -74,27 +74,27 @@ public final class ImageLibrary
 		Log.e("myid", "misc".concat(Long.toString((System.nanoTime()-time)/100000)));
 		
 		time = System.nanoTime();
-		Bitmap sheet = loadImage("sprite_enemies", 4460, 240);
+		Bitmap sheet = loadImage("sprite_enemies", 4725, 240);
 		enemyImages[0] = new Bitmap[55];
 		enemyImages[3] = new Bitmap[55];
 		for(int i = 0; i < 55; i++)
 		{
-			enemyImages[0][i] = Bitmap.createBitmap(sheet, i*80, 0, 110, 70);
-			enemyImages[3][i] = Bitmap.createBitmap(sheet, i*80, 70, 110, 70);
+			enemyImages[0][i] = Bitmap.createBitmap(sheet, i*85, 0, 110, 70);
+			enemyImages[3][i] = Bitmap.createBitmap(sheet, i*85, 70, 110, 70);
 		}
 		enemyImages[1] = new Bitmap[49];
 		enemyImages[4] = new Bitmap[49];
 		for(int i = 0; i < 49; i++)
 		{
-			enemyImages[1][i] = Bitmap.createBitmap(sheet, i*60, 140, 80, 50);
-			enemyImages[4][i] = Bitmap.createBitmap(sheet, i*60, 190, 80, 50);
+			enemyImages[1][i] = Bitmap.createBitmap(sheet, i*65, 140, 80, 50);
+			enemyImages[4][i] = Bitmap.createBitmap(sheet, i*65, 190, 80, 50);
 		}
 		enemyImages[2] = new Bitmap[31];
 		enemyImages[5] = new Bitmap[31];
 		for(int i = 0; i < 31; i++)
 		{
-			enemyImages[2][i] = Bitmap.createBitmap(sheet, i*30+2980, 140, 30, 34);
-			enemyImages[5][i] = Bitmap.createBitmap(sheet, i*30+2980, 174, 30, 34);
+			enemyImages[2][i] = Bitmap.createBitmap(sheet, i*30+3215, 140, 30, 34);
+			enemyImages[5][i] = Bitmap.createBitmap(sheet, i*30+3215, 174, 30, 34);
 		}
 		Log.e("myid", "hm".concat(Long.toString((System.nanoTime()-time)/100000)));
 		

@@ -91,7 +91,7 @@ public final class Proj_Tracker extends Sprite
 		}
 		x = (int) realX;
 		y = (int) realY;
-		if(alpha == 0)
+		if(alpha == 0 || alpha == 1 || alpha == 2 || alpha == 3)
 		{
 			explodeBack();
 			Log.e("myid", "works");

@@ -11,6 +11,6 @@ public final class Control_Mage extends Control_Induvidual
 	protected void frameCall()
 	{
 		super.frameCall();
-		Control_AI.mageFrame(mage, retreating, enemiesAround());
+		doingNothing = !Control_AI.mageFrame(mage, retreating, enemiesAround());
 	}
 }

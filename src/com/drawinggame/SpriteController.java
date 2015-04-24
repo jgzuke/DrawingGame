@@ -40,6 +40,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -476,12 +477,39 @@ public final class SpriteController
 				if(enemyInsideCircle(points, allies.get(i).x, allies.get(i).y))
 				{
 					countGroup ++;
-					if(countGroup > 28) break;
+					//if(countGroup > 28) break;
 					group.add(allies.get(i));
 				}
 			}
 		}
 		selectGroup(group);
+	}
+	protected void selectGroup(Control_Main g1, Control_Main g2, boolean isOnPlayersTeam)
+	{
+		ArrayList<Enemy> group = new ArrayList<Enemy>();
+		if(g1.isGroup)
+		{
+			group.addAll(((Control_Group)g1).humans);
+		} else
+		{
+			group.add((Enemy) ((Control_Induvidual)g1).human);
+		}
+		if(g2.isGroup)
+		{
+			group.addAll(((Control_Group)g2).humans);
+		} else
+		{
+			group.add((Enemy) ((Control_Induvidual)g1).human);
+		}
+		Log.e("myid", Integer.toString(group.size()));
+		Control_Group enemyGroup = groupEnemies(group, isOnPlayersTeam);
+		if(isOnPlayersTeam)
+		{
+			allyControllers.add(enemyGroup);
+		} else
+		{
+			enemyControllers.add(enemyGroup);
+		}
 	}
 	protected boolean enemyInsideCircle(Vector<Point> p, double x, double y)
 	{

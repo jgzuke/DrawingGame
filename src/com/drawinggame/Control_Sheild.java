@@ -11,6 +11,6 @@ public final class Control_Sheild extends Control_Induvidual
 	protected void frameCall()
 	{
 		super.frameCall();
-		Control_AI.sheildFrame(sheild, retreating, enemiesAround());
+		doingNothing = !Control_AI.sheildFrame(sheild, retreating, enemiesAround());
 	}
 }

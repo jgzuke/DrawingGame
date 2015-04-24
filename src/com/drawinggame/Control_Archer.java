@@ -11,7 +11,7 @@ public final class Control_Archer extends Control_Induvidual
 	protected void frameCall()
 	{
 		super.frameCall();
-		Control_AI.archerFrame(archer, retreating, enemiesAround());
+		doingNothing = !Control_AI.archerFrame(archer, retreating, enemiesAround());
 	}
 	@Override
 	protected void archerDoneFiring(Enemy_Archer archer)
