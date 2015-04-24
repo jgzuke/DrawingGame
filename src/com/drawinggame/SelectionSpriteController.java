@@ -35,6 +35,7 @@
 package com.drawinggame;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.widget.Toast;
 
@@ -44,9 +45,9 @@ import java.util.Vector;
 
 import lx.interaction.dollar.Point;
 
-import com.spritelib.SpriteDrawer;
-public final class SelectionSpriteController extends SpriteDrawer
+public final class SelectionSpriteController
 {
+	private Matrix rotateImages = new Matrix();
 	protected Controller control;
 	private int selected = 0;
 	protected ArrayList<ArrayList<Enemy_Archer>> archers = new ArrayList<ArrayList<Enemy_Archer>>();
@@ -475,8 +476,20 @@ public final class SelectionSpriteController extends SpriteDrawer
 		}
 		g.restore();
 	}
-	@Override
-	protected boolean onScreen(double x, double y, int width, int height) {return true;}
+	/**
+	 * draws a sprite
+	 */
+	public void draw(Sprite sprite, Canvas g, Paint p)
+	{
+		if(sprite!=null)
+		{
+				rotateImages.reset();
+				rotateImages.postTranslate(-sprite.width / 2, -sprite.height / 2);
+				rotateImages.postRotate((float) sprite.rotation);
+				rotateImages.postTranslate((float) sprite.x, (float) sprite.y);
+				g.drawBitmap(sprite.image, rotateImages, p);
+		}
+	}
 	/**
 	 * selects enemy with click
 	 * @param x click x

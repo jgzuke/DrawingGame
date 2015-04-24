@@ -47,8 +47,6 @@ import java.util.Vector;
 
 import lx.interaction.dollar.Point;
 
-import com.spritelib.Sprite;
-import com.spritelib.SpriteDrawer;
 public final class SpriteController
 {
 	private Matrix rotateImages = new Matrix();

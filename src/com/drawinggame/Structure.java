@@ -6,8 +6,6 @@ package com.drawinggame;
 
 import android.graphics.Bitmap;
 
-import com.spritelib.Sprite;
-
 abstract public class Structure extends Sprite
 {
 	public Structure(double X, double Y, int Width, int Height,

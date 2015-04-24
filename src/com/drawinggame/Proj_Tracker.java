@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import android.graphics.Bitmap;
 import android.util.Log;
 
-import com.spritelib.Sprite;
-
 public final class Proj_Tracker extends Sprite
 {
 	protected boolean hitBack;

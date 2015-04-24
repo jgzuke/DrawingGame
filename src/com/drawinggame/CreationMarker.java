@@ -5,8 +5,6 @@ package com.drawinggame;
 
 import android.graphics.Bitmap;
 
-import com.spritelib.Sprite;
-
 public final class CreationMarker extends Sprite
 {
 	public CreationMarker(double X, double Y, Bitmap Image, SpriteController controlSet) {

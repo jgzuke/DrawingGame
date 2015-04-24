@@ -7,8 +7,6 @@ import java.util.ArrayList;
 
 import android.graphics.Bitmap;
 
-import com.spritelib.Sprite;
-
 public final class Proj_Tracker_AOE extends Sprite
 {
 	protected double r2d = 180 / Math.PI;

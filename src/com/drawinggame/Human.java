@@ -5,8 +5,6 @@ package com.drawinggame;
 
 import android.graphics.Bitmap;
 
-import com.spritelib.Sprite;
-
 abstract public class Human extends Sprite
 {
 	public Human(double X, double Y, double Rotation, int Frame,

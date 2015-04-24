@@ -116,13 +116,12 @@ public final class Control_Group extends Control_Main
 			}
 		} else
 		{
-			if(hasChangedMembers)
+			if(hasChangedMembers || lastGoupEngaged)
 			{
 				groupRadius = Math.sqrt(humans.size()) * spacing;
 				hasChangedMembers = false;
 				formUp();
 			}
-			if(lastGoupEngaged) formUp();
 		}
 		groupLocation = averagePoint();
 		groupRotation = averageRotation();
