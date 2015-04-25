@@ -467,6 +467,7 @@ public final class SpriteController
 	 */
 	protected void selectCircle(Vector<Point> points)
 	{
+		Log.e("myid", "circleChecked");
 		deselectEnemies();
 		ArrayList<Enemy> group = new ArrayList<Enemy>();
 		int countGroup = 0;
