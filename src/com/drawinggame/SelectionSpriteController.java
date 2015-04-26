@@ -59,6 +59,7 @@ public final class SelectionSpriteController
 	private static double spacing = 40;
 	private static double spacingSlanted = Math.sqrt(2)*spacing/2;
 	private double groupRadius = 0;
+	protected double selectedManaRatio = 0;
 	float ratio = 0;
 	private Context context;
 	public SelectionSpriteController(Context contextSet, Controller controlSet)
@@ -102,6 +103,7 @@ public final class SelectionSpriteController
 		control.spriteController.groupDetails[selected][1] = archers.get(selected).size();
 		control.spriteController.groupDetails[selected][2] = mages.get(selected).size();
 		control.spriteController.setPrices();
+		control.graphicsController.drawSection[2] = true;
 	}
 	protected double getGroupPrice()
 	{
@@ -135,6 +137,7 @@ public final class SelectionSpriteController
 				i --;
 			}
 		}
+		deselectEnemies();
 		formUp();
 		changedSetting();
 	}
@@ -153,7 +156,6 @@ public final class SelectionSpriteController
 			Toast.makeText(context, "Too many in this group", Toast.LENGTH_SHORT).show();
 			return;
 		}
-		control.graphicsController.drawSection[2] = true;
 		Enemy newEnemy = null;
 		switch(type)
 		{
@@ -185,7 +187,7 @@ public final class SelectionSpriteController
 	{
 		selected = control.gestureDetector.settingSelected;
 		groupRadius = 75 + Math.sqrt(allies.get(selected).size())*spacing/4;
-		ratio = (float)(180/groupRadius);
+		ratio = (float)(220/groupRadius);
 		if(allies.get(selected).size()==0) return;
 		if(organizing[selected])
 		{
@@ -514,6 +516,8 @@ public final class SelectionSpriteController
 	protected void selectCircle(Vector<Point> points)
 	{
 		deselectEnemies();
+		SpriteController s = control.spriteController;
+		int priceSum = 0;
 		for(int i = 0; i < allies.get(selected).size(); i++)
 		{
 			if(allies.get(selected).get(i) != null)
@@ -521,9 +525,11 @@ public final class SelectionSpriteController
 				if(enemyInsideCircle(points, allies.get(selected).get(i).x, allies.get(selected).get(i).y))
 				{
 					allies.get(selected).get(i).selected = true;
+					priceSum += s.manaPrices[allies.get(selected).get(i).humanType];
 				}
 			}
 		}
+		selectedManaRatio = Math.pow(priceSum, s.depreciation)/1000;
 	}
 	protected boolean enemyInsideCircle(Vector<Point> p, double x, double y)
 	{
@@ -566,6 +572,8 @@ public final class SelectionSpriteController
 		x = screenToMapPointX(x);
 		y = screenToMapPointY(y);
 		deselectEnemies();
+		SpriteController s = control.spriteController;
+		int priceSum = 0;
 		for(int i = 0; i < allies.get(selected).size(); i++)
 		{
 			if(allies.get(selected).get(i) != null)
@@ -573,9 +581,11 @@ public final class SelectionSpriteController
 				if(Math.pow(x-allies.get(selected).get(i).x, 2) + Math.pow(y-allies.get(selected).get(i).y, 2) < 600)
 				{
 					allies.get(selected).get(i).selected = true;
+					priceSum += s.manaPrices[allies.get(selected).get(i).humanType];
 				}
 			}
 		}
+		selectedManaRatio = Math.pow(priceSum, s.depreciation)/1000;
 	}
 	protected double screenToMapPointX(double X)
     {
@@ -611,6 +621,7 @@ public final class SelectionSpriteController
 	 */
 	protected void deselectEnemies()
 	{
+		selectedManaRatio = 0;
 		for(int i = 0; i < allies.get(selected).size(); i++)
 		{
 			if(allies.get(selected).get(i) != null)

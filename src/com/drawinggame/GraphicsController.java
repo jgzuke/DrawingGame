@@ -63,10 +63,9 @@ public final class GraphicsController extends View
 	protected double unitHeight;
 	protected Paint paint = new Paint();
 	protected Matrix rotateImages = new Matrix();
-	private Rect aoeRect = new Rect();
-	private int healthColor = Color.rgb(170, 0, 0);
-	private int cooldownColor = Color.rgb(0, 0, 170);
 	private int manaColor = Color.rgb(30, 0, 170);
+	private int manaColorDark = Color.rgb(20, 0, 110);
+	private int manaColorCover = Color.argb(50, 255, 255, 255);
 	private ImageLibrary imageLibrary;
 	private Controller control;
 	private SpriteController spriteController;
@@ -197,6 +196,11 @@ public final class GraphicsController extends View
 		paint.setStyle(Style.FILL);
 		g.drawRect(spacing, top-(int)(manaHeight*(double)control.spriteController.playerGameControl.mana/1000), spacing*4, top, paint);
 		g.drawRect(phoneWidth-spacing*4, top-(int)(manaHeight*(double)control.spriteController.enemyGameControl.mana/1000), phoneWidth-spacing, top, paint);
+		
+		paint.setColor(manaColorCover);
+		g.drawRect(spacing, top-manaHeight, spacing*4, top-(int)(manaHeight*(double)control.spriteController.playerGameControl.mana/1000), paint);
+		g.drawRect(phoneWidth-spacing*4, top-manaHeight, phoneWidth-spacing, top-(int)(manaHeight*(double)control.spriteController.enemyGameControl.mana/1000), paint);
+		
 		paint.setStrokeWidth(3);
 		paint.setColor(Color.BLACK);
 		paint.setStyle(Style.STROKE);
@@ -248,7 +252,6 @@ public final class GraphicsController extends View
 	}
 	private void drawPaused_Left(Canvas g)
 	{
-		double uHeight = unitHeight*10;
 		// background
 		g.drawBitmap(imageLibrary.menu_side, 0, (int)(unitHeight*20), paint);
 		
@@ -257,7 +260,7 @@ public final class GraphicsController extends View
 	}
 	private void drawPaused_Middle(Canvas g)
 	{
-		int selected = control.selectionSpriteController.selected;
+		int selected = control.gestureDetector.settingSelected;
 		
 		double uHeight = unitHeight*10;
 		// background
@@ -269,31 +272,29 @@ public final class GraphicsController extends View
 		// mana prices
 		int leftS = (int)(unitWidth*50+uHeight-spacing*3);
 		int rightS = (int)(unitWidth*50+uHeight-spacing);
-		paint.setColor(manaColor);
-		paint.setStyle(Style.FILL);
+		
 		for(int i = 0; i < 4; i++)
 		{
 			double bottomS = unitHeight*20*(i+2)-spacing;
 			double ratioS = control.selectionSpriteController.getGroupPrice(i)/1000;
-			double topS = bottomS - ratioS*(unitHeight*20 - 2*spacing);
-			g.drawRect(leftS, (int)(topS), rightS, (int)(bottomS), paint);
-		}
-		paint.setStrokeWidth(3);
-		paint.setColor(Color.BLACK);
-		paint.setStyle(Style.STROKE);
-		for(int i = 0; i < 4; i++)
-		{
+			double manaS = bottomS - ratioS*(unitHeight*20 - 2*spacing);
 			double topS = unitHeight*20*(i+1)+spacing;
-			double bottomS = unitHeight*20*(i+2)-spacing;
+			
+			paint.setStyle(Style.FILL);
+			paint.setColor(manaColor);
+			g.drawRect(leftS, (int)(manaS), rightS, (int)(bottomS), paint);
+			paint.setColor(manaColorCover);
+			g.drawRect(leftS, (int)(topS), rightS, (int)(manaS), paint);
+			
+			paint.setStrokeWidth(3);
+			paint.setColor(Color.BLACK);
+			paint.setStyle(Style.STROKE);
 			g.drawRect(leftS, (int)(topS), rightS, (int)(bottomS), paint);
 		}
 		
 		// selection square
 		paint.setColor(Color.BLUE);
 		g.drawRect((int)(unitWidth*50-uHeight), (int)(unitHeight*20*(selected+1)), (int)(unitWidth*50+uHeight), (int)(unitHeight*20*(selected+2)), paint);
-		
-		// small gestures
-		
 	}
 	private void drawPaused_Right(Canvas g)
 	{
@@ -312,9 +313,16 @@ public final class GraphicsController extends View
 		double right = unitWidth*50+uHeight+spacing*4;
 		double full = control.selectionSpriteController.getGroupPrice()/1000;
 		double manaTop = bottom - full*(bottom-top);
-		paint.setColor(manaColor);
+		double manaSelectTop = bottom - control.selectionSpriteController.selectedManaRatio*(bottom-top);
 		paint.setStyle(Style.FILL);
+		paint.setColor(manaColor);
 		g.drawRect((int)left, (int)manaTop, (int)right, (int)bottom, paint);
+		paint.setColor(manaColorCover);
+		g.drawRect((int)left, (int)top, (int)right, (int)manaTop, paint);
+		paint.setColor(manaColorDark);
+		g.drawRect((int)left, (int)manaSelectTop, (int)right, (int)bottom, paint);
+		
+		
 		paint.setStrokeWidth(3);
 		paint.setColor(Color.BLACK);
 		paint.setStyle(Style.STROKE);

@@ -81,14 +81,14 @@ public class GestureDetector implements OnTouchListener
 	{
     	paint.setColor(Color.WHITE);
     	paint.setStrokeWidth(4);
-    	g.drawPath(getPathFromVector(recognizer.templates.get(0).Points, (int)(unitWidth*50), (int)(unitHeight*30), 0.6*(unitHeight*20)), paint);
-    	g.drawPath(getPathFromVector(recognizer.templates.get(1).Points, (int)(unitWidth*50), (int)(unitHeight*50), 0.6*(unitHeight*20)), paint);
-    	g.drawPath(getPathFromVector(recognizer.templates.get(2).Points, (int)(unitWidth*50), (int)(unitHeight*70), 0.6*(unitHeight*20)), paint);
-    	g.drawPath(getPathFromVector(recognizer.templates.get(3).Points, (int)(unitWidth*50), (int)(unitHeight*90), 0.6*(unitHeight*20)), paint);
+    	g.drawPath(getPathFromVector(recognizer.templates.get(0).Points, (int)(unitWidth*50 - 10), (int)(unitHeight*30), 0.55*(unitHeight*20)), paint);
+    	g.drawPath(getPathFromVector(recognizer.templates.get(1).Points, (int)(unitWidth*50 - 10), (int)(unitHeight*50), 0.55*(unitHeight*20)), paint);
+    	g.drawPath(getPathFromVector(recognizer.templates.get(2).Points, (int)(unitWidth*50 - 10), (int)(unitHeight*70), 0.55*(unitHeight*20)), paint);
+    	g.drawPath(getPathFromVector(recognizer.templates.get(3).Points, (int)(unitWidth*50 - 10), (int)(unitHeight*90), 0.55*(unitHeight*20)), paint);
 	}
     protected boolean shouldDrawGesture()
     {
-    	return pointsList.size() != 0 || lastShape != null && System.nanoTime() - timeOfDraw < fadeTime + 2000;
+    	return pointsList.size() != 0 || lastShape != null && System.nanoTime() - timeOfDraw < fadeTime + 10000;
     }
     protected void drawGestures(Canvas g)
 	{
@@ -139,6 +139,8 @@ public class GestureDetector implements OnTouchListener
 			if(b.X+b.Width < unitWidth*50-unitHeight*10 && b.Y > unitHeight*20)
 			{
 				recognizer.templates.get(settingSelected).replacePoints(points, context);
+				control.graphicsController.drawSection[1] = true;
+				control.graphicsController.drawSection[2] = true;
 				return;
 			}
 			if(b.X < unitWidth*50-unitHeight*10)
@@ -244,6 +246,7 @@ public class GestureDetector implements OnTouchListener
     			if(Math.abs(pPhone.X-unitWidth*50) < unitHeight*10)
         		{
     				settingSelected = (int) (pPhone.Y/(unitHeight*20)) - 1;
+    				control.selectionSpriteController.selectedManaRatio = 0;
     				control.graphicsController.drawSection[1] = true;
     				control.graphicsController.drawSection[2] = true;
     				control.graphicsController.drawSection[3] = true;
