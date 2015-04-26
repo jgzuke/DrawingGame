@@ -467,7 +467,6 @@ public final class SpriteController
 	 */
 	protected void selectCircle(Vector<Point> points)
 	{
-		Log.e("myid", "circleChecked");
 		deselectEnemies();
 		ArrayList<Enemy> group = new ArrayList<Enemy>();
 		int countGroup = 0;
@@ -502,7 +501,6 @@ public final class SpriteController
 		{
 			group.add((Enemy) ((Control_Induvidual)g1).human);
 		}
-		Log.e("myid", Integer.toString(group.size()));
 		Control_Group enemyGroup = groupEnemies(group, isOnPlayersTeam);
 		if(isOnPlayersTeam)
 		{

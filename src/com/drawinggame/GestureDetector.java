@@ -47,7 +47,7 @@ public class GestureDetector implements OnTouchListener
 	
 	private Path lastShape;
 	private Vector<Point> average = new Vector<Point>();
-	private Context context;
+	public Context context;
 	private int pointersDown = 0;
 	
     public GestureDetector(Context contextSet, Controller controllerSet, int widthSet, int heightSet)
@@ -131,7 +131,7 @@ public class GestureDetector implements OnTouchListener
 		{
 			if(b.X+b.Width < unitWidth*50-unitHeight*10 && b.Y > unitHeight*20)
 			{
-				recognizer.templates.get(settingSelected).replacePoints(points);
+				recognizer.templates.get(settingSelected).replacePoints(points, context);
 				return;
 			}
 			if(b.X < unitWidth*50-unitHeight*10)
@@ -146,7 +146,7 @@ public class GestureDetector implements OnTouchListener
 		{
 			if(recognizer.templates.get(settingSelected).Name.equals(type))
 			{
-				recognizer.templates.get(settingSelected).replacePoints(points);
+				recognizer.templates.get(settingSelected).replacePoints(points, context);
 			} else
 			{
 				Toast.makeText(context, "Too close to another gesture", Toast.LENGTH_SHORT).show();
@@ -271,12 +271,11 @@ public class GestureDetector implements OnTouchListener
     }
 	public void endCircle(Vector<Point> points, Vector<Point> pointsOrig, Rectangle b)
 	{
-		Log.e("myid", "drewacircle");
 		if(control.paused)
 		{
 			if(b.X+b.Width < unitWidth*50-unitHeight*10 && b.Y > unitHeight*20)
 			{
-				recognizer.templates.get(settingSelected).replacePoints(points);
+				recognizer.templates.get(settingSelected).replacePoints(points, context);
 				return;
 			}
 			if(b.X < unitWidth*50-unitHeight*10)

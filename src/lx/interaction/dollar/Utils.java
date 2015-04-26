@@ -26,7 +26,7 @@ public class Utils
 			sum += Math.abs(difference);
 		}
 		int by90 = (int)(sum/90);
-		double simplicity = 0.4 + (1.5/(0.5+by90));
+		double simplicity = 0.5 + (1.5/(0.5+by90));
 		return simplicity;
 	}
 	public static Vector<Point> Resample(Vector<Point> points)
@@ -329,7 +329,6 @@ public class Utils
 		double length = 0;
 		for (int i = 1; i < points.size(); i++)
 		{
-			//length += Distance((Point) points[i - 1], (Point) points[i]);
 			length += Distance((Point) points.elementAt(i - 1), (Point) points.elementAt(i));
 		}
 		return length;

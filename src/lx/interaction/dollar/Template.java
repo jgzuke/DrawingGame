@@ -2,6 +2,10 @@ package lx.interaction.dollar;
 
 import java.util.*;
 
+import android.content.Context;
+import android.util.Log;
+import android.widget.Toast;
+
 public class Template
 {
 	public String Name;
@@ -36,8 +40,14 @@ public class Template
 		PointsEarly2 = ResampleEarly(bigger);
 		PointsLate2 = ResampleLate(bigger);
 	}
-	public void replacePoints(Vector<Point> points)
+	public void replacePoints(Vector<Point> points, Context context)
 	{
+		double newSimplicity = Utils.getSimplicity(points);
+		if(newSimplicity < 0.6)
+		{
+			Toast.makeText(context, "Gesture too complicated", Toast.LENGTH_SHORT).show();
+			return;
+		}
 		Points = points;
 		Points1 = Utils.RotateBy(Points, 0.1);
 		Points2 = Utils.RotateBy(Points, -0.1);
@@ -50,7 +60,7 @@ public class Template
 		bigger = Utils.Resample(Points2, Recognizer.NumPoints+2);
 		PointsEarly2 = ResampleEarly(bigger);
 		PointsLate2 = ResampleLate(bigger);
-		simplicity = Utils.getSimplicity(Points);
+		simplicity = newSimplicity;
 	}
 	public Vector<Point> ResampleLate(Vector<Point> pointsNew)
 	{

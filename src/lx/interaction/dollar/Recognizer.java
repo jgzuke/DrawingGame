@@ -13,7 +13,7 @@ public class Recognizer
 	//
 	// Recognizer class constants
 	//
-	public static int NumPoints = 32;
+	public static int NumPoints = 64;
 	public static double SquareSize = 250.0;
 	double AngleRange = 0.0;
 	double AnglePrecision = 1.0;
@@ -53,7 +53,7 @@ public class Recognizer
 	}
 	void replaceTemplate(int i, Vector<Point> array) // i = 0-3
 	{
-		templates.get(i).replacePoints(array);
+		templates.get(i).replacePoints(array, gestureDetector.context);
 	}
 	Template loadTemplate(String name, int[] array)
 	{
