@@ -37,12 +37,13 @@ public class GestureDetector implements OnTouchListener
 	protected double unitWidth;
 	protected double unitHeight;
 	private Vector<Point> pointsList = new Vector<Point>(100);
-	private int timeSinceDraw = 50;
+	private Long timeOfDraw = (long) 0;
 	private int actionMask;
 	protected int settingSelected = 0;
 	protected Vector<Point> lastPoints = new Vector<Point>(100);
 	protected Recognizer recognizer;
 	protected String selectType = "none";
+	protected Long fadeTime = (long) 50000;
 	int ID = 0;
 	
 	private Path lastShape;
@@ -70,38 +71,44 @@ public class GestureDetector implements OnTouchListener
 			average.add(new Point(0,0));
 		}
     }
-    protected void drawGestureSelected(Canvas g)
+    protected void drawGesturePausedBig(Canvas g)
 	{
     	paint.setColor(Color.BLACK);
     	paint.setStrokeWidth(7);
     	g.drawPath(getPathFromVector(recognizer.templates.get(settingSelected).Points, (int)(unitWidth*25-unitHeight*5), (int)(unitHeight*60), 0.6*(unitWidth*50 - unitHeight*10)), paint);
+    }
+    protected void drawGesturePausedSmall(Canvas g)
+	{
     	paint.setColor(Color.WHITE);
     	paint.setStrokeWidth(4);
     	g.drawPath(getPathFromVector(recognizer.templates.get(0).Points, (int)(unitWidth*50), (int)(unitHeight*30), 0.6*(unitHeight*20)), paint);
     	g.drawPath(getPathFromVector(recognizer.templates.get(1).Points, (int)(unitWidth*50), (int)(unitHeight*50), 0.6*(unitHeight*20)), paint);
     	g.drawPath(getPathFromVector(recognizer.templates.get(2).Points, (int)(unitWidth*50), (int)(unitHeight*70), 0.6*(unitHeight*20)), paint);
     	g.drawPath(getPathFromVector(recognizer.templates.get(3).Points, (int)(unitWidth*50), (int)(unitHeight*90), 0.6*(unitHeight*20)), paint);
-    	drawGestures(g);
 	}
+    protected boolean shouldDrawGesture()
+    {
+    	return pointsList.size() != 0 || lastShape != null && System.nanoTime() - timeOfDraw < fadeTime + 2000;
+    }
     protected void drawGestures(Canvas g)
 	{
-    	timeSinceDraw++;
-    	paint.setColor(Color.BLACK);
     	paint.setStyle(Style.STROKE);
     	paint.setStrokeWidth(4);
     	if(pointsList.size() != 0)
     	{
+    		paint.setColor(Color.BLACK);
     		g.drawPath(getPathFromVector(pointsList), paint);
     	}
-    	if(lastShape != null && timeSinceDraw < 50)
+    	if(lastShape != null && System.nanoTime() - timeOfDraw < fadeTime)
     	{
     		paint.setColor(Color.argb(127, 0, 0, 0));
     		//g.saveLayerAlpha(0, 0, g.getWidth(), g.getHeight(), 255 - 5*timeSinceDraw, Canvas.HAS_ALPHA_LAYER_SAVE_FLAG);
-    		paint.setColor(Color.GRAY);
+    		//paint.setColor(Color.GRAY);
     		g.drawPath(lastShape, paint);
+    		
+    		paint.setColor(Color.BLACK);
     		//g.saveLayerAlpha(0, 0, g.getWidth(), g.getHeight(), 255, Canvas.HAS_ALPHA_LAYER_SAVE_FLAG);
     	}
-    	paint.setColor(Color.BLACK);
 	}
 	public void setLastShape(Vector<Point> points)
 	{
@@ -147,6 +154,8 @@ public class GestureDetector implements OnTouchListener
 			if(recognizer.templates.get(settingSelected).Name.equals(type))
 			{
 				recognizer.templates.get(settingSelected).replacePoints(points, context);
+				control.graphicsController.drawSection[1] = true;
+				control.graphicsController.drawSection[2] = true;
 			} else
 			{
 				Toast.makeText(context, "Too close to another gesture", Toast.LENGTH_SHORT).show();
@@ -180,7 +189,7 @@ public class GestureDetector implements OnTouchListener
 	public void endShape(String type, Point screenPoint, Rectangle b, Vector<Point> points)
     {
 		Point p = screenToMapPoint(screenPoint);
-		timeSinceDraw = 0;
+		timeOfDraw = System.nanoTime();
 		if(control.paused)
 		{
 			endShapePaused(type, screenPoint, b, points);
@@ -235,6 +244,9 @@ public class GestureDetector implements OnTouchListener
     			if(Math.abs(pPhone.X-unitWidth*50) < unitHeight*10)
         		{
     				settingSelected = (int) (pPhone.Y/(unitHeight*20)) - 1;
+    				control.graphicsController.drawSection[1] = true;
+    				control.graphicsController.drawSection[2] = true;
+    				control.graphicsController.drawSection[3] = true;
         		}
     			if(pPhone.X>phoneWidth-150 && pPhone.Y < (unitHeight*20)+150)
         		{
@@ -259,10 +271,17 @@ public class GestureDetector implements OnTouchListener
     	if(p.X < 150 && p.Y < 150)
     	{
     		control.paused = !control.paused;
-    		timeSinceDraw = 50;
+    		if(control.paused)
+    		{
+    			control.graphicsController.drawSection[0] = true;
+				control.graphicsController.drawSection[1] = true;
+				control.graphicsController.drawSection[2] = true;
+				control.graphicsController.drawSection[3] = true;
+    		}
+    		timeOfDraw = (long) 0;
     		return true;
     	}
-    	if(p.X < 300 && p.Y < 150 && !control.gestureDetector.selectType.equals("none"))
+    	if(!control.paused && p.X < 300 && p.Y < 150 && !control.gestureDetector.selectType.equals("none"))
     	{
     		control.spriteController.deselectEnemies();
     		return true;
@@ -276,6 +295,8 @@ public class GestureDetector implements OnTouchListener
 			if(b.X+b.Width < unitWidth*50-unitHeight*10 && b.Y > unitHeight*20)
 			{
 				recognizer.templates.get(settingSelected).replacePoints(points, context);
+				control.graphicsController.drawSection[1] = true;
+				control.graphicsController.drawSection[2] = true;
 				return;
 			}
 			if(b.X < unitWidth*50-unitHeight*10)

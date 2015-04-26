@@ -49,13 +49,13 @@ public final class SelectionSpriteController
 {
 	private Matrix rotateImages = new Matrix();
 	protected Controller control;
-	private int selected = 0;
+	protected int selected = 0;
 	protected ArrayList<ArrayList<Enemy_Archer>> archers = new ArrayList<ArrayList<Enemy_Archer>>();
 	protected ArrayList<ArrayList<Enemy_Mage>> mages = new ArrayList<ArrayList<Enemy_Mage>>();
 	protected ArrayList<ArrayList<Enemy_Sheild>> sheilds = new ArrayList<ArrayList<Enemy_Sheild>>();
 	protected ArrayList<ArrayList<Enemy>> allies = new ArrayList<ArrayList<Enemy>>();
 	protected int [] layoutType = new int[4];
-	private boolean [] organizing = {false, false, false, false};
+	protected boolean [] organizing = {false, false, false, false};
 	private static double spacing = 40;
 	private static double spacingSlanted = Math.sqrt(2)*spacing/2;
 	private double groupRadius = 0;
@@ -103,6 +103,19 @@ public final class SelectionSpriteController
 		control.spriteController.groupDetails[selected][2] = mages.get(selected).size();
 		control.spriteController.setPrices();
 	}
+	protected double getGroupPrice()
+	{
+		return getGroupPrice(selected);
+	}
+	protected double getGroupPrice(int i)
+	{
+		SpriteController s = control.spriteController;
+		int numS = sheilds.get(i).size();
+		int numA = archers.get(i).size();
+		int numM = mages.get(i).size();
+		int price = numS*s.sheildPrice + numA*s.archerPrice + numM*s.magePrice;
+		return Math.pow(price, s.depreciation);
+	}
 	protected void deleteEnemies()
 	{
 		for(int i = 0; i < allies.get(selected).size(); i++)
@@ -140,6 +153,7 @@ public final class SelectionSpriteController
 			Toast.makeText(context, "Too many in this group", Toast.LENGTH_SHORT).show();
 			return;
 		}
+		control.graphicsController.drawSection[2] = true;
 		Enemy newEnemy = null;
 		switch(type)
 		{
@@ -171,10 +185,11 @@ public final class SelectionSpriteController
 	{
 		selected = control.gestureDetector.settingSelected;
 		groupRadius = 75 + Math.sqrt(allies.get(selected).size())*spacing/4;
-		ratio = (float)(250/groupRadius);
+		ratio = (float)(180/groupRadius);
 		if(allies.get(selected).size()==0) return;
 		if(organizing[selected])
 		{
+			control.graphicsController.drawSection[3] = true;
 			boolean doneOrganizing = true;
 			for(int i = 0; i < allies.get(selected).size(); i ++)
 			{
@@ -603,5 +618,6 @@ public final class SelectionSpriteController
 				allies.get(selected).get(i).selected = false;
 			}
 		}
+		control.graphicsController.drawSection[3] = true;
 	}
 }

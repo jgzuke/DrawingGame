@@ -57,6 +57,7 @@ public final class GraphicsController extends View
 	protected int curXShift;
 	protected int curYShift;
 	protected int phoneWidth;
+	private int spacing = 10;
 	protected int phoneHeight;
 	protected double unitWidth;
 	protected double unitHeight;
@@ -203,40 +204,121 @@ public final class GraphicsController extends View
 		g.drawRect(phoneWidth-spacing*4, top-manaHeight, phoneWidth-spacing, phoneHeight-spacing, paint);
 		control.gestureDetector.drawGestures(g);
 	}
-	protected void drawPaused(Canvas g)
+	protected boolean [] drawSection = new boolean[4]; // top left middle right
+	Bitmap saveCanvas = null;
+	protected void drawPaused(Canvas h)
 	{
-		int selected = control.gestureDetector.settingSelected;
-		paint.setColor(Color.LTGRAY);
-		paint.setStyle(Style.FILL);
-		g.drawRect(0, 0, phoneWidth, phoneHeight, paint);
-		/*
-		menu_top = loadImage("menu_top", (int)(w), (int)(h/5));
-		menu_side = loadImage("menu_side", (int)(w/2 - h/10), (int)(h*4/5));
-		menu_middle = loadImage("menu_middle", (int)(h/5), (int)(h*4/5));
-		icon_back = loadImage("icon_back", (int)(h/5), (int)(h*4/5));
-		icon_delete = loadImage("icon_delete", (int)(h/5), (int)(h/5));
-		icon_cancel = loadImage("icon_cancel", (int)(h/5), (int)(h/5));
-		icon_menu = loadImage("icon_menu", (int)(h/5), (int)(h/5));
-		 */
-		paint.setColor(Color.RED);
-		paint.setStyle(Style.STROKE);
-		double uHeight = unitHeight*10;
+		if(saveCanvas == null)
+		{
+			saveCanvas = Bitmap.createBitmap(phoneWidth, phoneHeight, Config.ARGB_8888);
+		}
+		Canvas g = new Canvas(saveCanvas);
+		if(control.gestureDetector.shouldDrawGesture())
+		{
+			for(int i = 0; i < 4; i++) drawSection[i] = true;
+		}
+		if(drawSection[1])
+		{
+			drawPaused_Left(g);
+			drawSection[1] = false;
+		}
+		if(drawSection[3])
+		{
+			drawPaused_Right(g);
+			drawSection[3] = false;
+		}
+		control.gestureDetector.drawGestures(g);
+		if(drawSection[2])
+		{
+			drawPaused_Middle(g);
+			drawSection[2] = false;
+		}
+		if(drawSection[0])
+		{
+			drawPaused_Top(g);
+			drawSection[0] = false;
+		}
+		h.drawBitmap(saveCanvas, 0, 0, paint);
+	}
+	private void drawPaused_Top(Canvas g)
+	{
+		// background and button
 		g.drawBitmap(imageLibrary.menu_top, 0, 0, paint);
-		g.drawBitmap(imageLibrary.menu_middle, (int)(unitWidth*50-uHeight), (int)(unitHeight*20), paint);
+		g.drawBitmap(imageLibrary.icon_back, 0, 0, paint);
+	}
+	private void drawPaused_Left(Canvas g)
+	{
+		double uHeight = unitHeight*10;
+		// background
 		g.drawBitmap(imageLibrary.menu_side, 0, (int)(unitHeight*20), paint);
-		g.drawBitmap(imageLibrary.menu_side, (int)(unitWidth*50+uHeight), (int)(unitHeight*20), paint);
-		//g.drawRect(0, 0, (int)(unitWidth*100), (int)(unitHeight*20), paint);
-		//g.drawRect((int)(unitWidth*50-uHeight), (int)(unitHeight*20), (int)(unitWidth*50+uHeight), (int)(unitHeight*40), paint);
-		//g.drawRect((int)(unitWidth*50-uHeight), (int)(unitHeight*40), (int)(unitWidth*50+uHeight), (int)(unitHeight*60), paint);
-		//g.drawRect((int)(unitWidth*50-uHeight), (int)(unitHeight*60), (int)(unitWidth*50+uHeight), (int)(unitHeight*80), paint);
-		//g.drawRect((int)(unitWidth*50-uHeight), (int)(unitHeight*80), (int)(unitWidth*50+uHeight), (int)(unitHeight*100), paint);
+		
+		// gesture
+		control.gestureDetector.drawGesturePausedBig(g);
+	}
+	private void drawPaused_Middle(Canvas g)
+	{
+		int selected = control.selectionSpriteController.selected;
+		
+		double uHeight = unitHeight*10;
+		// background
+		g.drawBitmap(imageLibrary.menu_middle, (int)(unitWidth*50-uHeight), (int)(unitHeight*20), paint);
+		
+		// gestures small
+		control.gestureDetector.drawGesturePausedSmall(g);
+		
+		// mana prices
+		int leftS = (int)(unitWidth*50+uHeight-spacing*3);
+		int rightS = (int)(unitWidth*50+uHeight-spacing);
+		paint.setColor(manaColor);
+		paint.setStyle(Style.FILL);
+		for(int i = 0; i < 4; i++)
+		{
+			double bottomS = unitHeight*20*(i+2)-spacing;
+			double ratioS = control.selectionSpriteController.getGroupPrice(i)/1000;
+			double topS = bottomS - ratioS*(unitHeight*20 - 2*spacing);
+			g.drawRect(leftS, (int)(topS), rightS, (int)(bottomS), paint);
+		}
+		paint.setStrokeWidth(3);
+		paint.setColor(Color.BLACK);
+		paint.setStyle(Style.STROKE);
+		for(int i = 0; i < 4; i++)
+		{
+			double topS = unitHeight*20*(i+1)+spacing;
+			double bottomS = unitHeight*20*(i+2)-spacing;
+			g.drawRect(leftS, (int)(topS), rightS, (int)(bottomS), paint);
+		}
+		
+		// selection square
 		paint.setColor(Color.BLUE);
 		g.drawRect((int)(unitWidth*50-uHeight), (int)(unitHeight*20*(selected+1)), (int)(unitWidth*50+uHeight), (int)(unitHeight*20*(selected+2)), paint);
-		control.gestureDetector.drawGestureSelected(g);
+		
+		// small gestures
+		
+	}
+	private void drawPaused_Right(Canvas g)
+	{
+		double uHeight = unitHeight*10;
+		// brackground and button
+		g.drawBitmap(imageLibrary.menu_side, (int)(unitWidth*50+uHeight), (int)(unitHeight*20), paint);
+		g.drawBitmap(imageLibrary.icon_delete, phoneWidth-150, (int)(unitHeight*20), paint);
+
+		// enemies
 		control.selectionSpriteController.drawSprites(g, paint, imageLibrary, unitWidth, unitHeight);
 		
-		g.drawBitmap(imageLibrary.icon_back, 0, 0, paint);
-		g.drawBitmap(imageLibrary.icon_delete, phoneWidth-150, (int)(unitHeight*20), paint);
+		// mana price
+		double top = unitHeight*20+spacing;
+		double bottom = unitHeight*100-spacing;
+		double left = unitWidth*50+uHeight+spacing;
+		double right = unitWidth*50+uHeight+spacing*4;
+		double full = control.selectionSpriteController.getGroupPrice()/1000;
+		double manaTop = bottom - full*(bottom-top);
+		paint.setColor(manaColor);
+		paint.setStyle(Style.FILL);
+		g.drawRect((int)left, (int)manaTop, (int)right, (int)bottom, paint);
+		paint.setStrokeWidth(3);
+		paint.setColor(Color.BLACK);
+		paint.setStyle(Style.STROKE);
+		g.drawRect((int)left, (int)top, (int)right, (int)bottom, paint);
 	}
 	/**
 	 * Starts warning label
