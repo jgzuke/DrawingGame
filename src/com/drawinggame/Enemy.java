@@ -97,6 +97,7 @@ abstract public class Enemy extends EnemyShell
 				rotation = destinationRotation;
 				hasDestination = false;
 				action = "Nothing";
+				runTimerTotal = 0;
 				frame = 0;
 			}
 		}
@@ -388,12 +389,20 @@ abstract public class Enemy extends EnemyShell
 	protected void runTowardsDestination()
 	{
 		if(!hasDestination) return;
-		runTowards(destinationX, destinationY);
+		if(runTimerTotal > 0)
+		{
+			run(2);
+		} else
+		{
+			double dist = runTowards(destinationX, destinationY);
+			runTimerTotal = (int) (dist/3.5);
+		}
 	}
 	/**
 	 * Runs towards player, if you cant, run randomly
+	 * returns distance till course change is neccesary
 	 */
-	protected void runTowards(double fx, double fy)
+	protected double runTowards(double fx, double fy)
 	{
 		if(checkObstructionsPoint((int)fx, (int)fy, (int)x, (int)y, true, fromWall))
 		{
@@ -416,17 +425,22 @@ abstract public class Enemy extends EnemyShell
 			if(foundPlayer==-1)
 			{
 				runRandom();
+				return 3.5*5;
 			} else
 			{
 				int[] closest = points.get(foundPlayer);
 				rads = Math.atan2(closest[3]*20 - y, closest[2]*20 - x);
+				rotation = rads * r2d;
+				run(2);
+				return distanceTo(closest[2]*20, closest[3]*20);
 			}
 		} else
 		{
 			rads = Math.atan2(fy - y, fx - x);
+			rotation = rads * r2d;
+			run(2);
+			return distanceTo(fx, fy);
 		}
-		rotation = rads * r2d;
-		run(2);
 	}
 	private int iterateSearch(ArrayList<int[]> points, boolean[][] checked, int eX, int eY)
 	{

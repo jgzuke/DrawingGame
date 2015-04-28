@@ -15,7 +15,7 @@ public final class Game_Control_Enemy extends Game_Control
 		super.frameCall();
 		if(mana > spriteControl.manaPricesEnemy[3] && timer < 0)
 		{
-			spriteControl.makeEnemy(3, 3600, 400, false);
+			spriteControl.makeEnemy(3, control.levelController.levelWidth/2, control.levelController.levelHeight/2, false);
 			timer = 30;
 		}
 		Control_Main e;

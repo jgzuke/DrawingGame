@@ -74,7 +74,7 @@ public final class Proj_Tracker extends Sprite
 	@ Override
 	protected void frameCall()
 	{
-		alpha -= 3;
+		alpha -= 4;
 		if(onPlayersTeam)
 		{
 			image = control.imageLibrary.shotPlayer[(int)(Math.random()*5)];
@@ -159,7 +159,7 @@ public final class Proj_Tracker extends Sprite
 				double distance = Math.pow(xDif, 2) + Math.pow(yDif, 2);
 				if(distance < 600)
 				{
-					enemies.get(i).getHit((int)(power*alpha/255));
+					enemies.get(i).getHit(power);
 					explode();
 					return;
 				}

@@ -17,6 +17,7 @@ abstract public class EnemyShell extends Human {
 	protected int fromWall = 5;
 	protected boolean selected = false;
 	protected int runTimer = 0;
+	protected int runTimerTotal = 0;
 	protected int rollTimer = 0;
 	protected double velocityX;
 	protected double velocityY;
@@ -94,6 +95,19 @@ abstract public class EnemyShell extends Human {
 		speedCur = 5;			//faster to get in line
 		destinationX = setX;
 		destinationY = setY;
+		runTimerTotal = 0;
+	}
+	protected void setDestination(int setX, int setY)
+	{
+		if(setX < 0) setX = 0;
+		if(setY < 0) setY = 0;
+		if(setX > control.levelController.levelWidth) setX = control.levelController.levelWidth;
+		if(setY > control.levelController.levelHeight) setY = control.levelController.levelHeight;
+		hasDestination = true;
+		speedCur = 3.5;			//faster to get in line
+		destinationX = setX;
+		destinationY = setY;
+		runTimerTotal = 0;
 	}
 	/**
 	 * sets new object as controller

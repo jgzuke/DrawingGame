@@ -53,6 +53,7 @@ public class Control_AI
 				mage.shoot(target);
 			}
 		}
+		
 		if(mage.checkDanger()>0)
 		{
 			if(mage.rollTimer<0)

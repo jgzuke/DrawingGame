@@ -62,10 +62,7 @@ public final class Control_Group extends Control_Main
 		{
 			layoutType = (int) Math.round(layoutMode/inGroups);
 		}
-		if(!enemiesAround())
-		{
-			formUp();
-		}
+		formUp();
 		groupRadius = Math.sqrt(humans.size()) * spacing;
 	}
 	protected void frameCall()
@@ -406,10 +403,9 @@ public final class Control_Group extends Control_Main
 	{
 		for(int i = 0; i < humans.size(); i++)
 		{
-			humans.get(i).hasDestination = true;
-			humans.get(i).speedCur = 3.5;
-			humans.get(i).destinationX += destLocation.X-groupLocation.X;
-			humans.get(i).destinationY += destLocation.Y-groupLocation.Y;
+			int setX = (int) (humans.get(i).destinationX + destLocation.X-groupLocation.X);
+			int setY = (int) (humans.get(i).destinationY + destLocation.Y-groupLocation.Y);
+			humans.get(i).setDestination(setX, setY);
 		}
 	}
 	protected void setLayoutType(int type) // 0 in norm, 1 is v, 2 is defend

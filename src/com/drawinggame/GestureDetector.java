@@ -120,19 +120,33 @@ public class GestureDetector implements OnTouchListener
 	}
 	public boolean checkMadeEnemy(String type, Point p)
     {
+		int num = -1;
 		if(type.equals("lineH"))
 		{
-				control.spriteController.makeEnemy(0, (int)p.X, (int)p.Y, true);
+			num = 0;
 		} else if(type.equals("lineV"))
 		{
-				control.spriteController.makeEnemy(2, (int)p.X, (int)p.Y, true);
+			num = 2;
 		} else if(type.equals("arrow"))
 		{
-				control.spriteController.makeEnemy(1, (int)p.X, (int)p.Y, true);
+			num = 1;
+		} else if(type.equals("0"))
+		{
+			num = 3;
+		} else if(type.equals("1"))
+		{
+			num = 4;
+		} else if(type.equals("2"))
+		{
+			num = 5;
+		} else if(type.equals("3"))
+		{
+			num = 6;
 		} else
 		{
 			return false;
 		}
+		control.spriteController.makeEnemy(num, (int)p.X, (int)p.Y, true);
 		return true;
     }
 	public void endShape(Vector<Point> points, Rectangle b)
@@ -206,19 +220,6 @@ public class GestureDetector implements OnTouchListener
 		if(checkMadeEnemy(type, p)) return true;
 		if(selectType.equals("none"))
 	    {
-			if(type.equals("0"))
-			{
-				control.spriteController.makeEnemy(3, (int)p.X, (int)p.Y, true);
-			} else if(type.equals("1"))
-			{
-				control.spriteController.makeEnemy(4, (int)p.X, (int)p.Y, true);
-			} else if(type.equals("2"))
-			{
-				control.spriteController.makeEnemy(5, (int)p.X, (int)p.Y, true);
-			} else if(type.equals("3"))
-			{
-				control.spriteController.makeEnemy(6, (int)p.X, (int)p.Y, true);
-			}
 	    } else if(selectType.equals("single"))
 	    {
 	    	if(type.equals("c"))
@@ -379,6 +380,11 @@ public class GestureDetector implements OnTouchListener
         		secondPoint.X = (int)(e.getX(secondID));
         		secondPoint.Y = (int)(e.getY(secondID));
         		scaleMap();
+        		Point fMap = screenToMapPoint(firstPoint);
+        		Point sMap = screenToMapPoint(secondPoint);
+        		averageStartPoint.X = (fMap.X + sMap.X)/2;
+        		averageStartPoint.Y = (fMap.Y + sMap.Y)/2;
+        		averageStartDist = distBetweenPoints(fMap, sMap);
         	}
         break;
         case MotionEvent.ACTION_POINTER_UP:

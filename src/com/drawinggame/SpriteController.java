@@ -54,7 +54,7 @@ public final class SpriteController
 	protected static int magePrice = 85;
 	protected static int archerPrice = 60;
 	protected static int sheildPrice = 75;
-	protected static double depreciation = 0.965;
+	protected static double depreciation = 0.96;
 	protected Controller control;
 	protected ArrayList<Control_Main> allyControllers = new ArrayList<Control_Main>();
 	protected ArrayList<Control_Main> enemyControllers = new ArrayList<Control_Main>();
