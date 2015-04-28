@@ -99,14 +99,21 @@ public class Recognizer
 				t = i;
 			}
 		}
+		boolean circle = isCircle(points, pointsOrig, myBounds);
 		if(error < 40)
 		{
-			Log.e("myid", "foundsomething");
-			gestureDetector.endShape((templates.elementAt(t)).Name, moveCoords, myBounds, points);
+			if(!gestureDetector.endShape((templates.elementAt(t)).Name, moveCoords, myBounds, points))
+			{
+				if(circle)
+				{
+					gestureDetector.endCircle(points, pointsOrig, myBounds);
+				}
+			}
+		} else if(circle)
+		{
+			gestureDetector.endCircle(points, pointsOrig, myBounds);
 		} else
 		{
-			Log.e("myid", "stupid");
-			isCircle(points, pointsOrig, myBounds);
 			gestureDetector.endShape(points, myBounds);
 		}
 	}
@@ -122,7 +129,6 @@ public class Recognizer
 	}
 	public boolean isCircle(Vector<Point> points, Vector<Point> pointsOrig, Rectangle myBounds)
 	{
-		Log.e("myid", "checkisacricle");
 		double pointSeperation = 5*distanceBetweenPoints(points, 0, 1);
 		for(int i = 0; i < points.size()-(int)(Recognizer.NumPoints*2/3); i++)
 		{
@@ -130,7 +136,6 @@ public class Recognizer
 			{
 				if(distanceBetweenPoints(points, i, j) < pointSeperation) // we made a circle, end points are close to start points
 				{
-					gestureDetector.endCircle(points, pointsOrig, myBounds);
 					return true;
 				}
 			}

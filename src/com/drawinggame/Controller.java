@@ -105,6 +105,7 @@ public final class Controller
 		time = System.nanoTime();
 		graphicsController = new GraphicsController(this, imageLibrary, spriteController, wallController, levelController, startSet, dimensions);
 		graphicsController.setOnTouchListener(gestureDetector);
+		gestureDetector.setGraphics(graphicsController);
 		Log.e("myid", "graphicsControl: ".concat(Long.toString((System.nanoTime()-time)/100000)));
 		
 		

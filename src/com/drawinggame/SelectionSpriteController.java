@@ -265,33 +265,42 @@ public final class SelectionSpriteController
 		double pY;
 		for(int i = 0; i < sheildRows; i++)
 		{
-			pY = -(spacing/2) * (sheildsPerRow-1);
-			if(i == sheildRows-1) pY += (spacing/2) * (sheildsPerRow*sheildRows - sheilds.get(selected).size());
-			for(int j = 0; j < sheildsPerRow; j++)
+			pY = 0;
+			int inRow = sheildsPerRow;
+			if(i == sheildRows-1) inRow = sheilds.get(selected).size() - sheildsPerRow*(sheildRows-1);
+			if(inRow%2 == 0) pY = spacing/2;// even num
+			for(int j = 0; j < (sheildsPerRow+1)/2; j++)
 			{
 				sheildPositions.add(new Point(pX, pY));
+				if(pY != 0) sheildPositions.add(new Point(pX, -pY));
 				pY += spacing;
 			}
 			pX -= spacing;
 		}
 		for(int i = 0; i < archerRows; i++)
 		{
-			pY = -(spacing/2) * (archersPerRow-1);
-			if(i == archerRows-1) pY += (spacing/2) * (archersPerRow*archerRows - archers.get(selected).size());
-			for(int j = 0; j < archersPerRow; j++)
+			pY = 0;
+			int inRow = sheildsPerRow;
+			if(i == archerRows-1) inRow = archers.get(selected).size() - archersPerRow*(archerRows-1);
+			if(inRow%2 == 0) pY = spacing/2;// even num
+			for(int j = 0; j < (archersPerRow+1)/2; j++)
 			{
 				archerPositions.add(new Point(pX, pY));
+				if(pY != 0) archerPositions.add(new Point(pX, -pY));
 				pY += spacing;
 			}
 			pX -= spacing;
 		}
 		for(int i = 0; i < mageRows; i++)
 		{
-			pY = -(spacing/2) * (magesPerRow-1);
-			if(i == mageRows-1) pY += (spacing/2) * (magesPerRow*mageRows - mages.get(selected).size());
-			for(int j = 0; j < magesPerRow; j++)
+			pY = 0;
+			int inRow = magesPerRow;
+			if(i == mageRows-1) inRow = mages.get(selected).size() - magesPerRow*(mageRows-1);
+			if(inRow%2 == 0) pY = spacing/2;// even num
+			for(int j = 0; j < (magesPerRow+1)/2; j++)
 			{
 				magePositions.add(new Point(pX, pY));
+				if(pY != 0) magePositions.add(new Point(pX, -pY));
 				pY += spacing;
 			}
 			pX -= spacing;
@@ -305,37 +314,24 @@ public final class SelectionSpriteController
 		addY += 500;
 		for(int i = 0; i < allies.get(selected).size(); i++)
 		{
-			allies.get(selected).get(i).hasDestination = true;
-			allies.get(selected).get(i).destinationRotation = 0;
-			allies.get(selected).get(i).speedCur = 5;			//faster to get in line
-			allies.get(selected).get(i).destinationX = (int)(positions.get(i).X+addX);
-			allies.get(selected).get(i).destinationY = (int)(positions.get(i).Y+addY);
+			allies.get(selected).get(i).setDestination((int)(positions.get(i).X+addX), (int)(positions.get(i).Y+addY), 0);
 		}
 	}
 	protected void startOrganizing(List<Point> sheildPositions,List<Point> archerPositions, List<Point> magePositions, double addX, double addY)
 	{
 		addX += 500;
 		addY += 500;
-		for(int i = 0; i < allies.get(selected).size(); i++)
-		{
-			allies.get(selected).get(i).hasDestination = true;
-			allies.get(selected).get(i).destinationRotation = 0;
-			allies.get(selected).get(i).speedCur = 5;			//faster to get in line
-		}
 		for(int i = 0; i < sheilds.get(selected).size(); i++)
 		{
-			sheilds.get(selected).get(i).destinationX = (int)(sheildPositions.get(i).X+addX);
-			sheilds.get(selected).get(i).destinationY = (int)(sheildPositions.get(i).Y+addY);
+			sheilds.get(selected).get(i).setDestination((int)(sheildPositions.get(i).X+addX), (int)(sheildPositions.get(i).Y+addY), 0);
 		}
 		for(int i = 0; i < archers.get(selected).size(); i++)
 		{
-			archers.get(selected).get(i).destinationX = (int)(archerPositions.get(i).X+addX);
-			archers.get(selected).get(i).destinationY = (int)(archerPositions.get(i).Y+addY);
+			archers.get(selected).get(i).setDestination((int)(archerPositions.get(i).X+addX), (int)(archerPositions.get(i).Y+addY), 0);
 		}
 		for(int i = 0; i < mages.get(selected).size(); i++)
 		{
-			mages.get(selected).get(i).destinationX = (int)(magePositions.get(i).X+addX);
-			mages.get(selected).get(i).destinationY = (int)(magePositions.get(i).Y+addY);
+			mages.get(selected).get(i).setDestination((int)(magePositions.get(i).X+addX), (int)(magePositions.get(i).Y+addY), 0);
 		}
 	}
 	protected void turnAfterOrganize()

@@ -210,7 +210,7 @@ abstract public class Enemy extends EnemyShell
 				double difRight = Math.abs((oldRads*r2d)-(rotation + 90));
 				if(difLeft>300) difLeft -= 360;
 				if(difRight>300) difLeft -= 360;
-				if(difLeft<difRight && control.getRandomInt(20)!=0)
+				if(difLeft<difRight && control.getRandomInt(5)!=0)
 				{
 					right = false;
 				}
@@ -398,12 +398,12 @@ abstract public class Enemy extends EnemyShell
 		if(checkObstructionsPoint((int)fx, (int)fy, (int)x, (int)y, true, fromWall))
 		{
 			int foundPlayer = -1;			//try to find enemy
-			int sX = (int)(fx/20);		//start at player
-			int sY = (int)(fy/20);
+			int sX = (int)(fx/20) + 5;		//start at player
+			int sY = (int)(fy/20) + 5;
 			int eX = (int)x;
 			int eY = (int)y;
 			int[] p1 = {sX, sY, sX, sY};
-			boolean[][] checked=new boolean[(control.levelController.levelWidth/20)][(control.levelController.levelHeight/20)];
+			boolean[][] checked=new boolean[(control.levelController.levelWidth/20) + 10][(control.levelController.levelHeight/20) + 10];
 			ArrayList<int[]> points = new ArrayList<int[]>();
 			points.add(p1);
 			checked[sX][sY]=true;

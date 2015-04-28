@@ -24,14 +24,9 @@ public class GestureDetector implements OnTouchListener
 	private double screenHeight;
 	private int firstID = 0;
 	private int secondID = 0;
-	private Point firstPoint;
-	private Point secondPoint;
-	private Point firstPointStart;
-	private Point secondPointStart;
+	private Point firstPoint = new Point(0,0);
+	private Point secondPoint = new Point(0,0);;
 	private Paint paint = new Paint();
-	private double playScreenSizeStart;
-	private int mapXSlideStart;
-	private int mapYSlideStart;
 	private int phoneWidth;
 	private int phoneHeight;
 	protected double unitWidth;
@@ -44,12 +39,16 @@ public class GestureDetector implements OnTouchListener
 	protected Recognizer recognizer;
 	protected String selectType = "none";
 	protected Long fadeTime = (long) 50000;
+	private GraphicsController graphics = null;
 	int ID = 0;
 	
 	private Path lastShape;
 	private Vector<Point> average = new Vector<Point>();
 	public Context context;
 	private int pointersDown = 0;
+	
+	private Point averageStartPoint = new Point(0,0);
+	private double averageStartDist = 0;
 	
     public GestureDetector(Context contextSet, Controller controllerSet, int widthSet, int heightSet)
     {
@@ -70,6 +69,10 @@ public class GestureDetector implements OnTouchListener
 		{
 			average.add(new Point(0,0));
 		}
+    }
+    protected void setGraphics(GraphicsController graphicsSet)
+    {
+    	graphics = graphicsSet;
     }
     protected void drawGesturePausedBig(Canvas g)
 	{
@@ -139,8 +142,8 @@ public class GestureDetector implements OnTouchListener
 			if(b.X+b.Width < unitWidth*50-unitHeight*10 && b.Y > unitHeight*20)
 			{
 				recognizer.templates.get(settingSelected).replacePoints(points, context);
-				control.graphicsController.drawSection[1] = true;
-				control.graphicsController.drawSection[2] = true;
+				graphics.drawSection[1] = true;
+				graphics.drawSection[2] = true;
 				return;
 			}
 			if(b.X < unitWidth*50-unitHeight*10)
@@ -149,15 +152,15 @@ public class GestureDetector implements OnTouchListener
 			}
 		}
 	}
-	public void endShapePaused(String type, Point screenPoint, Rectangle b, Vector<Point> points)
+	public boolean endShapePaused(String type, Point screenPoint, Rectangle b, Vector<Point> points)
 	{
 		if(b.X+b.Width < unitWidth*50-unitHeight*10 && b.Y > unitHeight*20)
 		{
 			if(recognizer.templates.get(settingSelected).Name.equals(type))
 			{
 				recognizer.templates.get(settingSelected).replacePoints(points, context);
-				control.graphicsController.drawSection[1] = true;
-				control.graphicsController.drawSection[2] = true;
+				graphics.drawSection[1] = true;
+				graphics.drawSection[2] = true;
 			} else
 			{
 				Toast.makeText(context, "Too close to another gesture", Toast.LENGTH_SHORT).show();
@@ -182,22 +185,25 @@ public class GestureDetector implements OnTouchListener
 			} else if(type.equals("v"))
 			{
 				control.selectionSpriteController.changeLayout(0);
+			} else
+			{
+				return false;
 			}
 		} else
 		{
 			Toast.makeText(context, "Out of bounds", Toast.LENGTH_SHORT).show();
 		}
+		return true;
 	}
-	public void endShape(String type, Point screenPoint, Rectangle b, Vector<Point> points)
+	public boolean endShape(String type, Point screenPoint, Rectangle b, Vector<Point> points)
     {
 		Point p = screenToMapPoint(screenPoint);
 		timeOfDraw = System.nanoTime();
 		if(control.paused)
 		{
-			endShapePaused(type, screenPoint, b, points);
-			return;
+			return endShapePaused(type, screenPoint, b, points);
 		}
-		if(checkMadeEnemy(type, p)) return;
+		if(checkMadeEnemy(type, p)) return true;
 		if(selectType.equals("none"))
 	    {
 			if(type.equals("0"))
@@ -235,6 +241,7 @@ public class GestureDetector implements OnTouchListener
 				control.selected.cancelMove();
 			}
 	    }
+		return true;
     }
 	public void click(Point pPhone)
     {
@@ -247,9 +254,9 @@ public class GestureDetector implements OnTouchListener
         		{
     				settingSelected = (int) (pPhone.Y/(unitHeight*20)) - 1;
     				control.selectionSpriteController.selectedManaRatio = 0;
-    				control.graphicsController.drawSection[1] = true;
-    				control.graphicsController.drawSection[2] = true;
-    				control.graphicsController.drawSection[3] = true;
+    				graphics.drawSection[1] = true;
+    				graphics.drawSection[2] = true;
+    				graphics.drawSection[3] = true;
         		}
     			if(pPhone.X>phoneWidth-150 && pPhone.Y < (unitHeight*20)+150)
         		{
@@ -276,10 +283,10 @@ public class GestureDetector implements OnTouchListener
     		control.paused = !control.paused;
     		if(control.paused)
     		{
-    			control.graphicsController.drawSection[0] = true;
-				control.graphicsController.drawSection[1] = true;
-				control.graphicsController.drawSection[2] = true;
-				control.graphicsController.drawSection[3] = true;
+    			graphics.drawSection[0] = true;
+				graphics.drawSection[1] = true;
+				graphics.drawSection[2] = true;
+				graphics.drawSection[3] = true;
     		}
     		timeOfDraw = (long) 0;
     		return true;
@@ -298,8 +305,8 @@ public class GestureDetector implements OnTouchListener
 			if(b.X+b.Width < unitWidth*50-unitHeight*10 && b.Y > unitHeight*20)
 			{
 				recognizer.templates.get(settingSelected).replacePoints(points, context);
-				control.graphicsController.drawSection[1] = true;
-				control.graphicsController.drawSection[2] = true;
+				graphics.drawSection[1] = true;
+				graphics.drawSection[2] = true;
 				return;
 			}
 			if(b.X < unitWidth*50-unitHeight*10)
@@ -328,10 +335,12 @@ public class GestureDetector implements OnTouchListener
 		{
 		case MotionEvent.ACTION_DOWN:
 			ID = e.getPointerId(e.getActionIndex());				// Add pointer ID to ID list
+			if(ID >= e.getPointerCount()) return true;
         	pointsList.add(new Point((int)(e.getX(ID)), (int)(e.getY(ID))));				// Add array to list
 			firstID = ID;
         	pointersDown = 1;
-        	firstPoint = new Point((int)(e.getX(ID)), (int)(e.getY(ID)));
+        	firstPoint.X = e.getX(firstID);
+    		firstPoint.Y = e.getY(firstID);
         break;
         case MotionEvent.ACTION_UP:
         	if(secondID == 0)
@@ -345,17 +354,20 @@ public class GestureDetector implements OnTouchListener
         break;
         case MotionEvent.ACTION_POINTER_DOWN:
         	ID = e.getPointerId(e.getActionIndex());
+        	if(ID >= e.getPointerCount()) return true;
         	pointersDown ++;
         	if(pointersDown == 2)
         	{
         		secondID = ID;
-        		firstPoint = new Point((int)(e.getX(firstID)), (int)(e.getY(firstID)));
-        		secondPoint = new Point((int)(e.getX(secondID)), (int)(e.getY(secondID)));
-        		firstPointStart = new Point(firstPoint.X, firstPoint.Y);
-        		secondPointStart = new Point(secondPoint.X, secondPoint.Y);
-        		playScreenSizeStart = control.graphicsController.playScreenSize;
-        		mapXSlideStart = control.graphicsController.mapXSlide;
-        		mapYSlideStart = control.graphicsController.mapYSlide;
+        		firstPoint.X = e.getX(firstID);
+        		firstPoint.Y = e.getY(firstID);
+        		secondPoint.X = e.getX(secondID);
+        		secondPoint.Y = e.getY(secondID);
+        		Point fMap = screenToMapPoint(firstPoint);
+        		Point sMap = screenToMapPoint(secondPoint);
+        		averageStartPoint.X = (fMap.X + sMap.X)/2;
+        		averageStartPoint.Y = (fMap.Y + sMap.Y)/2;
+        		averageStartDist = distBetweenPoints(fMap, sMap);
         	}
         break;
         case MotionEvent.ACTION_MOVE:
@@ -366,15 +378,7 @@ public class GestureDetector implements OnTouchListener
         		firstPoint.Y = (int)(e.getY(firstID));
         		secondPoint.X = (int)(e.getX(secondID));
         		secondPoint.Y = (int)(e.getY(secondID));
-        		
         		scaleMap();
-        		firstPointStart.X = (int)(e.getX(firstID));
-        		firstPointStart.Y = (int)(e.getY(firstID));
-        		secondPointStart.X = (int)(e.getX(secondID));
-        		secondPointStart.Y = (int)(e.getY(secondID));
-        		playScreenSizeStart = control.graphicsController.playScreenSize;
-        		mapXSlideStart = control.graphicsController.mapXSlide;
-        		mapYSlideStart = control.graphicsController.mapYSlide;
         	}
         break;
         case MotionEvent.ACTION_POINTER_UP:
@@ -420,72 +424,66 @@ public class GestureDetector implements OnTouchListener
     }
     protected void screenToMapPointInPlace(Point p)
     {
-    	double phoneToMap = control.graphicsController.playScreenSize;
-    	p.X = control.graphicsController.mapXSlide + p.X*phoneToMap;
-    	p.Y = control.graphicsController.mapYSlide + p.Y*phoneToMap;
+    	double phoneToMap = graphics.playScreenSize;
+    	p.X = graphics.mapXSlide + p.X*phoneToMap;
+    	p.Y = graphics.mapYSlide + p.Y*phoneToMap;
     }
     protected Point screenToMapPoint(Point p)
     {
-    	double phoneToMap = control.graphicsController.playScreenSize;
-    	double phoneX = control.graphicsController.mapXSlide + p.X*phoneToMap;
-    	double phoneY = control.graphicsController.mapYSlide + p.Y*phoneToMap;
+    	double phoneX = graphics.mapXSlide + p.X*graphics.playScreenSize;
+    	double phoneY = graphics.mapYSlide + p.Y*graphics.playScreenSize;
     	return new Point(phoneX, phoneY);
+    }
+    protected double distBetweenPoints(Point p, Point q)
+    {
+    	return Math.sqrt(Math.pow(p.X-q.X, 2) + Math.pow(p.Y-q.Y, 2));
     }
     protected void scaleMap()
     {
-		double startXAverage = (firstPointStart.X + secondPointStart.X)/2;
-		double startYAverage = (firstPointStart.Y + secondPointStart.Y)/2;
-		double endXAverage = (firstPoint.X + secondPoint.X)/2;
-		double endYAverage = (firstPoint.Y + secondPoint.Y)/2;
-		double startSeperation = Math.sqrt(Math.pow(firstPointStart.X - secondPointStart.X, 2)+Math.pow(firstPointStart.Y - secondPointStart.Y, 2));
-		double endSeperation = Math.sqrt(Math.pow(firstPoint.X - secondPoint.X, 2)+Math.pow(firstPoint.Y - secondPoint.Y, 2));
-		double screenScale = startSeperation/endSeperation;
-		double screenRatio = endSeperation/startSeperation;
-		double newPlayScreenSize = playScreenSizeStart*screenScale;
-		double playScreenSizeMax = control.graphicsController.playScreenSizeMax;
-		int levelWidth = control.levelController.levelWidth;
-		int levelHeight = control.levelController.levelHeight;
-		double xFix = 0;
-		double yFix = 0;
-		if(newPlayScreenSize > playScreenSizeMax)
+		double seperation = distBetweenPoints(firstPoint, secondPoint);
+		/* distances have to be equal
+		* dist end = dist start
+		* dist end = graphics.playScreenSize * seperation
+		* graphics.playScreenSize * seperation = dist start
+		* graphics.playScreenSize = dist start/seperation
+		*/
+		if(seperation == 0) return;
+		graphics.playScreenSize = averageStartDist/seperation;
+		
+		if(graphics.playScreenSize > graphics.playScreenSizeMax)
 		{
-			playScreenSizeStart *= playScreenSizeMax/newPlayScreenSize;
-			newPlayScreenSize = playScreenSizeMax;
-		} else if(newPlayScreenSize < 0.5) 
+			graphics.playScreenSize = graphics.playScreenSizeMax;
+		} else if(graphics.playScreenSize < 0.5) 
 		{
-			playScreenSizeStart *= 0.5/newPlayScreenSize;
-			newPlayScreenSize = 0.5;
-		} else
-		{
-			xFix = (1-screenRatio)*(mapXSlideStart+startXAverage)*playScreenSizeStart;
-			yFix = (1-screenRatio)*(mapYSlideStart+startYAverage)*playScreenSizeStart;
+			graphics.playScreenSize = 0.5;
 		}
-		xFix += (endXAverage-startXAverage)*playScreenSizeStart;
-		yFix += (endYAverage-startYAverage)*playScreenSizeStart;
-		int newXSlide = (int)(mapXSlideStart - xFix);
-		int newYSlide = (int)(mapYSlideStart - yFix);
-		if(newXSlide < 0)
+    	
+		double aveX = (firstPoint.X+secondPoint.X)*graphics.playScreenSize/2;
+		double aveY = (firstPoint.Y+secondPoint.Y)*graphics.playScreenSize/2;
+		/*
+		 * aveX + graphics.mapXSlide = averageStartPoint.X
+		 * graphics.mapXSlide = averageStartPoint.X - aveX
+		 */
+		graphics.mapXSlide = (int) (averageStartPoint.X - aveX);
+		graphics.mapYSlide = (int) (averageStartPoint.Y - aveY);
+		
+		if(graphics.mapXSlide < 0)
 		{
-			mapXSlideStart = (int) xFix;
-			newXSlide = 0;
+			graphics.mapXSlide = 0;
 		}
-		if(newYSlide < 0)
+		if(graphics.mapYSlide < 0)
 		{
-			mapYSlideStart = (int) yFix;
-			newYSlide = 0;
+			graphics.mapYSlide = 0;
 		}
-		if(newXSlide > levelWidth - newPlayScreenSize*phoneWidth)
+		int maxW = (int)(control.levelController.levelWidth - graphics.playScreenSize*phoneWidth);
+		int maxH = (int)(control.levelController.levelHeight - graphics.playScreenSize*phoneHeight);
+		if(graphics.mapXSlide > maxW)
 		{
-			mapXSlideStart = (int)(levelWidth - newPlayScreenSize*phoneWidth + xFix);
-			newXSlide = (int)(mapXSlideStart - xFix);
+			graphics.mapXSlide = maxW;
 		}
-		if(newYSlide > levelHeight - newPlayScreenSize*phoneHeight)
+		if(graphics.mapYSlide > maxH)
 		{
-			mapYSlideStart = (int)(levelHeight - newPlayScreenSize*phoneHeight + yFix);
-			newYSlide = (int)(mapYSlideStart - yFix);
+			graphics.mapYSlide = maxH;
 		}
-		control.graphicsController.playScreenSize = newPlayScreenSize;
-		control.graphicsController.mapXSlide = newXSlide;
-		control.graphicsController.mapYSlide = newYSlide;
     }
 }

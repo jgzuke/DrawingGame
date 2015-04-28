@@ -482,10 +482,10 @@ public final class WallController
 	{
 		int width = control.levelController.levelWidth/20;
 		int height = control.levelController.levelHeight/20;
-		pathing = new boolean[width][height][5]; //x, y, isFree, right, left, down, up
-		for(int i = 0; i < width; i++)
+		pathing = new boolean[width+10][height+10][5]; //x, y, isFree, right, left, down, up
+		for(int i = 5; i < width+5; i++)
 		{
-			for(int j = 0; j < height; j++)
+			for(int j = 5; j < height+5; j++)
 			{
 				pathing[i][j][0] = checkPoint(i, j);
 				pathing[i][j][1] = checkPath(i, j, 1, 0);

@@ -189,39 +189,48 @@ public final class Control_Group extends Control_Main
 		ArrayList<Point> sheildPositions = new ArrayList<Point>();
 		ArrayList<Point> archerPositions = new ArrayList<Point>();
 		ArrayList<Point> magePositions = new ArrayList<Point>();
-		double pX = (spacing/2) * (bestRows-1);
-		double pY;
 		double cosT = Math.cos(rotation/r2d);
 		double sinT = Math.sin(rotation/r2d);
+		double pX = (spacing/2) * (bestRows-1);
+		double pY;
 		for(int i = 0; i < sheildRows; i++)
 		{
-			pY = -(spacing/2) * (sheildsPerRow-1);
-			if(i == sheildRows-1) pY += (spacing/2) * (sheildsPerRow*sheildRows - sheilds.size());
-			for(int j = 0; j < sheildsPerRow; j++)
+			pY = 0;
+			int inRow = sheildsPerRow;
+			if(i == sheildRows-1) inRow = sheilds.size() - sheildsPerRow*(sheildRows-1);
+			if(inRow%2 == 0) pY = spacing/2;// even num
+			for(int j = 0; j < (sheildsPerRow+1)/2; j++)
 			{
 				sheildPositions.add(pointAtAngle(pX, pY, cosT, sinT));
+				if(pY != 0) sheildPositions.add(pointAtAngle(pX, -pY, cosT, sinT));
 				pY += spacing;
 			}
 			pX -= spacing;
 		}
 		for(int i = 0; i < archerRows; i++)
 		{
-			pY = -(spacing/2) * (archersPerRow-1);
-			if(i == archerRows-1) pY += (spacing/2) * (archersPerRow*archerRows - archers.size());
-			for(int j = 0; j < archersPerRow; j++)
+			pY = 0;
+			int inRow = sheildsPerRow;
+			if(i == archerRows-1) inRow = archers.size() - archersPerRow*(archerRows-1);
+			if(inRow%2 == 0) pY = spacing/2;// even num
+			for(int j = 0; j < (archersPerRow+1)/2; j++)
 			{
 				archerPositions.add(pointAtAngle(pX, pY, cosT, sinT));
+				if(pY != 0) archerPositions.add(pointAtAngle(pX, -pY, cosT, sinT));
 				pY += spacing;
 			}
 			pX -= spacing;
 		}
 		for(int i = 0; i < mageRows; i++)
 		{
-			pY = -(spacing/2) * (magesPerRow-1);
-			if(i == mageRows-1) pY += (spacing/2) * (magesPerRow*mageRows - mages.size());
-			for(int j = 0; j < magesPerRow; j++)
+			pY = 0;
+			int inRow = magesPerRow;
+			if(i == mageRows-1) inRow = mages.size() - magesPerRow*(mageRows-1);
+			if(inRow%2 == 0) pY = spacing/2;// even num
+			for(int j = 0; j < (magesPerRow+1)/2; j++)
 			{
 				magePositions.add(pointAtAngle(pX, pY, cosT, sinT));
+				if(pY != 0) magePositions.add(pointAtAngle(pX, -pY, cosT, sinT));
 				pY += spacing;
 			}
 			pX -= spacing;
@@ -368,35 +377,22 @@ public final class Control_Group extends Control_Main
 	{
 		for(int i = 0; i < humans.size(); i++)
 		{
-			humans.get(i).hasDestination = true;
-			humans.get(i).destinationRotation = setRotation;
-			humans.get(i).speedCur = 5;			//faster to get in line
-			humans.get(i).destinationX = (int)(positions.get(i).X+addX);
-			humans.get(i).destinationY = (int)(positions.get(i).Y+addY);
+			humans.get(i).setDestination((int)(positions.get(i).X+addX), (int)(positions.get(i).Y+addY), setRotation);
 		}
 	}
 	protected void startOrganizing(List<Point> sheildPositions,List<Point> archerPositions, List<Point> magePositions, double addX, double addY, int setRotation)
 	{
-		for(int i = 0; i < humans.size(); i++)
-		{
-			humans.get(i).hasDestination = true;
-			humans.get(i).destinationRotation = setRotation;
-			humans.get(i).speedCur = 5;			//faster to get in line
-		}
 		for(int i = 0; i < sheilds.size(); i++)
 		{
-			sheilds.get(i).destinationX = (int)(sheildPositions.get(i).X+addX);
-			sheilds.get(i).destinationY = (int)(sheildPositions.get(i).Y+addY);
+			sheilds.get(i).setDestination((int)(sheildPositions.get(i).X+addX), (int)(sheildPositions.get(i).Y+addY), setRotation);
 		}
 		for(int i = 0; i < archers.size(); i++)
 		{
-			archers.get(i).destinationX = (int)(archerPositions.get(i).X+addX);
-			archers.get(i).destinationY = (int)(archerPositions.get(i).Y+addY);
+			archers.get(i).setDestination((int)(archerPositions.get(i).X+addX), (int)(archerPositions.get(i).Y+addY), setRotation);
 		}
 		for(int i = 0; i < mages.size(); i++)
 		{
-			mages.get(i).destinationX = (int)(magePositions.get(i).X+addX);
-			mages.get(i).destinationY = (int)(magePositions.get(i).Y+addY);
+			mages.get(i).setDestination((int)(magePositions.get(i).X+addX), (int)(magePositions.get(i).Y+addY), setRotation);
 		}
 	}
 	protected void turnAfterOrganize()

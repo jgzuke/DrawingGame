@@ -83,6 +83,18 @@ abstract public class EnemyShell extends Human {
 			proj_Tracker_AOEs = control.spriteController.proj_TrackerA_AOEs;
 		}
 	}
+	protected void setDestination(int setX, int setY, int setRot)
+	{
+		if(setX < 0) setX = 0;
+		if(setY < 0) setY = 0;
+		if(setX > control.levelController.levelWidth) setX = control.levelController.levelWidth;
+		if(setY > control.levelController.levelHeight) setY = control.levelController.levelHeight;
+		hasDestination = true;
+		destinationRotation = setRot;
+		speedCur = 5;			//faster to get in line
+		destinationX = setX;
+		destinationY = setY;
+	}
 	/**
 	 * sets new object as controller
 	 */
@@ -157,21 +169,6 @@ abstract public class EnemyShell extends Human {
 		double moveRads;
 		double xdif;
 		double ydif;
-		for (int i = 0; i < enemies.size(); i++) {
-			if (enemies.get(i) != null && enemies.get(i).x != x) {
-				xdif = x - enemies.get(i).x;
-				ydif = y - enemies.get(i).y;
-				if (Math.pow(xdif, 2) + Math.pow(ydif, 2) < Math.pow(radius, 2)) {
-					moveRads = Math.atan2(ydif, xdif);
-					movementX = (x - (Math.cos(moveRads) * radius) - enemies.get(i).x) / 2;
-					movementY = (y - (Math.sin(moveRads) * radius) - enemies.get(i).y) / 2;
-					enemies.get(i).x += movementX;
-					enemies.get(i).y += movementY;
-					x -= movementX;
-					y -= movementY;
-				}
-			}
-		}
 		if(myController.isGroup && ((Control_Group)myController).organizing) return;
 		for (int i = 0; i < allies.size(); i++) {
 			if (allies.get(i) != null && allies.get(i).x != x) {

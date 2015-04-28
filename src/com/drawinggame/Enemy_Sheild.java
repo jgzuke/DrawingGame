@@ -44,7 +44,7 @@ public final class Enemy_Sheild extends Enemy
 		{
 			if(frame==frames[3][i])
 			{
-				meleeAttack(200, 25, 20);
+				meleeAttack(400, 25, 20);
 			}
 		}
 	}
