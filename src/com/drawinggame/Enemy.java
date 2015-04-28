@@ -53,6 +53,7 @@ abstract public class Enemy extends EnemyShell
 			if(frame==frames[1][1])
 			{
 				action = "Nothing";	//roll done
+				((Enemy_Mage)this).energy = 0;
 				frame = 0;
 			}
 		} else if(action.equals("Melee"))
@@ -66,7 +67,7 @@ abstract public class Enemy extends EnemyShell
 		} else if(action.equals("Sheild"))
 		{
 			frame++;
-			if(frame==frames[4][1])
+			if(frame >= frames[4][1]-1)
 			{
 				action = "Nothing";	//block done
 				frame = 0;
@@ -164,6 +165,7 @@ abstract public class Enemy extends EnemyShell
 		xMove = Math.cos(rads) * speedCur;
 		yMove = Math.sin(rads) * speedCur;
         if(frame>17) frame = 0;
+        runTimerTotal = 0;
 	}
 	/**
 	 * rolls forward for 11 frames
@@ -179,6 +181,7 @@ abstract public class Enemy extends EnemyShell
 			xMove = Math.cos(rads) * 8;
 			yMove = Math.sin(rads) * 8;
 		}
+		runTimerTotal = 0;
 	}
 	protected void turnToward()
 	{
@@ -360,6 +363,7 @@ abstract public class Enemy extends EnemyShell
 	 */
 	protected void meleeAttack(int damage, int range, int ahead)
 	{
+		runTimerTotal = 0;
 		for(int i  = 0; i < enemies.size(); i++)
 		{
 			distanceFound = checkDistance(x + Math.cos(rads) * ahead, y + Math.sin(rads) * ahead, enemies.get(i).x, enemies.get(i).y);
@@ -391,7 +395,8 @@ abstract public class Enemy extends EnemyShell
 		if(!hasDestination) return;
 		if(runTimerTotal > 0)
 		{
-			run(2);
+			runTimer = 2;
+			action = "Move";
 		} else
 		{
 			double dist = runTowards(destinationX, destinationY);

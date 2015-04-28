@@ -189,6 +189,8 @@ abstract public class EnemyShell extends Human {
 				xdif = x - allies.get(i).x;
 				ydif = y - allies.get(i).y;
 				if (Math.pow(xdif, 2) + Math.pow(ydif, 2) < Math.pow(radius, 2)) {
+					runTimerTotal = 0;
+					allies.get(i).runTimerTotal = 0;
 					moveRads = Math.atan2(ydif, xdif);
 					movementX = (x - (Math.cos(moveRads) * radius) - allies.get(i).x) / 2;
 					movementY = (y - (Math.sin(moveRads) * radius) - allies.get(i).y) / 2;

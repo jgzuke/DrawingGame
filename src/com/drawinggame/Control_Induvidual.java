@@ -43,4 +43,9 @@ abstract public class Control_Induvidual extends Control_Main
 	}
 	@Override
 	protected void archerDoneFiring(Enemy_Archer archer) {}
+	@Override
+	protected int getSize()
+	{
+		return 1;
+	}
 }

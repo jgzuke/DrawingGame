@@ -44,7 +44,7 @@ public final class Game_Control_Enemy extends Game_Control
 			Point p2 = e.groupLocation;
 			if(e.doingNothing && p.X != p2.X)
 			{
-				if(Math.sqrt(Math.pow(p.X-p2.X, 2)+Math.pow(p.Y-p2.Y, 2)) < 100 + e.groupRadius + g.groupRadius)
+				if(g.getSize() + e.getSize() < 29 && Math.sqrt(Math.pow(p.X-p2.X, 2)+Math.pow(p.Y-p2.Y, 2)) < 100 + e.groupRadius + g.groupRadius)
 				{
 					control.spriteController.selectGroup(e, g, false);
 				}

@@ -39,6 +39,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.graphics.Rect;
 import android.util.Log;
 import android.widget.Toast;
@@ -420,6 +421,14 @@ public final class SpriteController
 			aoeRect.right = (int)(proj_TrackerA_AOEs.get(i).x + (proj_TrackerA_AOEs.get(i).getWidth() / 2.5));
 			drawRect(proj_TrackerA_AOEs.get(i).image, aoeRect, g, paint);
 		}
+		drawFog(g, paint);
+	}
+	protected void drawFog(Canvas g, Paint paint)
+	{
+		paint.setStyle(Style.FILL);
+		paint.setColor(Color.argb(50, 200, 200, 200));
+		
+		
 	}
 	/**
 	 * creates an enemy power ball

@@ -18,7 +18,7 @@ public class Control_AI
 				Enemy target = archer.myController.findClosestEnemy(archer);
 				if(target == null) return false;
 				double distanceToTarget = archer.distanceTo(target);
-				if(distanceToTarget < 70 || archer.hp<600 && distanceToTarget<100)
+				if(distanceToTarget < 70 && distanceToTarget > 40)
 				{
 					archer.runAway(target);
 				} else if(distanceToTarget<200)
@@ -75,12 +75,9 @@ public class Control_AI
 				if(target != null)
 				{
 					double distanceToTarget = mage.distanceTo(target);
-					if(distanceToTarget<80)		// MAGES ALWAYS MOVING, DONT STOP TO SHOOT
+					if(distanceToTarget<70)		// MAGES ALWAYS MOVING, DONT STOP TO SHOOT
 					{
 						mage.rollAway(target);
-					} else if(distanceToTarget<120)
-					{
-						mage.runAway(target);
 					} else if(distanceToTarget < 200)
 					{
 						mage.runAround(160, (int)distanceToTarget, target);
@@ -144,7 +141,7 @@ public class Control_AI
 			Enemy target = archer.myController.findClosestEnemy(archer);
 			if(target == null) return;
 			double distanceToTarget = archer.distanceTo(target);
-			if(archer.hp>600&&distanceToTarget<220&&distanceToTarget>70)
+			if(archer.hp>600&&distanceToTarget<220)
 			{
 				archer.shoot(target);
 			}

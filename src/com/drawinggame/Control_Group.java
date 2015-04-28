@@ -491,4 +491,9 @@ public final class Control_Group extends Control_Main
 	{
 		Control_AI.archerDoneFiring(archer, enemiesAround() && !archer.hasDestination && !organizing);
 	}
+	@Override
+	protected int getSize()
+	{
+		return humans.size();
+	}
 }
