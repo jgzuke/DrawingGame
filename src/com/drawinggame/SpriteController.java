@@ -37,6 +37,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.CornerPathEffect;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
@@ -78,6 +79,7 @@ public final class SpriteController
 	protected Bitmap isSelected;
 	protected Game_Control_Player playerGameControl;
 	protected Game_Control_Enemy enemyGameControl;
+	private Paint fogPaint = new Paint();
 	/**
 	 * Initializes all undecided variables, loads level, creates player and enemy objects, and starts frameCaller
 	 */
@@ -89,6 +91,11 @@ public final class SpriteController
 		enemyGameControl = new Game_Control_Enemy(control);
 		setPrices();
 		setPricesEnemy();
+
+		fogPaint.setStrokeJoin(Paint.Join.ROUND);    // set the join to round you want
+		fogPaint.setStrokeCap(Paint.Cap.ROUND);      // set the paint cap to round too
+		fogPaint.setStyle(Style.FILL_AND_STROKE);
+		fogPaint.setColor(Color.argb(80, 0, 0, 0));
 	}
 	protected void setPrices()
 	{
@@ -429,6 +436,8 @@ public final class SpriteController
 	{
 		int wide = visibleArea.length;
 		boolean[][] visibleEdge= new boolean[wide][wide];
+		int[][] visibleEdgeCounts= new int[wide][wide];
+		paint.setColor(Color.argb(100, 255, 0, 0));
 		for(int i = 0; i < wide; i++)
 		{
 			for(int j = 0; j < wide; j ++)
@@ -439,52 +448,140 @@ public final class SpriteController
 				}
 			}
 		}
+		for(int i = 0; i < wide; i++)
+		{
+			for(int j = 0; j < wide; j ++)
+			{
+				if(visibleEdge[i][j])
+				{
+					visibleEdgeCounts[i][j] = connectingEdges(i, j, visibleEdge, wide);
+					if(visibleEdgeCounts[i][j] == 1)
+					{
+						int pX = i*fogSize;
+						int pY = j*fogSize;
+						g.drawRect(pX, pY, pX + fogSize, pY + fogSize, paint);
+					}
+					if(visibleEdgeCounts[i][j] == 2)
+					{
+						paint.setColor(Color.argb(100, 0, 0, 255));
+						int pX = i*fogSize;
+						int pY = j*fogSize;
+						g.drawRect(pX, pY, pX + fogSize, pY + fogSize, paint);
+						paint.setColor(Color.argb(100, 255, 0, 0));
+					}
+				}
+			}
+		}
 		int levelWidth = control.levelController.levelHeight;
 		Path fullPath = new Path();
-		fullPath.moveTo(0, 0);
-		fullPath.lineTo(levelWidth, 0);
-		fullPath.lineTo(levelWidth, levelWidth);
-		fullPath.lineTo(0, levelWidth);
-		fullPath.lineTo(0, 0);
-		addToEdgePath(fullPath, visibleEdge);
+		fullPath.moveTo(-50, -50);
+		fullPath.lineTo(levelWidth+50, -50);
+		fullPath.lineTo(levelWidth+50, levelWidth+50);
+		fullPath.lineTo(-50, levelWidth+50);
+		fullPath.lineTo(-50, -50);
+		addToEdgePath(fullPath, visibleEdgeCounts);
 		fullPath.close();
-		
-		paint.setStyle(Style.FILL);
-		paint.setColor(Color.argb(80, 0, 0, 0));
-		g.drawPath(fullPath, paint);
+		fogPaint.setColor(Color.argb(50, 0, 0, 0));
+		fogPaint.setStyle(Style.FILL);
+		g.drawPath(fullPath, fogPaint);
+		fogPaint.setColor(Color.rgb(0, 0, 0));
+		fogPaint.setStyle(Style.STROKE);
+		fogPaint.setStrokeWidth(1);
+		g.drawPath(fullPath, fogPaint);
 	}
-	private void addToEdgePath(Path path, boolean [][] edge)
+	private void addToEdgePath(Path path, int [][] edge)
 	{
 		int [] p = findEdgePath(edge);
 		if(p == null) return;
 		int [] firstP = p.clone();
 		boolean pathDone = false;
+		int x;
+		int y;
+		path.lineTo(p[0] * fogSize + fogSize/2, p[1] * fogSize + fogSize/2);
 		while(!pathDone)
 		{
-			path.lineTo(p[0] * fogSpacing, p[1] * fogSpacing);
+			x = p[0] * fogSize + fogSize/2;
+			y = p[1] * fogSize + fogSize/2;
+			pathDone = findNextEdge(edge, p);
+			if(!pathDone)
+			{
+				path.quadTo(x, y, p[0] * fogSize + fogSize/2, p[1] * fogSize + fogSize/2);
+			} else
+			{
+				path.lineTo(x, y);
+			}
 			pathDone = findNextEdge(edge, p);
 		}
-		path.lineTo(firstP[0] * fogSpacing, firstP[1] * fogSpacing);
+		path.lineTo(firstP[0] * fogSize + fogSize/2, firstP[1] * fogSize + fogSize/2);
 		path.close();
 		addToEdgePath(path, edge);
 	}
-	private boolean findNextEdge(boolean [][] edge, int [] p)
+	private int lastDirection = -1; // 0:left, 1:up, 2:right, 3: down
+	private boolean findNextEdge(int [][] edge, int [] p) // 0 left, 1 top, 2 right, 3 bottom
 	{
-		edge[p[0]][p[1]] = false;
-		if(p[1]+1 < edge.length && edge[p[0]][p[1]+1]) p[1] ++;
-		else if(p[1]-1 >=0 && edge[p[0]][p[1]-1]) p[1] --;
-		else if(p[0]+1 < edge.length && edge[p[0]+1][p[1]]) p[0] ++;
-		else if(p[0]-1 >= 0 && edge[p[0]-1][p[1]]) p[0] --;
-		else return true;
+		edge[p[0]][p[1]] --;
+		boolean used = edge[p[0]][p[1]] == 0;
+		if(lastDirection != 1 && p[1]+1 < edge.length && edge[p[0]][p[1]+1] > 0)
+		{
+			p[1] ++;
+			lastDirection = 3;
+		} else if(lastDirection != 3 && p[1]-1 >=0 && edge[p[0]][p[1]-1] > 0)
+		{
+			p[1] --;
+			lastDirection = 1;
+		} else if(lastDirection != 0 && p[0]+1 < edge.length && edge[p[0]+1][p[1]] > 0)
+		{
+			p[0] ++;
+			lastDirection = 2;
+		} else if(lastDirection != 2 && p[0]-1 >= 0 && edge[p[0]-1][p[1]] > 0)
+		{
+			p[0] --;
+			lastDirection = 0;
+		} else 
+		{
+			switch(lastDirection)
+			{
+			case 0:
+				if(p[0]+1 < edge.length && edge[p[0]+1][p[1]] > 0)
+				{
+					p[0] ++;
+					lastDirection = 2;
+					return false;
+				}
+			case 1:
+				if(p[1]+1 < edge.length && edge[p[0]][p[1]+1] > 0)
+				{
+					p[1] ++;
+					lastDirection = 3;
+					return false;
+				}
+			case 2:
+				if(p[0]-1 >= 0 && edge[p[0]-1][p[1]] > 0)
+				{
+					p[0] --;
+					lastDirection = 0;
+					return false;
+				}
+			case 3:
+				if(p[1]-1 >=0 && edge[p[0]][p[1]-1] > 0)
+				{
+					p[1] --;
+					lastDirection = 1;
+					return false;
+				}
+			}
+			return true;
+		}
 		return false;
-	}
-	private int[] findEdgePath(boolean [][] edge)
+	} 
+	private int[] findEdgePath(int [][] edge)
 	{
+		lastDirection = -1;
 		for(int i = 0; i < edge.length; i++)
 		{
 			for(int j = 0; j < edge.length; j++)
 			{
-				if(edge[i][j])
+				if(edge[i][j] > 0)
 				{
 					int [] found = {i,j};
 					return found;
@@ -493,23 +590,32 @@ public final class SpriteController
 		}
 		return null;
 	}
+	protected int connectingEdges(int i, int j, boolean [][] visibleEdge, int wide)
+	{
+		int count = 0;
+		if(i > 0 && visibleEdge[i-1][j]) count ++;
+		if(j > 0 && visibleEdge[i][j-1]) count ++;
+		if(i < wide-1 && visibleEdge[i+1][j]) count ++;
+		if(j < wide-1 && visibleEdge[i][j+1]) count ++;
+		return count - 1;
+	}
 	protected boolean edgeOfVisibility(int x, int y, boolean [][] a, int wide)
 	{
 		if(x == 0 || y == 0 || x == wide-1 || y == wide-1) return true; // is on the edge
 		// if any near squares are visible
 		return !(a[x-1][y-1] && a[x-1][y] && a[x-1][y+1] && a[x][y+1] && a[x+1][y+1] && a[x+1][y] && a[x+1][y-1] && a[x][y-1]);
 	}
-	protected int fogSpacing = 20;
+	protected int fogSize = 20;
 	protected boolean[][] getVisibilityMap()
 	{
 		LevelController l = control.levelController;
-		int wide = l.levelWidth/fogSpacing + 1;
+		int wide = l.levelWidth/fogSize + 1;
 		boolean[][] visibleArea= new boolean[wide][wide];
 		for(int i = 0; i < allies.size(); i++)
 		{
-			int x = (int) (allies.get(i).x/fogSpacing);
-			int y = (int) (allies.get(i).y/fogSpacing);
-			double radius = 450 / fogSpacing;
+			int x = (int) (allies.get(i).x/fogSize);
+			int y = (int) (allies.get(i).y/fogSize);
+			double radius = 450 / fogSize;
 			for(int j = 0; j < radius; j ++)
 			{
 				for(int k = 0; k < Math.sqrt(Math.pow(radius, 2) - Math.pow(j, 2)); k ++)
