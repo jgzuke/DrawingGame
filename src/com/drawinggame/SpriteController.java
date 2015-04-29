@@ -40,6 +40,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.util.Log;
 import android.widget.Toast;
@@ -375,6 +376,7 @@ public final class SpriteController
 	protected void drawSprites(Canvas g, Paint paint, ImageLibrary imageLibrary)
 	{
 		Rect aoeRect = new Rect();
+		boolean [][] visibilityMap = getVisibilityMap();
 		for(int i = 0; i < creationMarkers.size(); i++)
 		{
 			paint.setAlpha(creationMarkers.get(i).getAlpha());
@@ -421,14 +423,105 @@ public final class SpriteController
 			aoeRect.right = (int)(proj_TrackerA_AOEs.get(i).x + (proj_TrackerA_AOEs.get(i).getWidth() / 2.5));
 			drawRect(proj_TrackerA_AOEs.get(i).image, aoeRect, g, paint);
 		}
-		drawFog(g, paint);
+		drawFog(g, paint, visibilityMap);
 	}
-	protected void drawFog(Canvas g, Paint paint)
+	protected void drawFog(Canvas g, Paint paint, boolean [][] visibleArea)
 	{
+		int wide = visibleArea.length;
+		boolean[][] visibleEdge= new boolean[wide][wide];
+		for(int i = 0; i < wide; i++)
+		{
+			for(int j = 0; j < wide; j ++)
+			{
+				if(visibleArea[i][j])
+				{
+					visibleEdge[i][j] = edgeOfVisibility(i, j, visibleArea, wide);
+				}
+			}
+		}
+		int levelWidth = control.levelController.levelHeight;
+		Path fullPath = new Path();
+		fullPath.moveTo(0, 0);
+		fullPath.lineTo(levelWidth, 0);
+		fullPath.lineTo(levelWidth, levelWidth);
+		fullPath.lineTo(0, levelWidth);
+		fullPath.lineTo(0, 0);
+		addToEdgePath(fullPath, visibleEdge);
+		fullPath.close();
+		
 		paint.setStyle(Style.FILL);
-		paint.setColor(Color.argb(50, 200, 200, 200));
-		
-		
+		paint.setColor(Color.argb(80, 0, 0, 0));
+		g.drawPath(fullPath, paint);
+	}
+	private void addToEdgePath(Path path, boolean [][] edge)
+	{
+		int [] p = findEdgePath(edge);
+		if(p == null) return;
+		int [] firstP = p.clone();
+		boolean pathDone = false;
+		while(!pathDone)
+		{
+			path.lineTo(p[0] * fogSpacing, p[1] * fogSpacing);
+			pathDone = findNextEdge(edge, p);
+		}
+		path.lineTo(firstP[0] * fogSpacing, firstP[1] * fogSpacing);
+		path.close();
+		addToEdgePath(path, edge);
+	}
+	private boolean findNextEdge(boolean [][] edge, int [] p)
+	{
+		edge[p[0]][p[1]] = false;
+		if(p[1]+1 < edge.length && edge[p[0]][p[1]+1]) p[1] ++;
+		else if(p[1]-1 >=0 && edge[p[0]][p[1]-1]) p[1] --;
+		else if(p[0]+1 < edge.length && edge[p[0]+1][p[1]]) p[0] ++;
+		else if(p[0]-1 >= 0 && edge[p[0]-1][p[1]]) p[0] --;
+		else return true;
+		return false;
+	}
+	private int[] findEdgePath(boolean [][] edge)
+	{
+		for(int i = 0; i < edge.length; i++)
+		{
+			for(int j = 0; j < edge.length; j++)
+			{
+				if(edge[i][j])
+				{
+					int [] found = {i,j};
+					return found;
+				}
+			}
+		}
+		return null;
+	}
+	protected boolean edgeOfVisibility(int x, int y, boolean [][] a, int wide)
+	{
+		if(x == 0 || y == 0 || x == wide-1 || y == wide-1) return true; // is on the edge
+		// if any near squares are visible
+		return !(a[x-1][y-1] && a[x-1][y] && a[x-1][y+1] && a[x][y+1] && a[x+1][y+1] && a[x+1][y] && a[x+1][y-1] && a[x][y-1]);
+	}
+	protected int fogSpacing = 20;
+	protected boolean[][] getVisibilityMap()
+	{
+		LevelController l = control.levelController;
+		int wide = l.levelWidth/fogSpacing + 1;
+		boolean[][] visibleArea= new boolean[wide][wide];
+		for(int i = 0; i < allies.size(); i++)
+		{
+			int x = (int) (allies.get(i).x/fogSpacing);
+			int y = (int) (allies.get(i).y/fogSpacing);
+			double radius = 450 / fogSpacing;
+			for(int j = 0; j < radius; j ++)
+			{
+				for(int k = 0; k < Math.sqrt(Math.pow(radius, 2) - Math.pow(j, 2)); k ++)
+				{
+					if(x+j<wide && y+k < wide) visibleArea[x + j][y + k] = true;
+					if(x+j<wide && y-k >= 0) visibleArea[x + j][y - k] = true;
+					if(x-j >= 0 && y+k < wide) visibleArea[x - j][y + k] = true;
+					if(x-j >= 0 && y-k >= 0) visibleArea[x - j][y - k] = true;
+				}
+			}
+		}
+		return visibleArea;
 	}
 	/**
 	 * creates an enemy power ball
