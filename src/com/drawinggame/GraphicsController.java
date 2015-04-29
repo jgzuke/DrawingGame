@@ -70,6 +70,7 @@ public final class GraphicsController extends View
 	private Controller control;
 	private SpriteController spriteController;
 	private LevelController levelController;
+	private int grassGreen = Color.rgb(51, 102, 0);
 	private Context context;
 	/** 
 	 * Initializes all undecided variables, loads level, creates player and enemy objects, and starts frameCaller
@@ -177,7 +178,7 @@ public final class GraphicsController extends View
 	}
 	protected void drawUnpaused(Canvas g)
 	{
-		paint.setColor(Color.rgb(51, 102, 0));
+		paint.setColor(grassGreen);
 		paint.setStyle(Style.FILL);
 		g.drawRect(0, 0, phoneWidth, phoneHeight, paint);
 		g.save();

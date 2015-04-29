@@ -92,10 +92,9 @@ public final class SpriteController
 		setPrices();
 		setPricesEnemy();
 
-		fogPaint.setStrokeJoin(Paint.Join.ROUND);    // set the join to round you want
-		fogPaint.setStrokeCap(Paint.Cap.ROUND);      // set the paint cap to round too
-		fogPaint.setStyle(Style.FILL_AND_STROKE);
-		fogPaint.setColor(Color.argb(80, 0, 0, 0));
+		fogPaint.setStyle(Style.FILL);
+		fogPaint.setPathEffect(new CornerPathEffect(fogSize/2) );
+		fogPaint.setColor(Color.rgb(40, 80, 0));
 	}
 	protected void setPrices()
 	{
@@ -455,7 +454,7 @@ public final class SpriteController
 				if(visibleEdge[i][j])
 				{
 					visibleEdgeCounts[i][j] = connectingEdges(i, j, visibleEdge, wide);
-					if(visibleEdgeCounts[i][j] == 1)
+					/*if(visibleEdgeCounts[i][j] == 1)
 					{
 						int pX = i*fogSize;
 						int pY = j*fogSize;
@@ -468,53 +467,69 @@ public final class SpriteController
 						int pY = j*fogSize;
 						g.drawRect(pX, pY, pX + fogSize, pY + fogSize, paint);
 						paint.setColor(Color.argb(100, 255, 0, 0));
-					}
+					}*/
 				}
 			}
 		}
-		int levelWidth = control.levelController.levelHeight;
-		Path fullPath = new Path();
-		fullPath.moveTo(-50, -50);
-		fullPath.lineTo(levelWidth+50, -50);
-		fullPath.lineTo(levelWidth+50, levelWidth+50);
-		fullPath.lineTo(-50, levelWidth+50);
-		fullPath.lineTo(-50, -50);
-		addToEdgePath(fullPath, visibleEdgeCounts);
-		fullPath.close();
-		fogPaint.setColor(Color.argb(50, 0, 0, 0));
-		fogPaint.setStyle(Style.FILL);
-		g.drawPath(fullPath, fogPaint);
-		fogPaint.setColor(Color.rgb(0, 0, 0));
-		fogPaint.setStyle(Style.STROKE);
-		fogPaint.setStrokeWidth(1);
-		g.drawPath(fullPath, fogPaint);
+		Vector<Point> points = new Vector<Point>();
+		addToEdgePath(points, visibleEdgeCounts);
+		//fogPaint.setColor(Color.argb(50, 0, 0, 0));
+		//fogPaint.setStyle(Style.FILL);
+		g.drawPath(getPathFromVector(points), fogPaint);
+		//fogPaint.setColor(Color.rgb(0, 0, 0));
+		//fogPaint.setStyle(Style.STROKE);
+		//fogPaint.setStrokeWidth(1);
+		//g.drawPath(fullPath, fogPaint);
 	}
-	private void addToEdgePath(Path path, int [][] edge)
+	protected int fogSize = 30;
+	private int skip = 1;
+    protected Path getPathFromVector(Vector<Point> points)
+    {
+    	Path path = new Path();
+		int levelWidth = control.levelController.levelHeight;
+    	path.moveTo(-50, -50);
+    	path.lineTo(levelWidth+50, -50);
+    	path.lineTo(levelWidth+50, levelWidth+50);
+    	path.lineTo(-50, levelWidth+50);
+    	path.lineTo(-50, -50);
+    	if(points.size() == 0) return path;
+		Point p;
+		for(int j = 0; j < points.size() - 1; j+=2)
+		{
+			p = (Point) points.get(j);
+	        Point n = points.get(j + 1);
+	        //path.quadTo((int)p.X, (int)p.Y, (int)n.X, (int)n.Y);
+	        path.lineTo((int)p.X, (int)p.Y);
+	        path.lineTo((int)n.X, (int)n.Y);
+		}
+		p = (Point) points.get(points.size() - 1);
+		path.lineTo((int)p.X, (int)p.Y);
+		path.lineTo(-50, -50);
+		return path;
+    }
+	private void addToEdgePath(Vector<Point> points, int [][] edge)
 	{
 		int [] p = findEdgePath(edge);
 		if(p == null) return;
 		int [] firstP = p.clone();
 		boolean pathDone = false;
+		int actuallyAdd = 0;
 		int x;
 		int y;
-		path.lineTo(p[0] * fogSize + fogSize/2, p[1] * fogSize + fogSize/2);
+		for(int i =0; i < 2; i++) points.add(new Point(p[0] * fogSize + fogSize/2, p[1] * fogSize + fogSize/2));
 		while(!pathDone)
 		{
-			x = p[0] * fogSize + fogSize/2;
-			y = p[1] * fogSize + fogSize/2;
-			pathDone = findNextEdge(edge, p);
-			if(!pathDone)
+			if(actuallyAdd == 0)
 			{
-				path.quadTo(x, y, p[0] * fogSize + fogSize/2, p[1] * fogSize + fogSize/2);
-			} else
-			{
-				path.lineTo(x, y);
+				points.add(new Point(p[0] * fogSize + fogSize/2, p[1] * fogSize + fogSize/2));
+				actuallyAdd = skip;
 			}
+			actuallyAdd --;
 			pathDone = findNextEdge(edge, p);
 		}
-		path.lineTo(firstP[0] * fogSize + fogSize/2, firstP[1] * fogSize + fogSize/2);
-		path.close();
-		addToEdgePath(path, edge);
+		for(int i =0; i < 2; i++) points.add(new Point(firstP[0] * fogSize + fogSize/2, firstP[1] * fogSize + fogSize/2));
+		for(int i =0; i < 2; i++) points.add(new Point(-50, -50));
+		addToEdgePath(points, edge);
 	}
 	private int lastDirection = -1; // 0:left, 1:up, 2:right, 3: down
 	private boolean findNextEdge(int [][] edge, int [] p) // 0 left, 1 top, 2 right, 3 bottom
@@ -605,7 +620,6 @@ public final class SpriteController
 		// if any near squares are visible
 		return !(a[x-1][y-1] && a[x-1][y] && a[x-1][y+1] && a[x][y+1] && a[x+1][y+1] && a[x+1][y] && a[x+1][y-1] && a[x][y-1]);
 	}
-	protected int fogSize = 20;
 	protected boolean[][] getVisibilityMap()
 	{
 		LevelController l = control.levelController;
