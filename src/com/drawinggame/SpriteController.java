@@ -80,6 +80,7 @@ public final class SpriteController
 	protected Game_Control_Player playerGameControl;
 	protected Game_Control_Enemy enemyGameControl;
 	private Paint fogPaint = new Paint();
+	boolean[][] visibilityMap;
 	Rect aoeRect = new Rect();
 	/**
 	 * Initializes all undecided variables, loads level, creates player and enemy objects, and starts frameCaller
@@ -95,8 +96,12 @@ public final class SpriteController
 
 		fogPaint.setStyle(Style.FILL);
 		fogPaint.setPathEffect(new CornerPathEffect(fogSize/2) );
-		//fogPaint.setColor(Color.rgb(40, 80, 0));
-		fogPaint.setColor(Color.argb(50, 0, 0, 0));
+		fogPaint.setColor(Color.argb(100, 0, 0, 0));
+	}
+	protected void setMapSize(LevelController l)
+	{
+		int wide = l.levelWidth/fogSize + 1;
+		visibilityMap = new boolean[wide][wide];
 	}
 	protected void setPrices()
 	{
@@ -144,6 +149,7 @@ public final class SpriteController
 				return;
 			}
 			playerGameControl.mana -= manaPrices[type];
+			creationMarkers.add(new CreationMarker(x, y, control.imageLibrary.createMarker, this));		
 		} else
 		{
 			if(enemyGameControl.mana < manaPricesEnemy[type])
@@ -152,7 +158,6 @@ public final class SpriteController
 			}
 			enemyGameControl.mana -= manaPricesEnemy[type];
 		}
-		creationMarkers.add(new CreationMarker(x, y, control.imageLibrary.createMarker, this));		
 		ArrayList<Enemy> toAdd;
 		ArrayList<Control_Main> toAddController;
 		if(isOnPlayersTeam)
@@ -293,7 +298,7 @@ public final class SpriteController
 		//int offset;
 		for(int i = 0; i < enemies.size(); i++)
 		{
-			if(enemies.get(i) != null && enemies.get(i).hp != enemies.get(i).hpMax)
+			if(enemies.get(i) != null && spriteOnScreen(enemies.get(i)) && enemies.get(i).hp != enemies.get(i).hpMax)
 			{
 					minX = (int) enemies.get(i).x - 20;
 					maxX = (int) enemies.get(i).x + 20;
@@ -375,18 +380,18 @@ public final class SpriteController
 			drawFlat(enemyStructures.get(i), g, paint);
 		}
 	}
-	protected void drawFog(Canvas g, Paint paint, boolean [][] visibleArea)
+	protected void drawFog(Canvas g, Paint paint)
 	{
-		int wide = visibleArea.length;
+		int wide = visibilityMap.length;
 		boolean[][] visibleEdge= new boolean[wide][wide];
 		int[][] visibleEdgeCounts= new int[wide][wide];
 		for(int i = 0; i < wide; i++)
 		{
 			for(int j = 0; j < wide; j ++)
 			{
-				if(visibleArea[i][j])
+				if(visibilityMap[i][j])
 				{
-					visibleEdge[i][j] = edgeOfVisibility(i, j, visibleArea, wide);
+					visibleEdge[i][j] = edgeOfVisibility(i, j, visibilityMap, wide);
 				}
 			}
 		}
@@ -549,28 +554,27 @@ public final class SpriteController
 		// if any near squares are visible
 		return !(a[x-1][y-1] && a[x-1][y] && a[x-1][y+1] && a[x][y+1] && a[x+1][y+1] && a[x+1][y] && a[x+1][y-1] && a[x][y-1]);
 	}
-	protected boolean[][] getVisibilityMap()
+	protected void getVisibilityMap()
 	{
 		LevelController l = control.levelController;
 		int wide = l.levelWidth/fogSize + 1;
-		boolean[][] visibleArea= new boolean[wide][wide];
+		visibilityMap= new boolean[wide][wide];
 		for(int i = 0; i < allies.size(); i++)
 		{
 			int x = (int) (allies.get(i).x/fogSize);
 			int y = (int) (allies.get(i).y/fogSize);
-			double radius = 450 / fogSize;
+			double radius = 550 / fogSize;
 			for(int j = 0; j < radius; j ++)
 			{
 				for(int k = 0; k < Math.sqrt(Math.pow(radius, 2) - Math.pow(j, 2)); k ++)
 				{
-					if(x+j<wide && y+k < wide) visibleArea[x + j][y + k] = true;
-					if(x+j<wide && y-k >= 0) visibleArea[x + j][y - k] = true;
-					if(x-j >= 0 && y+k < wide) visibleArea[x - j][y + k] = true;
-					if(x-j >= 0 && y-k >= 0) visibleArea[x - j][y - k] = true;
+					if(x+j<wide && y+k < wide) visibilityMap[x + j][y + k] = true;
+					if(x+j<wide && y-k >= 0) visibilityMap[x + j][y - k] = true;
+					if(x-j >= 0 && y+k < wide) visibilityMap[x - j][y + k] = true;
+					if(x-j >= 0 && y-k >= 0) visibilityMap[x - j][y - k] = true;
 				}
 			}
 		}
-		return visibleArea;
 	}
 	/**
 	 * creates an enemy power ball
@@ -850,7 +854,7 @@ public final class SpriteController
 	 */
 	protected void drawSprites(Canvas g, Paint paint, ImageLibrary imageLibrary)
 	{
-		boolean [][] visibilityMap = getVisibilityMap();
+		getVisibilityMap();
 		for(int i = 0; i < creationMarkers.size(); i++)
 		{
 			paint.setAlpha(creationMarkers.get(i).getAlpha());
@@ -887,14 +891,43 @@ public final class SpriteController
 		{
 			drawAOE(proj_TrackerA_AOEs.get(i), g, paint);
 		}
-		drawFog(g, paint, visibilityMap);
+		drawFog(g, paint);
 	}
+	private boolean spriteOnScreen(Sprite s)
+	{
+		return spriteOnScreen(s.x, s.y, s.width, s.height);
+	}
+	private boolean spriteOnScreen(double x, double y, double width, double height)
+	{
+		return pointOnScreen(x-width/2, y-height/2) || pointOnScreen(x+width/2, y-height/2) || pointOnScreen(x-width/2, y+height/2) || pointOnScreen(x+width/2, y+height/2);
+	}
+	private boolean pointOnScreen(double x, double y)
+	{
+		if(!visibilityMap[(int) (x/fogSize)][(int) (y/fogSize)])
+		{
+			return false;
+		}
+		if(!mapPointOnScreen(x, y))
+		{
+			return false;
+		}
+		return true;
+	}
+	protected boolean mapPointOnScreen(double x2, double y2)
+    { // reversed one
+		//double x2  = xR + x*R
+		// x = (x2-xR)/R
+		GraphicsController g = control.graphicsController;
+		double screenX = (x2-g.mapXSlide)/g.playScreenSize;
+		double screenY = (y2-g.mapYSlide)/g.playScreenSize;
+    	return (screenX>0 && screenY>0 && screenX<g.phoneWidth && screenY<g.phoneHeight);
+    }
 	/**
 	 * draws a sprite
 	 */
 	public void drawAOE(Proj_Tracker_AOE sprite, Canvas g, Paint p)
 	{
-		if(sprite!=null)
+		if(sprite!=null && spriteOnScreen(sprite.x, sprite.y, sprite.getWidth(), sprite.getHeight()))
 		{
 			p.setAlpha(sprite.alpha);
 			aoeRect.top = (int)(sprite.y - (sprite.getHeight() / 2.5));
@@ -909,7 +942,7 @@ public final class SpriteController
 	 */
 	public void draw(Sprite sprite, Canvas g, Paint p)
 	{
-		if(sprite!=null)
+		if(sprite!=null && spriteOnScreen(sprite))
 		{
 				rotateImages.reset();
 				rotateImages.postTranslate(-sprite.width / 2, -sprite.height / 2);

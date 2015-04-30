@@ -100,6 +100,7 @@ public final class Controller
 		time = System.nanoTime();
 		levelController = new LevelController(this);
 		levelController.loadLevel(1);
+		spriteController.setMapSize(levelController);
 		Log.e("myid", "levelControl: ".concat(Long.toString((System.nanoTime()-time)/100000)));
 		
 		time = System.nanoTime();
