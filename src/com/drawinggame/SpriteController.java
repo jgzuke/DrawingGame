@@ -80,6 +80,7 @@ public final class SpriteController
 	protected Game_Control_Player playerGameControl;
 	protected Game_Control_Enemy enemyGameControl;
 	private Paint fogPaint = new Paint();
+	Rect aoeRect = new Rect();
 	/**
 	 * Initializes all undecided variables, loads level, creates player and enemy objects, and starts frameCaller
 	 */
@@ -94,7 +95,8 @@ public final class SpriteController
 
 		fogPaint.setStyle(Style.FILL);
 		fogPaint.setPathEffect(new CornerPathEffect(fogSize/2) );
-		fogPaint.setColor(Color.rgb(40, 80, 0));
+		//fogPaint.setColor(Color.rgb(40, 80, 0));
+		fogPaint.setColor(Color.argb(50, 0, 0, 0));
 	}
 	protected void setPrices()
 	{
@@ -373,70 +375,11 @@ public final class SpriteController
 			drawFlat(enemyStructures.get(i), g, paint);
 		}
 	}
-	/**
-	 * draws all the sprites onto the canvas
-	 * @param g canvas to use
-	 * @param paint paint to use
-	 * @param imageLibrary imageLibrary to use
-	 */
-	protected void drawSprites(Canvas g, Paint paint, ImageLibrary imageLibrary)
-	{
-		Rect aoeRect = new Rect();
-		boolean [][] visibilityMap = getVisibilityMap();
-		for(int i = 0; i < creationMarkers.size(); i++)
-		{
-			paint.setAlpha(creationMarkers.get(i).getAlpha());
-			drawFlat(creationMarkers.get(i), g, paint);
-		}
-		paint.setAlpha(255);
-		for(int i = 0; i < allies.size(); i++)
-		{
-			if(allies.get(i).selected) g.drawBitmap(control.imageLibrary.isSelected, (int)allies.get(i).x-30, (int)allies.get(i).y-30, paint);
-		}
-		for(int i = 0; i < allies.size(); i++)
-		{
-			draw(allies.get(i), g, paint);
-		}
-		for(int i = 0; i < enemies.size(); i++)
-		{
-			draw(enemies.get(i), g, paint);
-		}
-		for(int i = 0; i < proj_TrackerAs.size(); i++)
-		{
-			paint.setAlpha(proj_TrackerAs.get(i).alpha);
-			draw(proj_TrackerAs.get(i), g, paint);
-		}
-		for(int i = 0; i < proj_TrackerEs.size(); i++)
-		{
-			paint.setAlpha(proj_TrackerEs.get(i).alpha);
-			draw(proj_TrackerEs.get(i), g, paint);
-		}
-		for(int i = 0; i < proj_TrackerE_AOEs.size(); i++)
-		{
-			paint.setAlpha(proj_TrackerE_AOEs.get(i).alpha);
-			aoeRect.top = (int)(proj_TrackerE_AOEs.get(i).y - (proj_TrackerE_AOEs.get(i).getHeight() / 2.5));
-			aoeRect.bottom = (int)(proj_TrackerE_AOEs.get(i).y + (proj_TrackerE_AOEs.get(i).getHeight() / 2.5));
-			aoeRect.left = (int)(proj_TrackerE_AOEs.get(i).x - (proj_TrackerE_AOEs.get(i).getWidth() / 2.5));
-			aoeRect.right = (int)(proj_TrackerE_AOEs.get(i).x + (proj_TrackerE_AOEs.get(i).getWidth() / 2.5));
-			drawRect(proj_TrackerE_AOEs.get(i).image, aoeRect, g, paint);
-		}
-		for(int i = 0; i < proj_TrackerA_AOEs.size(); i++)
-		{
-			paint.setAlpha(proj_TrackerA_AOEs.get(i).alpha);
-			aoeRect.top = (int)(proj_TrackerA_AOEs.get(i).y - (proj_TrackerA_AOEs.get(i).getHeight() / 2.5));
-			aoeRect.bottom = (int)(proj_TrackerA_AOEs.get(i).y + (proj_TrackerA_AOEs.get(i).getHeight() / 2.5));
-			aoeRect.left = (int)(proj_TrackerA_AOEs.get(i).x - (proj_TrackerA_AOEs.get(i).getWidth() / 2.5));
-			aoeRect.right = (int)(proj_TrackerA_AOEs.get(i).x + (proj_TrackerA_AOEs.get(i).getWidth() / 2.5));
-			drawRect(proj_TrackerA_AOEs.get(i).image, aoeRect, g, paint);
-		}
-		drawFog(g, paint, visibilityMap);
-	}
 	protected void drawFog(Canvas g, Paint paint, boolean [][] visibleArea)
 	{
 		int wide = visibleArea.length;
 		boolean[][] visibleEdge= new boolean[wide][wide];
 		int[][] visibleEdgeCounts= new int[wide][wide];
-		paint.setColor(Color.argb(100, 255, 0, 0));
 		for(int i = 0; i < wide; i++)
 		{
 			for(int j = 0; j < wide; j ++)
@@ -473,15 +416,16 @@ public final class SpriteController
 		}
 		Vector<Point> points = new Vector<Point>();
 		addToEdgePath(points, visibleEdgeCounts);
-		//fogPaint.setColor(Color.argb(50, 0, 0, 0));
-		//fogPaint.setStyle(Style.FILL);
 		g.drawPath(getPathFromVector(points), fogPaint);
-		//fogPaint.setColor(Color.rgb(0, 0, 0));
-		//fogPaint.setStyle(Style.STROKE);
-		//fogPaint.setStrokeWidth(1);
-		//g.drawPath(fullPath, fogPaint);
+		/*fogPaint.setColor(Color.argb(50, 0, 0, 0));
+		fogPaint.setStyle(Style.FILL);
+		g.drawPath(getPathFromVector(points), fogPaint);
+		fogPaint.setColor(Color.rgb(0, 0, 0));
+		fogPaint.setStyle(Style.STROKE);
+		fogPaint.setStrokeWidth(1);
+		g.drawPath(getPathFromVector(points), fogPaint);*/
 	}
-	protected int fogSize = 30;
+	protected int fogSize = 40;
 	private int skip = 1;
     protected Path getPathFromVector(Vector<Point> points)
     {
@@ -540,51 +484,36 @@ public final class SpriteController
 		{
 			p[1] ++;
 			lastDirection = 3;
-		} else if(lastDirection != 3 && p[1]-1 >=0 && edge[p[0]][p[1]-1] > 0)
-		{
-			p[1] --;
-			lastDirection = 1;
 		} else if(lastDirection != 0 && p[0]+1 < edge.length && edge[p[0]+1][p[1]] > 0)
 		{
 			p[0] ++;
 			lastDirection = 2;
+		} else if(lastDirection != 3 && p[1]-1 >=0 && edge[p[0]][p[1]-1] > 0)
+		{
+			p[1] --;
+			lastDirection = 1;
 		} else if(lastDirection != 2 && p[0]-1 >= 0 && edge[p[0]-1][p[1]] > 0)
 		{
 			p[0] --;
 			lastDirection = 0;
-		} else 
+		} else if(lastDirection == 1 && p[1]+1 < edge.length && edge[p[0]][p[1]+1] > 0)
 		{
-			switch(lastDirection)
-			{
-			case 0:
-				if(p[0]+1 < edge.length && edge[p[0]+1][p[1]] > 0)
-				{
-					p[0] ++;
-					lastDirection = 2;
-					return false;
-				}
-			case 1:
-				if(p[1]+1 < edge.length && edge[p[0]][p[1]+1] > 0)
-				{
-					p[1] ++;
-					lastDirection = 3;
-					return false;
-				}
-			case 2:
-				if(p[0]-1 >= 0 && edge[p[0]-1][p[1]] > 0)
-				{
-					p[0] --;
-					lastDirection = 0;
-					return false;
-				}
-			case 3:
-				if(p[1]-1 >=0 && edge[p[0]][p[1]-1] > 0)
-				{
-					p[1] --;
-					lastDirection = 1;
-					return false;
-				}
-			}
+			p[1] ++;
+			lastDirection = 3;
+		} else if(lastDirection == 0 && p[0]+1 < edge.length && edge[p[0]+1][p[1]] > 0)
+		{
+			p[0] ++;
+			lastDirection = 2;
+		} else if(lastDirection == 3 && p[1]-1 >=0 && edge[p[0]][p[1]-1] > 0)
+		{
+			p[1] --;
+			lastDirection = 1;
+		} else if(lastDirection == 2 && p[0]-1 >= 0 && edge[p[0]-1][p[1]] > 0)
+		{
+			p[0] --;
+			lastDirection = 0;
+		} else
+		{
 			return true;
 		}
 		return false;
@@ -910,6 +839,69 @@ public final class SpriteController
 		if(sprite!=null)
 		{
 			g.drawBitmap(image, (int)sprite.x-(w/2), (int)sprite.y-(h/2), p);
+		}
+	}
+
+	/**
+	 * draws all the sprites onto the canvas
+	 * @param g canvas to use
+	 * @param paint paint to use
+	 * @param imageLibrary imageLibrary to use
+	 */
+	protected void drawSprites(Canvas g, Paint paint, ImageLibrary imageLibrary)
+	{
+		boolean [][] visibilityMap = getVisibilityMap();
+		for(int i = 0; i < creationMarkers.size(); i++)
+		{
+			paint.setAlpha(creationMarkers.get(i).getAlpha());
+			drawFlat(creationMarkers.get(i), g, paint);
+		}
+		paint.setAlpha(255);
+		for(int i = 0; i < allies.size(); i++)
+		{
+			if(allies.get(i).selected) g.drawBitmap(control.imageLibrary.isSelected, (int)allies.get(i).x-30, (int)allies.get(i).y-30, paint);
+		}
+		for(int i = 0; i < allies.size(); i++)
+		{
+			draw(allies.get(i), g, paint);
+		}
+		for(int i = 0; i < enemies.size(); i++)
+		{
+			draw(enemies.get(i), g, paint);
+		}
+		for(int i = 0; i < proj_TrackerAs.size(); i++)
+		{
+			paint.setAlpha(proj_TrackerAs.get(i).alpha);
+			draw(proj_TrackerAs.get(i), g, paint);
+		}
+		for(int i = 0; i < proj_TrackerEs.size(); i++)
+		{
+			paint.setAlpha(proj_TrackerEs.get(i).alpha);
+			draw(proj_TrackerEs.get(i), g, paint);
+		}
+		for(int i = 0; i < proj_TrackerE_AOEs.size(); i++)
+		{
+			drawAOE(proj_TrackerE_AOEs.get(i), g, paint);
+		}
+		for(int i = 0; i < proj_TrackerA_AOEs.size(); i++)
+		{
+			drawAOE(proj_TrackerA_AOEs.get(i), g, paint);
+		}
+		drawFog(g, paint, visibilityMap);
+	}
+	/**
+	 * draws a sprite
+	 */
+	public void drawAOE(Proj_Tracker_AOE sprite, Canvas g, Paint p)
+	{
+		if(sprite!=null)
+		{
+			p.setAlpha(sprite.alpha);
+			aoeRect.top = (int)(sprite.y - (sprite.getHeight() / 2.5));
+			aoeRect.bottom = (int)(sprite.y + (sprite.getHeight() / 2.5));
+			aoeRect.left = (int)(sprite.x - (sprite.getWidth() / 2.5));
+			aoeRect.right = (int)(sprite.x + (sprite.getWidth() / 2.5));
+			drawRect(sprite.image, aoeRect, g, p);
 		}
 	}
 	/**
