@@ -4,7 +4,7 @@
 package com.drawinggame;
 abstract public class Wall
 {
-	protected Controller control;
+	protected static Controller control;
 	protected int playerRollWidth = 5;
 	protected int humanWidth = 10;
 	protected boolean tall;

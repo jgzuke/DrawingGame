@@ -74,6 +74,9 @@ public final class Controller
 	 */
 	public Controller(Context startSet, StartActivity activitySet, double [] dimensions)
 	{
+		Sprite.control = this;
+		Wall.control = this;
+		
 		Long timeBig = System.nanoTime();
 		activity = activitySet;
 		context = startSet;

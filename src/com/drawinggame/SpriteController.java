@@ -98,6 +98,22 @@ public final class SpriteController
 		fogPaint.setPathEffect(new CornerPathEffect(fogSize/2) );
 		fogPaint.setColor(Color.argb(100, 0, 0, 0));
 	}
+	public void restart()
+    {
+		allyControllers.clear();
+		enemyControllers.clear();
+    	allies.clear();
+    	enemies.clear();
+    	enemyStructures = new ArrayList<Structure>();
+    	allyStructures = new ArrayList<Structure>();
+    	proj_TrackerEs = new ArrayList<Proj_Tracker>();
+    	proj_TrackerAs = new ArrayList<Proj_Tracker>();
+    	proj_TrackerA_AOEs = new ArrayList<Proj_Tracker_AOE>();
+    	proj_TrackerE_AOEs = new ArrayList<Proj_Tracker_AOE>();
+    	creationMarkers = new ArrayList<CreationMarker>();
+    	playerGameControl.mana = playerGameControl.startMana;
+    	enemyGameControl.mana = playerGameControl.startMana;
+    }
 	protected void setMapSize(LevelController l)
 	{
 		int wide = l.levelWidth/fogSize + 1;
@@ -195,17 +211,17 @@ public final class SpriteController
 		switch(type)
 		{
 		case 0:
-			newEnemy = new Enemy_Sheild(control, x, y, isOnPlayersTeam, 0+imageType);
+			newEnemy = new Enemy_Sheild(x, y, isOnPlayersTeam, 0+imageType);
 			toAddController.add(new Control_Sheild(control, (Enemy_Sheild) newEnemy, isOnPlayersTeam));
 			toAdd.add(newEnemy);
 			break;
 		case 1:
-			newEnemy = new Enemy_Archer(control, x, y, isOnPlayersTeam, 1+imageType);
+			newEnemy = new Enemy_Archer(x, y, isOnPlayersTeam, 1+imageType);
 			toAddController.add(new Control_Archer(control, (Enemy_Archer) newEnemy, isOnPlayersTeam));
 			toAdd.add(newEnemy);
 			break;
 		case 2:
-			newEnemy = new Enemy_Mage(control, x, y, isOnPlayersTeam, 2+imageType);
+			newEnemy = new Enemy_Mage(x, y, isOnPlayersTeam, 2+imageType);
 			toAddController.add(new Control_Mage(control, (Enemy_Mage) newEnemy, isOnPlayersTeam));
 			toAdd.add(newEnemy);
 			break;
@@ -563,7 +579,7 @@ public final class SpriteController
 		{
 			int x = (int) (allies.get(i).x/fogSize);
 			int y = (int) (allies.get(i).y/fogSize);
-			double radius = 550 / fogSize;
+			double radius = EnemyShell.ranges[allies.get(i).humanType]/fogSize;
 			for(int j = 0; j < radius; j ++)
 			{
 				for(int k = 0; k < Math.sqrt(Math.pow(radius, 2) - Math.pow(j, 2)); k ++)
@@ -702,13 +718,16 @@ public final class SpriteController
 	protected boolean selectEnemy(double x, double y)
 	{
 		Enemy selectedEnemy = null;
+		double closest = Double.MAX_VALUE;
 		for(int i = 0; i < allies.size(); i++)
 		{
 			if(allies.get(i) != null)
 			{
-				if(Math.pow(x-allies.get(i).x, 2) + Math.pow(y-allies.get(i).y, 2) < 600)
+				double dist = Math.pow(x-allies.get(i).x, 2) + Math.pow(y-allies.get(i).y, 2);
+				if(dist < 1300 && dist < closest)
 				{
 					selectedEnemy = allies.get(i);
+					closest = dist;
 					break;
 				}
 			}

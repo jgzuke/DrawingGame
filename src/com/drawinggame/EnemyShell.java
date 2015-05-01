@@ -40,6 +40,8 @@ abstract public class EnemyShell extends Human {
 	protected ArrayList < Structure > allyStructures;
 	protected ArrayList < Proj_Tracker > proj_Trackers;
 	protected ArrayList < Proj_Tracker_AOE > proj_Tracker_AOEs;
+	protected static int [] scores = {20, 15, 30};
+	protected static int [] ranges = {500, 580, 620};
 	protected Control_Main myController;
 	int[][] frames;
 	protected String action = "Nothing"; //"Nothing", "Move", "Alert", "Shoot", "Melee", "Roll", "Hide", "Sheild", "Stun"
@@ -47,11 +49,10 @@ abstract public class EnemyShell extends Human {
 	 * sets danger arrays, speed and control object
 	 * @param creator control object
 	 */
-	public EnemyShell(Controller creator, double X, double Y, int HP, int ImageIndex, boolean isOnPlayersTeam) {
-		super(X, Y, 0, 0, true, false, creator.imageLibrary.enemyImages[ImageIndex][0], isOnPlayersTeam);
+	public EnemyShell(double X, double Y, int HP, int ImageIndex, boolean isOnPlayersTeam) {
+		super(X, Y, 0, 0, true, false, control.imageLibrary.enemyImages[ImageIndex][0], isOnPlayersTeam);
 		humanType = ImageIndex;
 		if(humanType>2) humanType -= 3;
-		control = creator;
 		destinationX = (int) X;
 		destinationY = (int) Y;
 		if (isOnPlayersTeam) {
@@ -66,7 +67,7 @@ abstract public class EnemyShell extends Human {
 		height = 30;
 		lastX = x;
 		lastY = y;
-		myImage = creator.imageLibrary.enemyImages[ImageIndex];
+		myImage = control.imageLibrary.enemyImages[ImageIndex];
 		image = myImage[frame];
 		if (isOnPlayersTeam) {
 			enemies = control.spriteController.enemies;
@@ -214,14 +215,20 @@ abstract public class EnemyShell extends Human {
 		hp -= damage*2;
 		if(hp < 1)
 		{
-			myController.removeHuman(this);
-			if(onPlayersTeam)
-			{
-				control.spriteController.allies.remove(this);
-			} else
-			{
-				control.spriteController.enemies.remove(this);
-			}
+			die();
+		}
+	}
+	protected void die()
+	{
+		myController.removeHuman(this);
+		if(onPlayersTeam)
+		{
+			control.spriteController.allies.remove(this);
+			control.spriteController.enemyGameControl.score(scores[humanType]);
+		} else
+		{
+			control.spriteController.enemies.remove(this);
+			control.spriteController.playerGameControl.score(scores[humanType]);
 		}
 	}
 	/**

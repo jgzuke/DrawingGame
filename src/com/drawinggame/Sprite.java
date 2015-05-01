@@ -18,6 +18,7 @@ abstract public class Sprite
 	public boolean playing = false;
 	public Bitmap image = null;
 	public boolean visible = true;
+	protected static Controller control;
 	//public boolean deleted = false;
 	
 	public Sprite(double X, double Y, int Width, int Height, double Rotation,

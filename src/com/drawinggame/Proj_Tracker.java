@@ -26,8 +26,6 @@ public final class Proj_Tracker extends Sprite
 	private ArrayList<Enemy> enemies;
 	private boolean onPlayersTeam;
 	private ArrayList<Structure> structures;
-	
-	Controller control;
 	public Proj_Tracker(Controller creator, int X, int Y, int Power, double Speed, double Rotation, SpriteController spriteControllerSet, Bitmap image, boolean isOnPlayersTeam)
 	{
 		super(X, Y, Rotation, image);

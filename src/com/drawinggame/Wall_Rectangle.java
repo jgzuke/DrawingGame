@@ -23,7 +23,7 @@ public class Wall_Rectangle extends Wall
 	 * @param HitPlayer whether wall interacts with the player
 	 * @param Tall whether or not the wall is tall enough to stop projectiles
 	 */
-	public Wall_Rectangle(Controller creator, int ORX, int ORY, int wallWidth, int wallHeight, boolean Tall)
+	public Wall_Rectangle(int ORX, int ORY, int wallWidth, int wallHeight, boolean Tall)
 	{
 		tall = Tall;
 		oRX1 = ORX;
@@ -32,7 +32,6 @@ public class Wall_Rectangle extends Wall
 		oRY2 = ORY+wallHeight;
 		x = (oRX1 + oRX2) / 2;
 		y = (oRY1 + oRY2) / 2;
-		control = creator;
 		oRX1 -=humanWidth;
 		oRX2 +=humanWidth;
 		oRY1 -=humanWidth;

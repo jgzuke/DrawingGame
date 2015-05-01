@@ -292,12 +292,33 @@ public class GestureDetector implements OnTouchListener
     		timeOfDraw = (long) 0;
     		return true;
     	}
-    	if(!control.paused && p.X < 300 && p.Y < 150 && !control.gestureDetector.selectType.equals("none"))
+    	if(!control.paused)
     	{
-    		control.spriteController.deselectEnemies();
-    		return true;
+    		if(p.X < 300 && p.Y < 150 && !control.gestureDetector.selectType.equals("none"))
+    		{
+    			control.spriteController.deselectEnemies();
+    			return true;
+    		}
+    		if(p.X < 450 && p.Y < 150 && !control.gestureDetector.selectType.equals("none"))
+    		{
+    			stopAction();
+    			return true;
+    		}
+    		if(p.X > phoneWidth-150 && p.Y < 150)
+    		{
+    			restart();
+    			return true;
+    		}
     	}
     	return false;
+    }
+    public void restart()
+    {
+    	control.spriteController.restart();
+    }
+    public void stopAction()
+    {
+    	control.selected.cancelMove();
     }
 	public void endCircle(Vector<Point> points, Vector<Point> pointsOrig, Rectangle b)
 	{

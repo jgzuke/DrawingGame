@@ -23,7 +23,6 @@ abstract public class Human extends Sprite
 	protected double rads;
 	protected double speedCur = 3.5;
 	protected boolean onPlayersTeam;
-	protected Controller control;
 	/**
 	 * Regains health, ends walk animation, plays animation
 	 */

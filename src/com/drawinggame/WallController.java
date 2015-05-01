@@ -82,7 +82,7 @@ public final class WallController
 	 */
 	protected void makeWall_Rectangle(int x, int y, int width, int height, boolean tall)
 	{
-		wallRects.add(new Wall_Rectangle(control, x-extraWidth, y-extraWidth, width+(2*extraWidth), height+(2*extraWidth), tall));
+		wallRects.add(new Wall_Rectangle(x-extraWidth, y-extraWidth, width+(2*extraWidth), height+(2*extraWidth), tall));
 		if(tall)setORect(x, x+width, y, y+height, 1);
 		else setORect(x, x+width, y, y+height, 0);
 	}
@@ -96,7 +96,7 @@ public final class WallController
 	 */
 	protected void makeWall_Ring(int x, int y, int radIn, int radOut, boolean tall)
 	{
-		wallRings.add(new Wall_Ring(control, x, y, radIn-extraWidth, radOut+extraWidth, tall));
+		wallRings.add(new Wall_Ring(x, y, radIn-extraWidth, radOut+extraWidth, tall));
 		if(tall)setORing(x, y, radIn, radOut, 1);
 		else setORing(x, y, radIn, radOut, 0);
 	}
@@ -123,7 +123,7 @@ public final class WallController
 	 */
 	protected void makeWall_Circle(int x, int y, int rad, boolean tall)
 	{
-		wallCircles.add(new Wall_Circle(control, x, y, rad + extraWidth, tall));
+		wallCircles.add(new Wall_Circle(x, y, rad + extraWidth, tall));
 		if(tall) setOCirc(x, y, rad, 1);
 		else setOCirc(x, y, rad, 0);
 	}

@@ -151,7 +151,7 @@ public final class SelectionSpriteController
 	 */
 	protected void makeEnemy(int type)
 	{
-		if(allies.get(selected).size() > 14)
+		if(allies.get(selected).size() > 27)
 		{
 			Toast.makeText(context, "Too many in this group", Toast.LENGTH_SHORT).show();
 			return;
@@ -160,17 +160,17 @@ public final class SelectionSpriteController
 		switch(type)
 		{
 		case 0:
-			newEnemy = new Enemy_Sheild(control, 0, 0, true, 3);
+			newEnemy = new Enemy_Sheild(0, 0, true, 3);
 			sheilds.get(selected).add((Enemy_Sheild) newEnemy);
 			allies.get(selected).add(mages.get(selected).size()+archers.get(selected).size(), newEnemy);
 			break;
 		case 1:
-			newEnemy = new Enemy_Archer(control, 0, 0, true, 4);
+			newEnemy = new Enemy_Archer(0, 0, true, 4);
 			archers.get(selected).add((Enemy_Archer) newEnemy);
 			allies.get(selected).add(mages.get(selected).size(), newEnemy);
 			break;
 		case 2:
-			newEnemy = new Enemy_Mage(control, 0, 0, true, 5);
+			newEnemy = new Enemy_Mage(0, 0, true, 5);
 			mages.get(selected).add((Enemy_Mage) newEnemy);
 			allies.get(selected).add(0, newEnemy);
 			break;

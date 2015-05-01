@@ -23,13 +23,12 @@ public class Wall_Circle extends Wall
 	 * @param OCRatio ratio between x and y
 	 * @param Tall whether or not the wall is tall enough to stop projectiles
 	 */
-	public Wall_Circle(Controller creator, int OCX, int OCY, int OCR, boolean Tall)
+	public Wall_Circle(int OCX, int OCY, int OCR, boolean Tall)
 	{
 		tall = Tall;
 		oCX = OCX;
 		oCY = OCY;
 		oCR = OCR;
-		control = creator;
 		oCR += humanWidth;
 		oCRS = Math.pow(oCR, 2);
 	}

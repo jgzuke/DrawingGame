@@ -30,7 +30,6 @@ public final class Proj_Tracker_AOE extends Sprite
 	 * @param Power power or size to start at
 	 * @param Shrinking whether it is shrinking or growing
 	 */
-	Controller control;
 	public Proj_Tracker_AOE(Controller creator, int X, int Y, double Power, boolean Shrinking, SpriteController spriteControllerSet, Bitmap image, boolean isDamaging, boolean isOnPlayersTeam)
 	{
 		super(X, Y, 2, 2, 0, image);
