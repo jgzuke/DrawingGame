@@ -121,7 +121,21 @@ abstract public class EnemyShell extends Human {
 		}
 		myController = myControllerSet;
 	}
-	abstract protected void selectSingle();
+	/**
+	 * select this enemy, take it out of a group if need be
+	 */
+	protected void selectSingle()
+	{
+		if(!myController.isGroup) return;
+		Control_Induvidual newControl = new Control_Induvidual(control, this, onPlayersTeam, humanType);
+		if(onPlayersTeam)
+		{
+			control.spriteController.allyControllers.add(newControl);
+		} else
+		{
+			control.spriteController.enemyControllers.add(newControl);
+		}
+	}
 	/**
 	 * Clears danger arrays, sets current dimensions, and counts timers
 	 */@

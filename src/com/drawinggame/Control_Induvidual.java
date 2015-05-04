@@ -2,10 +2,11 @@ package com.drawinggame;
 
 import lx.interaction.dollar.Point;
 
-abstract public class Control_Induvidual extends Control_Main
+public final class Control_Induvidual extends Control_Main
 {
 	protected EnemyShell human;
-	public Control_Induvidual(Controller controlSet, EnemyShell humanSet, boolean onPlayersTeam)
+	protected int type; //0: sheild 1: archer 2: mage
+	public Control_Induvidual(Controller controlSet, EnemyShell humanSet, boolean onPlayersTeam, int typeSet)
 	{
 		super(controlSet, onPlayersTeam);
 		human = humanSet;
@@ -13,11 +14,29 @@ abstract public class Control_Induvidual extends Control_Main
 		isGroup = false;
 		groupLocation = new Point(human.x, human.y);
 		groupRadius = 20;
+		type = typeSet;
 	}
 	protected void frameCall()
 	{
 		groupLocation.X = human.x;
 		groupLocation.Y = human.y;
+		switch(type)
+		{
+		case 0:
+			doingNothing = !Control_AI.sheildFrame((Enemy_Sheild)human, retreating, enemiesAround());
+			break;
+		case 1:
+			doingNothing = !Control_AI.archerFrame((Enemy_Archer)human, retreating, enemiesAround());
+			break;
+		case 2:
+			doingNothing = !Control_AI.mageFrame((Enemy_Mage)human, retreating, enemiesAround());
+			break;
+		}
+	}
+	@Override
+	protected void archerDoneFiring(Enemy_Archer archer)
+	{
+		if(type==1)Control_AI.archerDoneFiring((Enemy_Archer)human, enemiesAround() && !archer.hasDestination);
 	}
 	@Override
 	protected void setDestination(Point p)
@@ -41,8 +60,6 @@ abstract public class Control_Induvidual extends Control_Main
 	{
 		human.hasDestination = false;
 	}
-	@Override
-	protected void archerDoneFiring(Enemy_Archer archer) {}
 	@Override
 	protected int getSize()
 	{

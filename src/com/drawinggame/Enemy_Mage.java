@@ -49,20 +49,4 @@ public final class Enemy_Mage extends Enemy
 		rads = saveRads;
 		rotation = rads*r2d;
 	}
-	/**
-	 * select this enemy, take it out of a group if need be
-	 */
-	@Override
-	protected void selectSingle()
-	{
-		if(!myController.isGroup) return;
-		Control_Mage newControl = new Control_Mage(control, this, onPlayersTeam);
-		if(onPlayersTeam)
-		{
-			control.spriteController.allyControllers.add(newControl);
-		} else
-		{
-			control.spriteController.enemyControllers.add(newControl);
-		}
-	}
 }

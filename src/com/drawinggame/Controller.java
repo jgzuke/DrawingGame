@@ -66,6 +66,7 @@ public final class Controller
 		public void run()
 		{
 			if(!activityPaused) frameCall();
+			if(paused) System.gc();
 			mHandler.postDelayed(this, 40);
 		}
 	};	
