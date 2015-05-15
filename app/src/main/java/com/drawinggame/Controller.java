@@ -54,9 +54,10 @@ public final class Controller
 	protected SelectionSpriteController selectionSpriteController;
 	protected WallController wallController;
 	protected LevelController levelController;
-	protected GraphicsController graphicsController;
+	//protected GraphicsController graphicsController;
+	protected MyGLSurfaceView graphicsController;
 	protected SoundController soundController;
-	
+
 	protected boolean paused = false;
 	protected Runnable frameCaller = new Runnable()
 	{
@@ -95,7 +96,7 @@ public final class Controller
 		spriteController = new SpriteController(startSet, this);
 		spriteController.playerGameControl.setEnemies(true);
 		spriteController.enemyGameControl.setEnemies(false);
-		Log.e("myid", "sprite, wall, sound, gesture: ".concat(Long.toString((System.nanoTime()-time)/100000)));
+		Log.e("myid", "sprite, wall, sound, gesture: ".concat(Long.toString((System.nanoTime() - time) / 100000)));
 		
 		time = System.nanoTime();
 		imageLibrary = new ImageLibrary(startSet, this, (int)dimensions[0], (int)dimensions[1]); // creates image library
@@ -105,10 +106,11 @@ public final class Controller
 		levelController = new LevelController(this);
 		levelController.loadLevel(1);
 		spriteController.setMapSize(levelController);
-		Log.e("myid", "levelControl: ".concat(Long.toString((System.nanoTime()-time)/100000)));
+		Log.e("myid", "levelControl: ".concat(Long.toString((System.nanoTime() - time) / 100000)));
 		
 		time = System.nanoTime();
-		graphicsController = new GraphicsController(this, imageLibrary, spriteController, wallController, levelController, startSet, dimensions);
+        graphicsController = new MyGLSurfaceView(context);
+		//graphicsController = new GraphicsController(this, imageLibrary, spriteController, wallController, levelController, startSet, dimensions);
 		graphicsController.setOnTouchListener(gestureDetector);
 		gestureDetector.setGraphics(graphicsController);
 		Log.e("myid", "graphicsControl: ".concat(Long.toString((System.nanoTime()-time)/100000)));

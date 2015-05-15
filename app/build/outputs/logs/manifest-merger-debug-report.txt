@@ -24,38 +24,38 @@ MERGED from com.android.support:support-v4:21.0.3:15:5
 		ADDED from AndroidManifest.xml:8:9
 		INJECTED from AndroidManifest.xml:0:0
 		INJECTED from AndroidManifest.xml:0:0
-uses-feature#0x00030000
-ADDED from AndroidManifest.xml:10:5
+uses-feature#0x00020000
+ADDED from AndroidManifest.xml:11:5
 	android:glEsVersion
-		ADDED from AndroidManifest.xml:10:19
+		ADDED from AndroidManifest.xml:11:19
 	android:required
-		ADDED from AndroidManifest.xml:10:52
+		ADDED from AndroidManifest.xml:11:52
 application
-ADDED from AndroidManifest.xml:12:5
+ADDED from AndroidManifest.xml:13:5
 MERGED from com.android.support:support-v4:21.0.3:16:5
 	android:label
-		ADDED from AndroidManifest.xml:15:9
-	android:allowBackup
-		ADDED from AndroidManifest.xml:13:9
-	android:icon
-		ADDED from AndroidManifest.xml:14:9
-	android:theme
 		ADDED from AndroidManifest.xml:16:9
+	android:allowBackup
+		ADDED from AndroidManifest.xml:14:9
+	android:icon
+		ADDED from AndroidManifest.xml:15:9
+	android:theme
+		ADDED from AndroidManifest.xml:17:9
 activity#com.drawinggame.StartActivity
-ADDED from AndroidManifest.xml:17:9
+ADDED from AndroidManifest.xml:18:9
 	android:screenOrientation
-		ADDED from AndroidManifest.xml:20:13
+		ADDED from AndroidManifest.xml:21:13
 	android:label
+		ADDED from AndroidManifest.xml:20:13
+	android:name
 		ADDED from AndroidManifest.xml:19:13
-	android:name
-		ADDED from AndroidManifest.xml:18:13
 intent-filter#android.intent.action.MAIN+android.intent.category.LAUNCHER
-ADDED from AndroidManifest.xml:21:13
+ADDED from AndroidManifest.xml:22:13
 action#android.intent.action.MAIN
-ADDED from AndroidManifest.xml:22:17
+ADDED from AndroidManifest.xml:23:17
 	android:name
-		ADDED from AndroidManifest.xml:22:25
+		ADDED from AndroidManifest.xml:23:25
 category#android.intent.category.LAUNCHER
-ADDED from AndroidManifest.xml:24:17
+ADDED from AndroidManifest.xml:25:17
 	android:name
-		ADDED from AndroidManifest.xml:24:27
+		ADDED from AndroidManifest.xml:25:27

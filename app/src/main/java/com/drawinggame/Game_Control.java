@@ -7,7 +7,7 @@ abstract public class Game_Control
 	protected Controller control;
 	protected SpriteController spriteControl;
 	protected double mana;
-	protected double manaGain = 0.3;
+	protected double manaGain = 0.2;
 	protected int startMana = 200;
 	protected double maxMana = 500;
 	protected double score = 0;

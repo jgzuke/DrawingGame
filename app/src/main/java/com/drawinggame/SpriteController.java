@@ -152,7 +152,6 @@ public final class SpriteController
 	 * @param type whether they are warrior, archer, mage etc
 	 * @param x x to walk to
 	 * @param y y to wakl to
-	 * @param r rotation
 	 * @param isOnPlayersTeam which team they are on
 	 */
 	protected void makeEnemy(int type, int x, int y, boolean isOnPlayersTeam)
@@ -392,7 +391,7 @@ public final class SpriteController
 			drawFlat(enemyStructures.get(i), g, paint);
 		}
 	}
-	protected void drawFog(Canvas g, Paint paint)
+	protected void drawFog(Canvas g)
 	{
 		int wide = visibilityMap.length;
 		boolean[][] visibleEdge= new boolean[wide][wide];
@@ -414,33 +413,12 @@ public final class SpriteController
 				if(visibleEdge[i][j])
 				{
 					visibleEdgeCounts[i][j] = connectingEdges(i, j, visibleEdge, wide);
-					/*if(visibleEdgeCounts[i][j] == 1)
-					{
-						int pX = i*fogSize;
-						int pY = j*fogSize;
-						g.drawRect(pX, pY, pX + fogSize, pY + fogSize, paint);
-					}
-					if(visibleEdgeCounts[i][j] == 2)
-					{
-						paint.setColor(Color.argb(100, 0, 0, 255));
-						int pX = i*fogSize;
-						int pY = j*fogSize;
-						g.drawRect(pX, pY, pX + fogSize, pY + fogSize, paint);
-						paint.setColor(Color.argb(100, 255, 0, 0));
-					}*/
 				}
 			}
 		}
 		Vector<Point> points = new Vector<Point>();
 		addToEdgePath(points, visibleEdgeCounts);
 		g.drawPath(getPathFromVector(points), fogPaint);
-		/*fogPaint.setColor(Color.argb(50, 0, 0, 0));
-		fogPaint.setStyle(Style.FILL);
-		g.drawPath(getPathFromVector(points), fogPaint);
-		fogPaint.setColor(Color.rgb(0, 0, 0));
-		fogPaint.setStyle(Style.STROKE);
-		fogPaint.setStrokeWidth(1);
-		g.drawPath(getPathFromVector(points), fogPaint);*/
 	}
 	protected int fogSize = 40;
 	private int skip = 1;
@@ -457,13 +435,12 @@ public final class SpriteController
 		Point p;
 		for(int j = 0; j < points.size() - 1; j+=2)
 		{
-			p = (Point) points.get(j);
+			p = points.get(j);
 	        Point n = points.get(j + 1);
-	        //path.quadTo((int)p.X, (int)p.Y, (int)n.X, (int)n.Y);
 	        path.lineTo((int)p.X, (int)p.Y);
 	        path.lineTo((int)n.X, (int)n.Y);
 		}
-		p = (Point) points.get(points.size() - 1);
+		p = points.get(points.size() - 1);
 		path.lineTo((int)p.X, (int)p.Y);
 		path.lineTo(-50, -50);
 		return path;
@@ -591,8 +568,7 @@ public final class SpriteController
 	/**
 	 * creates an enemy power ball
 	 * @param rotation rotation of Proj_Tracker
-	 * @param xVel horizontal velocity of ball
-	 * @param yVel vertical velocity of ball
+	 * @param Vel Velocity of ball
 	 * @param power power of ball
 	 * @param x x position
 	 * @param y y position
@@ -628,8 +604,6 @@ public final class SpriteController
 	protected boolean onScreen(double x, double y, int width, int height) {return true;}
 	/**
 	 * selects enemy with click
-	 * @param x click x
-	 * @param y click y
 	 * @return whether anything was selected
 	 */
 	protected void selectCircle(Vector<Point> points)
@@ -906,7 +880,7 @@ public final class SpriteController
 		{
 			drawAOE(proj_TrackerA_AOEs.get(i), g, paint);
 		}
-		drawFog(g, paint);
+		drawFog(g);
 	}
 	private boolean spriteOnScreen(Sprite s)
 	{
@@ -929,10 +903,11 @@ public final class SpriteController
 		return true;
 	}
 	protected boolean mapPointOnScreen(double x2, double y2)
-    { // reversed one
+    {
+    // reversed one
 		//double x2  = xR + x*R
 		// x = (x2-xR)/R
-		GraphicsController g = control.graphicsController;
+		MyGLSurfaceView g = control.graphicsController;
 		double screenX = (x2-g.mapXSlide)/g.playScreenSize;
 		double screenY = (y2-g.mapYSlide)/g.playScreenSize;
     	return (screenX>0 && screenY>0 && screenX<g.phoneWidth && screenY<g.phoneHeight);

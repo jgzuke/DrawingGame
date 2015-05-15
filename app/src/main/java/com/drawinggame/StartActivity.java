@@ -100,6 +100,9 @@ public class StartActivity extends Activity
 			readSaveData();
 		}*/
 		control.soundController.startMusic();
+		if (control.graphicsController != null) {
+			control.graphicsController.onResume();
+		}
 	}
 	/**
 	 * stops music, stops timer, saves data
@@ -114,6 +117,9 @@ public class StartActivity extends Activity
 		control.activityPaused = true;
 		Log.e("mine", "onPau");
 		//control.paused = true;
+		if (control.graphicsController != null) {
+			control.graphicsController.onPause();
+		}
 	}
 	@ Override
 	public void onStop()

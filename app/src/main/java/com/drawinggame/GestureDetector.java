@@ -39,7 +39,7 @@ public class GestureDetector implements OnTouchListener
 	protected Recognizer recognizer;
 	protected String selectType = "none";
 	protected Long fadeTime = (long) 50000;
-	private GraphicsController graphics = null;
+	private MyGLSurfaceView graphics = null;
 	int ID = 0;
 	
 	private Path lastShape;
@@ -70,7 +70,7 @@ public class GestureDetector implements OnTouchListener
 			average.add(new Point(0,0));
 		}
     }
-    protected void setGraphics(GraphicsController graphicsSet)
+    protected void setGraphics(MyGLSurfaceView graphicsSet)
     {
     	graphics = graphicsSet;
     }
