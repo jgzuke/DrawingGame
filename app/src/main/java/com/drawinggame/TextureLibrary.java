@@ -18,25 +18,6 @@ import javax.microedition.khronos.opengles.GL10;
  * Created by jgzuke on 15-05-15.
  */
 public class TextureLibrary {
-    float width = 1.0f;
-    private float vertices[] = {
-            -width,  width, 0.0f,  // 0, Top Left
-            -width, -width, 0.0f,  // 1, Bottom Left
-            width, -width, 0.0f,  // 2, Bottom Right
-            width,  width, 0.0f,  // 3, Top Right
-    };
-    private short[] indices = { 0, 1, 2, 0, 2, 3 };
-    private FloatBuffer vertexBuffer;
-    private FloatBuffer textureBuffer;
-    private float texture[] = {
-            0.0f, 1.0f,     // top left     (V2)
-            0.0f, 0.0f,     // bottom left  (V1)
-            1.0f, 1.0f,     // top right    (V4)
-            1.0f, 0.0f      // bottom right (V3)
-    };
-    private ShortBuffer indexBuffer;
-
-
     public String getting;
     public Resources res;
     public String packageName;
@@ -82,27 +63,6 @@ public class TextureLibrary {
         phoneHeight = pHeight;
         initBuffers();
         loadAllImages();
-    }
-
-    private void initBuffers()
-    {
-        ByteBuffer vbb = ByteBuffer.allocateDirect(vertices.length * 4);
-        vbb.order(ByteOrder.nativeOrder());
-        vertexBuffer = vbb.asFloatBuffer();
-        vertexBuffer.put(vertices);
-        vertexBuffer.position(0);
-
-        ByteBuffer ibb = ByteBuffer.allocateDirect(indices.length * 2);
-        ibb.order(ByteOrder.nativeOrder());
-        indexBuffer = ibb.asShortBuffer();
-        indexBuffer.put(indices);
-        indexBuffer.position(0);
-
-        ibb = ByteBuffer.allocateDirect(texture.length * 4);
-        ibb.order(ByteOrder.nativeOrder());
-        textureBuffer = ibb.asFloatBuffer();
-        textureBuffer.put(texture);
-        textureBuffer.position(0);
     }
 
     /**
@@ -158,7 +118,7 @@ public class TextureLibrary {
      */
     public Bitmap[] loadArray1D(int length, String start, int width, int height)
     {
-        Bitmap sheet = loadImage(start, width*length, height);
+        Bitmap sheet = loadImage(start, width * length, height);
         Bitmap[] newArray = new Bitmap[length];
         for(int i = 0; i < length; i++)
         {
@@ -191,7 +151,49 @@ public class TextureLibrary {
         return Bitmap.createScaledBitmap(BitmapFactory.decodeResource(res, imageNumber, opts), width, height, false);
     }
 
+
+
+
+
+
+
+    private FloatBuffer vertexBuffer;	// buffer holding the vertices
+    private float vertices[] = {
+            -1.0f, -1.0f,  0.0f,		// V1 - bottom left
+            -1.0f,  1.0f,  0.0f,		// V2 - top left
+            1.0f, -1.0f,  0.0f,		// V3 - bottom right
+            1.0f,  1.0f,  0.0f			// V4 - top right
+    };
+
+    private FloatBuffer textureBuffer;	// buffer holding the texture coordinates
+    private float texture[] = {
+            // Mapping coordinates for the vertices
+            0.0f, 1.0f,		// top left		(V2)
+            0.0f, 0.0f,		// bottom left	(V1)
+            1.0f, 1.0f,		// top right	(V4)
+            1.0f, 0.0f		// bottom right	(V3)
+    };
+
+    /** The texture pointer */
     private int[] textures = new int[1];
+    private void initBuffers()
+    {
+        ByteBuffer byteBuffer = ByteBuffer.allocateDirect(vertices.length * 4);
+        byteBuffer.order(ByteOrder.nativeOrder());
+        vertexBuffer = byteBuffer.asFloatBuffer();
+        vertexBuffer.put(vertices);
+        vertexBuffer.position(0);
+        byteBuffer = ByteBuffer.allocateDirect(texture.length * 4);
+        byteBuffer.order(ByteOrder.nativeOrder());
+        textureBuffer = byteBuffer.asFloatBuffer();
+        textureBuffer.put(texture);
+        textureBuffer.position(0);
+    }
+
+    /**
+     * Load the texture for the square
+     * @param gl
+     */
     public void loadGLTexture(GL10 gl, Bitmap image) {
         gl.glGenTextures(1, textures, 0);
         gl.glBindTexture(GL10.GL_TEXTURE_2D, textures[0]);
@@ -199,26 +201,66 @@ public class TextureLibrary {
         gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
         GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, image, 0);
     }
-    /**
-     * This function draws our square on screen.
-     * @param gl
-     */
+
+
+    /** The draw method for the square with the GL context */
     public void draw(GL10 gl, Bitmap image) {
         loadGLTexture(gl, image);
-        draw(gl, textures[0]);
+
+        // bind the previously generated texture
+        gl.glBindTexture(GL10.GL_TEXTURE_2D, textures[0]);
+
+        // Point to our buffers
+        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+
+        // Set the face rotation
+        gl.glFrontFace(GL10.GL_CW);
+
+        // Point to our vertex buffer
+        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
+        gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureBuffer);
+
+        // Draw the vertices as triangle strip
+        gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, vertices.length / 3);
+
+        //Disable the client state before leaving
+        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+    }
+
+    /*public void loadGLTexture(GL10 gl, Bitmap image) {
+        // Generate one texture pointer...
+        int[] textures = new int[1];
+        gl.glGenTextures(1, textures, 0);
+        mTextureId = textures[0];
+        gl.glBindTexture(GL10.GL_TEXTURE_2D, mTextureId);
+        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER,
+                GL10.GL_LINEAR);
+        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER,
+                GL10.GL_LINEAR);
+        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S,
+                GL10.GL_CLAMP_TO_EDGE);
+        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T,
+                GL10.GL_REPEAT);
+        GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, image, 0);
     }
 
     /**
      * This function draws our square on screen.
      * @param gl
      */
-    public void draw(GL10 gl, int texture) {
-        gl.glBindTexture(GL10.GL_TEXTURE_2D, texture);
-        draw(gl);
-    }
+    /*public void draw(GL10 gl, Bitmap image) {
+        setTextureCoordinates(texture);
+        loadGLTexture(gl, image);
 
-    public void draw(GL10 gl) {
-        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
+        gl.glEnable(GL10.GL_TEXTURE_2D);
+        gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+        gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, mTextureBuffer);
+        gl.glBindTexture(GL10.GL_TEXTURE_2D, mTextureId);
+
         gl.glDrawElements(GL10.GL_TRIANGLES, indices.length, GL10.GL_UNSIGNED_SHORT, indexBuffer);
-    }
+
+        gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+    }*/
 }

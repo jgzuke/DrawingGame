@@ -54,7 +54,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
     private void initialize(Context contextSet)
     {
         context = contextSet;
-        mRenderer = new MyGLRenderer();
+        mRenderer = new MyGLRenderer(context);
         setRenderer(mRenderer);
     }
 
@@ -81,10 +81,5 @@ public class MyGLSurfaceView extends GLSurfaceView {
     public void onResume()
     {
         super.onResume();
-    }
-
-    public void onCreate(int width, int height, boolean contextLost)
-    {
-
     }
 }
