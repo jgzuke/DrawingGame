@@ -79,7 +79,7 @@ public final class LevelController
 			break;
 		}
 		w.makePaths();
-		control.imageLibrary.loadLevel(toLoad, levelWidth, levelHeight);
+		//control.textureLibrary.loadLevel(toLoad, levelWidth, levelHeight);
 	}
 	/**
 	 * ends a fight section with no saved enemies

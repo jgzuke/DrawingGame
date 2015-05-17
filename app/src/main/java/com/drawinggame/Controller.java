@@ -47,7 +47,7 @@ public final class Controller
 	protected StartActivity activity;
 	protected GestureDetector gestureDetector;
 	protected Context context;
-	protected ImageLibrary imageLibrary;
+	protected TextureLibrary textureLibrary;
 	private Random randomGenerator = new Random();
 	private Handler mHandler = new Handler();
 	protected SpriteController spriteController;
@@ -99,7 +99,7 @@ public final class Controller
 		Log.e("myid", "sprite, wall, sound, gesture: ".concat(Long.toString((System.nanoTime() - time) / 100000)));
 		
 		time = System.nanoTime();
-		imageLibrary = new ImageLibrary(startSet, this, (int)dimensions[0], (int)dimensions[1]); // creates image library
+		textureLibrary = new TextureLibrary(startSet, this, (int)dimensions[0], (int)dimensions[1]); // creates image library
 		Log.e("myid", "imageLibrary: ".concat(Long.toString((System.nanoTime()-time)/100000)));
 		
 		time = System.nanoTime();

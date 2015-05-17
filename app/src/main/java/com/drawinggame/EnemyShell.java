@@ -44,10 +44,9 @@ abstract public class EnemyShell extends Human {
 	protected String action = "Nothing"; //"Nothing", "Move", "Alert", "Shoot", "Melee", "Roll", "Hide", "Sheild", "Stun"
 	/**
 	 * sets danger arrays, speed and control object
-	 * @param creator control object
 	 */
 	public EnemyShell(double X, double Y, int HP, int ImageIndex, boolean isOnPlayersTeam) {
-		super(X, Y, 0, 0, true, false, control.imageLibrary.enemyImages[ImageIndex][0], isOnPlayersTeam);
+		super(X, Y, 0, 0, true, false, control.textureLibrary.enemyImages[ImageIndex][0], isOnPlayersTeam);
 		humanType = ImageIndex;
 		if(humanType>2) humanType -= 3;
 		destinationX = (int) X;
@@ -64,7 +63,7 @@ abstract public class EnemyShell extends Human {
 		height = 30;
 		lastX = x;
 		lastY = y;
-		myImage = control.imageLibrary.enemyImages[ImageIndex];
+		myImage = control.textureLibrary.enemyImages[ImageIndex];
 		image = myImage[frame];
 		if (isOnPlayersTeam) {
 			enemies = control.spriteController.enemies;

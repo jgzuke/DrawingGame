@@ -144,10 +144,6 @@ public final class SelectionSpriteController
 	/**
 	 * creates person
 	 * @param type whether they are warrior, archer, mage etc
-	 * @param x x to walk to
-	 * @param y y to wakl to
-	 * @param r rotation
-	 * @param isOnPlayersTeam which team they are on
 	 */
 	protected void makeEnemy(int type)
 	{
@@ -218,9 +214,6 @@ public final class SelectionSpriteController
 	
 	/**
 	 * forms this group around given x, y, rotation
-	 * @param rotation
-	 * @param newX
-	 * @param newY
 	 */
 	protected void formUp()
 	{
@@ -481,7 +474,7 @@ public final class SelectionSpriteController
 		g.translate((float)(unitWidth*75+unitHeight*5)/ratio - 500,(float)(unitHeight*60)/ratio - 500);//(float)(unitWidth*75+unitHeight*5), (float)(unitHeight*60));
 		for(int i = 0; i < allies.get(selected).size(); i++)
 		{
-			if(allies.get(selected).get(i).selected) g.drawBitmap(control.imageLibrary.isSelected, (int)allies.get(selected).get(i).x-30, (int)allies.get(selected).get(i).y-30, paint);
+			if(allies.get(selected).get(i).selected) g.drawBitmap(control.textureLibrary.isSelected, (int)allies.get(selected).get(i).x-30, (int)allies.get(selected).get(i).y-30, paint);
 		}
 		for(int i = 0; i < allies.get(selected).size(); i++)
 		{
@@ -505,8 +498,6 @@ public final class SelectionSpriteController
 	}
 	/**
 	 * selects enemy with click
-	 * @param x click x
-	 * @param y click y
 	 * @return whether anything was selected
 	 */
 	protected void selectCircle(Vector<Point> points)

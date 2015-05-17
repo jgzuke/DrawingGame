@@ -164,7 +164,7 @@ public final class SpriteController
 				return;
 			}
 			playerGameControl.mana -= manaPrices[type];
-			creationMarkers.add(new CreationMarker(x, y, control.imageLibrary.createMarker, this));		
+			creationMarkers.add(new CreationMarker(x, y, control.textureLibrary.createMarker, this));
 		} else
 		{
 			if(enemyGameControl.mana < manaPricesEnemy[type])
@@ -575,8 +575,8 @@ public final class SpriteController
 	 */
 	protected void createProj_Tracker(double rotation, double Vel, int power, double x, double y, boolean onPlayersTeam)
 	{
-		if(onPlayersTeam) proj_TrackerAs.add(new Proj_Tracker(control, (int)x, (int)y, power, Vel, rotation, this, control.imageLibrary.shotPlayer[0], onPlayersTeam));
-		else proj_TrackerEs.add(new Proj_Tracker(control, (int)x, (int)y, power, Vel, rotation, this, control.imageLibrary.shotPlayer[1], onPlayersTeam));
+		if(onPlayersTeam) proj_TrackerAs.add(new Proj_Tracker(control, (int)x, (int)y, power, Vel, rotation, this, control.textureLibrary.shotPlayer[0], onPlayersTeam));
+		else proj_TrackerEs.add(new Proj_Tracker(control, (int)x, (int)y, power, Vel, rotation, this, control.textureLibrary.shotPlayer[1], onPlayersTeam));
 	}
 	/**
 	 * creates an emeny AOE explosion
@@ -587,8 +587,8 @@ public final class SpriteController
 	 */
 	protected void createProj_TrackerAOE(double x, double y, double power, boolean damaging, boolean onPlayersTeam)
 	{
-		if(onPlayersTeam) proj_TrackerA_AOEs.add(new Proj_Tracker_AOE(control, (int) x, (int) y, power, true, this, control.imageLibrary.shotAOEPlayer, damaging, onPlayersTeam));
-		else proj_TrackerE_AOEs.add(new Proj_Tracker_AOE(control, (int) x, (int) y, power, true, this, control.imageLibrary.shotAOEEnemy, damaging, onPlayersTeam));
+		if(onPlayersTeam) proj_TrackerA_AOEs.add(new Proj_Tracker_AOE(control, (int) x, (int) y, power, true, this, control.textureLibrary.shotAOEPlayer, damaging, onPlayersTeam));
+		else proj_TrackerE_AOEs.add(new Proj_Tracker_AOE(control, (int) x, (int) y, power, true, this, control.textureLibrary.shotAOEEnemy, damaging, onPlayersTeam));
 	}
 	/**
 	 * creates an enemy burst
@@ -598,8 +598,8 @@ public final class SpriteController
 	 */
 	protected void createProj_TrackerBurst(double x, double y, double power, boolean onPlayersTeam)
 	{
-		if(onPlayersTeam) proj_TrackerA_AOEs.add(new Proj_Tracker_AOE(control, (int) x, (int) y, power, false, this, control.imageLibrary.shotAOEPlayer, true, onPlayersTeam));
-		else proj_TrackerE_AOEs.add(new Proj_Tracker_AOE(control, (int) x, (int) y, power, false, this, control.imageLibrary.shotAOEEnemy, true, onPlayersTeam));
+		if(onPlayersTeam) proj_TrackerA_AOEs.add(new Proj_Tracker_AOE(control, (int) x, (int) y, power, false, this, control.textureLibrary.shotAOEPlayer, true, onPlayersTeam));
+		else proj_TrackerE_AOEs.add(new Proj_Tracker_AOE(control, (int) x, (int) y, power, false, this, control.textureLibrary.shotAOEEnemy, true, onPlayersTeam));
 	}
 	protected boolean onScreen(double x, double y, int width, int height) {return true;}
 	/**
@@ -852,7 +852,7 @@ public final class SpriteController
 		paint.setAlpha(255);
 		for(int i = 0; i < allies.size(); i++)
 		{
-			if(allies.get(i).selected) g.drawBitmap(control.imageLibrary.isSelected, (int)allies.get(i).x-30, (int)allies.get(i).y-30, paint);
+			if(allies.get(i).selected) g.drawBitmap(control.textureLibrary.isSelected, (int)allies.get(i).x-30, (int)allies.get(i).y-30, paint);
 		}
 		for(int i = 0; i < allies.size(); i++)
 		{

@@ -13,7 +13,7 @@ public class Structure_Spawn extends Structure
 	int childType;
 	public Structure_Spawn(Controller creator, double X, double Y, int ChildType, boolean isOnPlayersTeam)
 	{
-		super(X, Y, 25, 25, 0, creator.imageLibrary.structure_Spawn, isOnPlayersTeam);
+		super(X, Y, 25, 25, 0, creator.textureLibrary.structure_Spawn, isOnPlayersTeam);
 		control = creator;
 		hp = 6000;
 		hpMax = hp;

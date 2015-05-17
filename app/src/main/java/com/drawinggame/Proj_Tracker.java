@@ -30,7 +30,7 @@ public final class Proj_Tracker extends Sprite
 	{
 		super(X, Y, Rotation, image);
 		spriteController = spriteControllerSet;
-		video = creator.imageLibrary.shotPlayer;
+		video = creator.textureLibrary.shotPlayer;
 		control = creator;
 		speed = Speed;
 		alpha = (byte) 254;
@@ -75,10 +75,10 @@ public final class Proj_Tracker extends Sprite
 		alpha -= 4;
 		if(onPlayersTeam)
 		{
-			image = control.imageLibrary.shotPlayer[(int)(Math.random()*5)];
+			image = control.textureLibrary.shotPlayer[(int)(Math.random()*5)];
 		} else
 		{
-			image = control.imageLibrary.shotEnemy[(int)(Math.random()*5)];
+			image = control.textureLibrary.shotEnemy[(int)(Math.random()*5)];
 		}
 		for(int i = 0; i < 4; i++)
 		{

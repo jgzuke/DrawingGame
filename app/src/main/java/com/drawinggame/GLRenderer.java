@@ -20,7 +20,7 @@ public abstract class GLRenderer implements Renderer {
     private int mFPS;
     protected SpriteController spriteController;
     protected LevelController levelController;
-    protected ImageLibrary imageLibrary;
+    protected TextureLibrary textureLibrary;
 
     public GLRenderer() {
         mFirstDraw = true;
@@ -33,7 +33,7 @@ public abstract class GLRenderer implements Renderer {
     public void setControllers (Controller control) {
         spriteController = control.spriteController;
         levelController = control.levelController;
-        imageLibrary = control.imageLibrary;
+        textureLibrary = control.textureLibrary;
     }
 
     @Override
@@ -86,14 +86,13 @@ public abstract class GLRenderer implements Renderer {
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
         gl.glLoadIdentity();
 
-        gl.glEnable(GL10.GL_TEXTURE_2D);
+        /*gl.glEnable(GL10.GL_TEXTURE_2D);
         gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
 
         gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR);
         gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
         gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, GL10.GL_REPEAT);
-        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_REPEAT);
-        GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, imageLibrary.enemyImages[0][0], 0);
+        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_REPEAT);*/
     }
 
     protected void endDraw(GL10 gl)

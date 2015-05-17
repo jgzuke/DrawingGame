@@ -32,7 +32,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
     private int manaColor = Color.rgb(30, 0, 170);
     private int manaColorDark = Color.rgb(20, 0, 110);
     private int manaColorCover = Color.argb(50, 255, 255, 255);
-    private ImageLibrary imageLibrary;
+    private TextureLibrary textureLibrary;
     private Controller control;
     private SpriteController spriteController;
     private LevelController levelController;
@@ -60,7 +60,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
     public void setControllers(Controller controlSet) {
         control = controlSet;
-        imageLibrary = control.imageLibrary;
+        textureLibrary = control.textureLibrary;
         spriteController = control.spriteController;
         levelController = control.levelController;
         mRenderer.setControllers(controlSet);
