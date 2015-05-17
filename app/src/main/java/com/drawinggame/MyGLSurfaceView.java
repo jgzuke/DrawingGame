@@ -7,11 +7,14 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
+
+import java.util.ResourceBundle;
+
 /**
  * Created by jgzuke on 15-05-15.
  */
 public class MyGLSurfaceView extends GLSurfaceView {
-    private Renderer mRenderer;
+    private MyGLRenderer mRenderer;
 
     protected double playScreenSize = 1;
     protected double playScreenSizeMax = 1;
@@ -40,27 +43,48 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
     public MyGLSurfaceView(Context context) {
         super(context);
-        mRenderer = new MyGLRenderer();
-        setRenderer(mRenderer);
+        initialize(context);
     }
 
     public MyGLSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        initialize(context);
+    }
+
+    private void initialize(Context contextSet)
+    {
+        context = contextSet;
         mRenderer = new MyGLRenderer();
         setRenderer(mRenderer);
     }
+
+    public void setControllers(Controller controlSet) {
+        control = controlSet;
+        imageLibrary = control.imageLibrary;
+        spriteController = control.spriteController;
+        levelController = control.levelController;
+        mRenderer.setControllers(controlSet);
+    }
+
     protected void frameCall()
     {
         //invalidate();
     }
+
     @ Override
     public void onPause()
     {
         super.onPause();
     }
+
     @ Override
     public void onResume()
     {
         super.onResume();
+    }
+
+    public void onCreate(int width, int height, boolean contextLost)
+    {
+
     }
 }

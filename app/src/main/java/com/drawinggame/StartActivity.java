@@ -127,20 +127,6 @@ public class StartActivity extends Activity
 		Log.e("mine", "onStop");
 		super.onStop();
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
 	/**
 	 * saves all required data 

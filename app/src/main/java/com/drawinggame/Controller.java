@@ -110,7 +110,6 @@ public final class Controller
 		
 		time = System.nanoTime();
         graphicsController = new MyGLSurfaceView(context);
-		//graphicsController = new GraphicsController(this, imageLibrary, spriteController, wallController, levelController, startSet, dimensions);
 		graphicsController.setOnTouchListener(gestureDetector);
 		gestureDetector.setGraphics(graphicsController);
 		Log.e("myid", "graphicsControl: ".concat(Long.toString((System.nanoTime()-time)/100000)));
@@ -119,6 +118,8 @@ public final class Controller
 		selectionSpriteController = new SelectionSpriteController(startSet, this);
 		frameCaller.run();
 		Log.e("myid", "totalControl: ".concat(Long.toString((System.nanoTime()-timeBig)/100000)));
+
+        graphicsController.setControllers(this);
 	}
 	protected void die()
 	{
