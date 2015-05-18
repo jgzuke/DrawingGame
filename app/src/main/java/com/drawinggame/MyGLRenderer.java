@@ -30,7 +30,6 @@ public class MyGLRenderer implements Renderer {
     @Override
     public void onDrawFrame(GL10 gl) {
         startDraw(gl);
-        gl.glTranslatef(0, 0, -height);
         for(Sprite s: spriteController.allies) {
             drawSprite(gl, s);
         }
@@ -38,36 +37,14 @@ public class MyGLRenderer implements Renderer {
             drawSprite(gl, s);
         }
         drawSprite(gl, 0, 0, 0, textureLibrary.createMarker);
-        endDraw(gl);
     }
 
     protected void startDraw(GL10 gl)
     {
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-        gl.glFrontFace(GL10.GL_CCW);
-        gl.glCullFace(GL10.GL_BACK);
-
-        gl.glEnable(GL10.GL_CULL_FACE);
-        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-        gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-
+        gl.glClearColor(0.0f, 1.0f, 0.2f, 1.0f);
         gl.glLoadIdentity();
-
-
-        /*gl.glEnable(GL10.GL_TEXTURE_2D);
-        gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
-
-        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR);
-        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
-        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, GL10.GL_REPEAT);
-        gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_REPEAT);*/
-    }
-
-    protected void endDraw(GL10 gl)
-    {
-        gl.glDisable(GL10.GL_CULL_FACE);
-        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
-        gl.glDisableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+        gl.glTranslatef(0, 0, -height);
     }
 
     public void drawSprite(GL10 gl, Sprite s)
@@ -109,5 +86,16 @@ public class MyGLRenderer implements Renderer {
         gl.glEnable(GL10.GL_DEPTH_TEST); 			//Enables Depth Testing
         gl.glDepthFunc(GL10.GL_LEQUAL); 			//The Type Of Depth Testing To Do
         gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_NICEST);
+
+
+        gl.glFrontFace(GL10.GL_CCW);
+        gl.glCullFace(GL10.GL_BACK);
+
+        gl.glEnable(GL10.GL_CULL_FACE);
+        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glEnableClientState(GL10.GL_TEXTURE_COORD_ARRAY);
+
+        gl.glEnable(gl.GL_ALPHA_TEST);
+        gl.glAlphaFunc(gl.GL_GREATER, 0);
     }
 }
