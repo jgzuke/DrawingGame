@@ -16,6 +16,7 @@ public class MyGLRenderer implements Renderer {
     private SpriteController spriteController;
     private LevelController levelController;
     private TextureLibrary textureLibrary;
+    private ImageDrawer imageDrawer;
 
     public MyGLRenderer(Context contextSet) {
         context = contextSet;
@@ -25,6 +26,7 @@ public class MyGLRenderer implements Renderer {
         spriteController = control.spriteController;
         levelController = control.levelController;
         textureLibrary = control.textureLibrary;
+        imageDrawer = new ImageDrawer();
     }
 
     @Override
@@ -43,6 +45,10 @@ public class MyGLRenderer implements Renderer {
     {
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
         gl.glClearColor(0.0f, 1.0f, 0.2f, 1.0f);
+
+        gl.glFrontFace(GL10.GL_CW);
+        gl.glCullFace(GL10.GL_BACK);
+
         gl.glLoadIdentity();
         gl.glTranslatef(0, 0, -height);
     }
@@ -59,8 +65,8 @@ public class MyGLRenderer implements Renderer {
     {
         gl.glPushMatrix();
         gl.glTranslatef(x, y, 0);
-        gl.glRotatef(r, 0, 0, -height);
-        textureLibrary.draw(gl, image);
+        gl.glRotatef(r+90, 0, 0, -height);
+        imageDrawer.draw(gl, image);
         gl.glPopMatrix();
     }
 
@@ -86,10 +92,6 @@ public class MyGLRenderer implements Renderer {
         gl.glEnable(GL10.GL_DEPTH_TEST); 			//Enables Depth Testing
         gl.glDepthFunc(GL10.GL_LEQUAL); 			//The Type Of Depth Testing To Do
         gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_NICEST);
-
-
-        gl.glFrontFace(GL10.GL_CCW);
-        gl.glCullFace(GL10.GL_BACK);
 
         gl.glEnable(GL10.GL_CULL_FACE);
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
