@@ -26,7 +26,7 @@ public class MyGLRenderer implements Renderer {
         spriteController = control.spriteController;
         levelController = control.levelController;
         textureLibrary = control.textureLibrary;
-        imageDrawer = new ImageDrawer();
+        imageDrawer = new ImageDrawer(textureLibrary);
     }
 
     @Override
@@ -58,7 +58,17 @@ public class MyGLRenderer implements Renderer {
         float x = (float) (s.x - levelController.levelWidth/2);
         float y = (float) (s.y - levelController.levelWidth/2);
         float ratio = 80.0f/levelController.levelWidth;
-        drawSprite(gl, x * ratio, y * ratio, (float) s.rotation, s.image);
+        //drawSprite(gl, x * ratio, y * ratio, (float) s.rotation, s.image);
+        drawSprite(gl, x * ratio, y * ratio, (float) s.rotation, s);
+    }
+
+    public void drawSprite(GL10 gl, float x, float y, float r, Sprite s)
+    {
+        gl.glPushMatrix();
+        gl.glTranslatef(x, y, 0);
+        gl.glRotatef(r+90, 0, 0, -height);
+        imageDrawer.draw(gl, s);
+        gl.glPopMatrix();
     }
 
     public void drawSprite(GL10 gl, float x, float y, float r, Bitmap image)

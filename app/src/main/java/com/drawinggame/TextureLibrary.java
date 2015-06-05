@@ -18,20 +18,21 @@ import javax.microedition.khronos.opengles.GL10;
  * Created by jgzuke on 15-05-15.
  */
 public class TextureLibrary {
-    public String getting;
     public Resources res;
     public String packageName;
     public BitmapFactory.Options opts;
+    protected Bitmap mageImages;
+    protected Bitmap archerImages;
+    protected Bitmap sheildImages;
+
+
     protected Bitmap[][] enemyImages = new Bitmap[6][100]; //array holding videos for each enemy, null when uneeded
     protected Bitmap structure_Spawn;
     protected Bitmap isSelected;
-    protected int isPlayerWidth;
     protected Bitmap[] shotPlayer;
     protected Bitmap shotAOEPlayer;
     protected Bitmap[] shotEnemy;
     protected Bitmap shotAOEEnemy;
-    //protected Bitmap currentLevel;
-    //protected Bitmap currentLevelTop;
     protected Bitmap backDrop;
     protected Bitmap createMarker;
     protected Bitmap menu_top;
@@ -76,7 +77,12 @@ public class TextureLibrary {
         createMarker = loadImage("createswordsman", 44, 66);
         backDrop = loadImage("leveltile1", 400, 400);
         isSelected = loadImage("icon_isselected", 60, 60);
-        Bitmap sheet = loadImage("sprite_enemies", 6050, 240);
+
+        mageImages = loadImage("mage");
+        archerImages = loadImage("archer");
+        sheildImages = loadImage("sheild");
+
+        /*Bitmap sheet = loadImage("sprite_enemies", 6050, 240);
         enemyImages[0] = new Bitmap[55];
         enemyImages[3] = new Bitmap[55];
         for(int i = 0; i < 55; i++)
@@ -97,7 +103,7 @@ public class TextureLibrary {
         {
             enemyImages[2][i] = Bitmap.createBitmap(sheet, i*30+3920, 140, 30, 34);
             enemyImages[5][i] = Bitmap.createBitmap(sheet, i*30+3920, 174, 30, 34);
-        }
+        }*/
         double w = phoneWidth;
         double h = phoneHeight;
         menu_top = loadImage("menu_top", (int)(w), (int)(h/5));
@@ -138,6 +144,15 @@ public class TextureLibrary {
             end = "0" + end;
         }
         return end;
+    }
+    /**
+     * Loads image of name given from resources and scales to specified width and height
+     * @return Returns bitmap loaded and resized
+     */
+    public Bitmap loadImage(String imageName)
+    {
+        int imageNumber = res.getIdentifier(imageName, "drawable", packageName);
+        return BitmapFactory.decodeResource(res, imageNumber, opts);
     }
     /**
      * Loads image of name given from resources and scales to specified width and height
